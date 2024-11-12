@@ -27,7 +27,7 @@ fn main() {
 #[derive(States, Debug, Clone, Copy, Eq, PartialEq, Hash, Default)]
 pub enum AppState {
     #[default]
-    MainMenu,
-    Game,
-    GameOver,
+    MainMenu, // State for the main menu
+    Game,     // State for when the game is running
+    GameOver, // We dont use this for anything yet
 }

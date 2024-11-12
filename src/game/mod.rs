@@ -6,6 +6,12 @@ use crate::AppState;
 
 use bevy::prelude::*;
 
+/// Bevy plugin responsible for managing the game's simulation state.
+///
+/// # Functionality
+///
+/// * Pausing the simulation when entering the game state
+/// * Resuming the simulation when exiting the game state.
 pub struct GamePlugin;
 
 impl Plugin for GamePlugin {
