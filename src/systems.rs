@@ -2,7 +2,7 @@ use crate::AppState;
 use bevy::prelude::*;
 
 // Function that generates the basic 3D scene.
-// Just here for testing purposes.
+// Just here for to make sure everything runs right.
 pub fn setup(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
@@ -39,7 +39,7 @@ pub fn setup(
     ));
 }
 
-// Transition to the game state when the 'G' key is pressed.
+/// Transition to the game state when the 'G' key is pressed.
 pub fn transition_to_game_state(
     keyboard_input: Res<ButtonInput<KeyCode>>,
     app_state: Res<State<AppState>>,
@@ -53,7 +53,7 @@ pub fn transition_to_game_state(
     }
 }
 
-// Goes back to the main menu state when the 'M' key is pressed.
+/// Goes back to the main menu state when the 'M' key is pressed.
 pub fn transition_to_main_menu_state(
     keyboard_input: Res<ButtonInput<KeyCode>>,
     app_state: Res<State<AppState>>,
@@ -67,6 +67,7 @@ pub fn transition_to_main_menu_state(
     }
 }
 
+/// Exits the game when the 'ESC' key is pressed.
 pub fn exit_game(
     keyboard_input: Res<ButtonInput<KeyCode>>,
     mut app_exit_event_writer: EventWriter<AppExit>,
