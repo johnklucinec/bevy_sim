@@ -18,9 +18,12 @@ fn main() {
         // Game Systems
         .insert_resource(ClearColor(Color::srgb(0.2, 0.2, 0.2)))
         .add_systems(Startup, setup)
-        .add_systems(Update, transition_to_game_state)
-        .add_systems(Update, transition_to_main_menu_state)
-        .add_systems(Update, exit_game)
+        .add_systems(Update, (
+            transition_to_game_state,
+            transition_to_main_menu_state,
+            move_cube,
+            exit_game,
+        ))
         .run();
 }
 
