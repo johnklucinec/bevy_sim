@@ -16,8 +16,9 @@ pub fn setup_buildings(commands: &mut Commands) {
             //generate building height using Perlin noise from noise.rs
             let height = get_scaled_building_height(x as f64, y as f64, 10.0); //scale by 10
 
-            let width = 5.0;
-            let depth = 5.0;
+            // generate width and depth using Perlin noise from noise.rs
+            let width = 5.0 + generate_perlin_noise(x as f64, y as f64) as f32 * 5.0; //random width based on noise
+            let depth = 5.0 + generate_perlin_noise(y as f64, x as f64) as f32 * 5.0; //random depth based on noise
 
             commands.spawn_bundle(PbrBundle {
                 mesh: bevy::prelude::shape::Box::default(),

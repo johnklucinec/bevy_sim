@@ -9,7 +9,7 @@ use bevy::prelude::*;
 pub struct BiomeStyle {
     pub road_color: Color,
     pub building_color: Color,
-    pub sky_color: Color,
+    //pub sky_color: Color,
 }
 
 impl BiomeStyle {
@@ -18,7 +18,7 @@ impl BiomeStyle {
         Self {
             road_color: Color::rgb(0.3, 0.3, 0.3), //Dark gray for roads
             building_color: Color::rgb(0.8, 0.8, 0.8), //Light gray for buildings
-            //sky_color: Color::rgb(0.5, 0.7, 1.0), //Light blue for sky
+                                                   //sky_color: Color::rgb(0.5, 0.7, 1.0), //Light blue for sky
         }
     }
 }
