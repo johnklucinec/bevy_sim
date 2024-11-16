@@ -5,8 +5,12 @@ enviorments in the future */
 
 use bevy::prelude::*;
 use noise::{NoiseFn, Perlin};
+use crate::style::BiomeStyle;
 
 pub fn setup_buildings(commands: &mut Commands) {
+
+    let biome_style = BiomeStyle::default();
+
     for x in 0..5 {
         for y in 0..5 {
             //generate building height using Perlin noise from noise.rs
@@ -18,7 +22,7 @@ pub fn setup_buildings(commands: &mut Commands) {
             commands.spawn_bundle(PbrBundle {
                 mesh: bevy::prelude::shape::Box::default(),
                 material: StandardMaterial {
-                    base_color: Color::rgb(0.7, 0.7, 0.7), // Color for the buildings(gray)
+                    base_color: biome_style.building_color, // Color for the buildings(gray)
                     ..Default::default()
                 },
                 transform: Transform {
