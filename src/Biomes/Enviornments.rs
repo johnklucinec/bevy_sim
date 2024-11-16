@@ -1,5 +1,5 @@
-// This file will just be used to initalize the enviornment by calling setup
-// functions from building.rs and terrain.rs 
+/*! This file will just be used to initalize the enviornment by calling setup
+ functions from building.rs and terrain.rs */   
 
 use bevy::prelude::*;
 use crate::environment::buildings::setup_buildings;
