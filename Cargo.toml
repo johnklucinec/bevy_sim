@@ -5,3 +5,4 @@ edition = "2021"
 
 [dependencies]
 bevy = "0.15.0-rc.2"
+noise = "0.8"
