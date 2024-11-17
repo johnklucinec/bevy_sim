@@ -1,5 +1,4 @@
-mod biome;
-mod camera;
+pub mod car;
 mod systems;
 mod ui;
 pub mod car;
