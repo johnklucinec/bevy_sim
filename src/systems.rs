@@ -92,17 +92,18 @@ pub fn move_cube(
         let movement_speed = 2.0;
         let delta = time.delta_secs() * movement_speed;
 
-        if keyboard_input.pressed(KeyCode::ArrowLeft){
+        if keyboard_input.pressed(KeyCode::ArrowLeft) {
             transform.translation.x -= delta;
         }
-        if keyboard_input.pressed(KeyCode::ArrowRight){
+        if keyboard_input.pressed(KeyCode::ArrowRight) {
             transform.translation.x += delta;
         }
-        if keyboard_input.pressed(KeyCode::ArrowUp){
+        if keyboard_input.pressed(KeyCode::ArrowUp) {
             transform.translation.z -= delta;
         }
-        if keyboard_input.pressed(KeyCode::ArrowDown){
+        if keyboard_input.pressed(KeyCode::ArrowDown) {
             transform.translation.z += delta;
         }
     }
 }
+
