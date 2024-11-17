@@ -1,8 +1,8 @@
 use crate::AppState;
 use bevy::prelude::*;
 
-#[derive(Component)]
-pub struct Cube;
+// #[derive(Component)]
+// pub struct Cube;
 
 // Function that generates the basic 3D scene.
 // Just here for to make sure everything runs right.
@@ -24,13 +24,13 @@ pub fn setup(
         Transform::from_rotation(Quat::from_rotation_x(-std::f32::consts::FRAC_PI_2)),
     ));
 
-    // cube
-    commands.spawn((
-        Cube,
-        Mesh3d(meshes.add(Cuboid::new(1.0, 1.0, 1.0))),
-        MeshMaterial3d(materials.add(Color::srgb_u8(124, 144, 255))),
-        Transform::from_xyz(0.0, 0.5, 0.0),
-    ));
+    // // cube
+    // commands.spawn((
+    //     Cube,
+    //     Mesh3d(meshes.add(Cuboid::new(1.0, 1.0, 1.0))),
+    //     MeshMaterial3d(materials.add(Color::srgb_u8(124, 144, 255))),
+    //     Transform::from_xyz(0.0, 0.5, 0.0),
+    // ));
 
     // Light
     commands.spawn((
@@ -81,28 +81,27 @@ pub fn exit_game(
     }
 }
 
+// //cube movement
+// pub fn move_cube(
+//     keyboard_input: Res<ButtonInput<KeyCode>>,
+//     mut cube_query: Query<&mut Transform, With<Cube>>,
+//     time: Res<Time>,
+// ) {
+//     if let Ok(mut transform) = cube_query.get_single_mut() {
+//         let movement_speed = 6.0;
+//         let delta = time.delta_secs() * movement_speed;
 
-//cube movement
-pub fn move_cube(
-    keyboard_input: Res<ButtonInput<KeyCode>>,
-    mut cube_query: Query<&mut Transform, With<Cube>>,
-    time: Res<Time>,
-) {
-    if let Ok(mut transform) = cube_query.get_single_mut() {
-        let movement_speed = 2.0;
-        let delta = time.delta_secs() * movement_speed;
-
-        if keyboard_input.pressed(KeyCode::ArrowLeft){
-            transform.translation.x -= delta;
-        }
-        if keyboard_input.pressed(KeyCode::ArrowRight){
-            transform.translation.x += delta;
-        }
-        if keyboard_input.pressed(KeyCode::ArrowUp){
-            transform.translation.z -= delta;
-        }
-        if keyboard_input.pressed(KeyCode::ArrowDown){
-            transform.translation.z += delta;
-        }
-    }
-}
+//         if keyboard_input.pressed(KeyCode::ArrowLeft){
+//             transform.translation.x -= delta;
+//         }
+//         if keyboard_input.pressed(KeyCode::ArrowRight){
+//             transform.translation.x += delta;
+//         }
+//         if keyboard_input.pressed(KeyCode::ArrowUp){
+//             transform.translation.z -= delta;
+//         }
+//         if keyboard_input.pressed(KeyCode::ArrowDown){
+//             transform.translation.z += delta;
+//         }
+//     }
+// }

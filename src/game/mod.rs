@@ -1,3 +1,4 @@
+pub mod car;
 mod systems;
 
 use crate::game::systems::pause_simulation;
