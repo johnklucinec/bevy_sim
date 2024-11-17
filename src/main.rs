@@ -3,6 +3,8 @@ mod game;
 mod main_menu;
 mod systems;
 
+use game::car::car::*;
+use game::car::physics::*;
 use game::GamePlugin;
 use main_menu::MainMenuPlugin;
 use systems::*;
