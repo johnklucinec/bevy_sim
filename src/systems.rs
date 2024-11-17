@@ -3,6 +3,8 @@ use bevy::prelude::*;
 
 // #[derive(Component)]
 // pub struct Cube;
+// #[derive(Component)]
+// pub struct Cube;
 
 // Function that generates the basic 3D scene.
 // Just here for to make sure everything runs right.
@@ -16,13 +18,6 @@ pub fn setup(
         Camera3d::default(),
         Transform::from_xyz(0.0, 5.0, 10.0).looking_at(Vec3::ZERO, Vec3::Y),
         IsDefaultUiCamera,
-    ));
-
-    // circular base
-    commands.spawn((
-        Mesh3d(meshes.add(Circle::new(4.0))),
-        MeshMaterial3d(materials.add(Color::WHITE)),
-        Transform::from_rotation(Quat::from_rotation_x(-std::f32::consts::FRAC_PI_2)),
     ));
 
     // // cube
@@ -80,6 +75,15 @@ pub fn exit_game(
     }
 }
 
+// //cube movement
+// pub fn move_cube(
+//     keyboard_input: Res<ButtonInput<KeyCode>>,
+//     mut cube_query: Query<&mut Transform, With<Cube>>,
+//     time: Res<Time>,
+// ) {
+//     if let Ok(mut transform) = cube_query.get_single_mut() {
+//         let movement_speed = 6.0;
+//         let delta = time.delta_secs() * movement_speed;
 // //cube movement
 // pub fn move_cube(
 //     keyboard_input: Res<ButtonInput<KeyCode>>,
