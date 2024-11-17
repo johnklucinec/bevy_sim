@@ -61,7 +61,7 @@ pub fn build_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>)
                     Button,
                     button_style(),
                     BorderColor(Color::BLACK),
-                    BorderRadius::MAX,
+                    BorderRadius::all(Val::Px(10.0)),
                     BackgroundColor(NORMAL_BUTTON),
                     PlayButton {},
                 ))
@@ -77,7 +77,7 @@ pub fn build_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>)
                     Button,
                     button_style(),
                     BorderColor(Color::BLACK),
-                    BorderRadius::MAX,
+                    BorderRadius::all(Val::Px(10.0)),
                     BackgroundColor(NORMAL_BUTTON),
                     QuitButton {},
                 ))

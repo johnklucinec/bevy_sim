@@ -71,16 +71,17 @@ pub fn transition_to_main_menu_state(
     }
 }
 
-/// Exits the game when the 'ESC' key is pressed.
+/// Exits the game when the 'ALT + F4' key is pressed.
 pub fn exit_game(
     keyboard_input: Res<ButtonInput<KeyCode>>,
     mut app_exit_event_writer: EventWriter<AppExit>,
 ) {
-    if keyboard_input.just_pressed(KeyCode::Escape) {
+    let alt_pressed = keyboard_input.any_pressed([KeyCode::AltLeft, KeyCode::AltRight]);
+
+    if alt_pressed && keyboard_input.just_pressed(KeyCode::F4) {
         app_exit_event_writer.send(AppExit::Success);
     }
 }
-
 
 //cube movement
 pub fn move_cube(
@@ -89,19 +90,19 @@ pub fn move_cube(
     time: Res<Time>,
 ) {
     if let Ok(mut transform) = cube_query.get_single_mut() {
-        let movement_speed = 2.0;
+        let movement_speed = 5.0;
         let delta = time.delta_secs() * movement_speed;
 
-        if keyboard_input.pressed(KeyCode::ArrowLeft){
+        if keyboard_input.pressed(KeyCode::ArrowLeft) {
             transform.translation.x -= delta;
         }
-        if keyboard_input.pressed(KeyCode::ArrowRight){
+        if keyboard_input.pressed(KeyCode::ArrowRight) {
             transform.translation.x += delta;
         }
-        if keyboard_input.pressed(KeyCode::ArrowUp){
+        if keyboard_input.pressed(KeyCode::ArrowUp) {
             transform.translation.z -= delta;
         }
-        if keyboard_input.pressed(KeyCode::ArrowDown){
+        if keyboard_input.pressed(KeyCode::ArrowDown) {
             transform.translation.z += delta;
         }
     }

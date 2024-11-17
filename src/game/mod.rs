@@ -1,8 +1,9 @@
 mod systems;
+mod ui;
 
-use crate::game::systems::pause_simulation;
-use crate::game::systems::resume_simulation;
 use crate::AppState;
+use systems::*;
+use ui::GameUIPlugin;
 
 use bevy::prelude::*;
 
@@ -16,11 +17,17 @@ pub struct GamePlugin;
 
 impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
-        app.init_state::<SimulationState>()
+        app
+            // States
+            .init_state::<SimulationState>()
             // On Enter Systems
-            .add_systems(OnEnter(AppState::Game), pause_simulation)
+            .add_systems(OnEnter(AppState::Game), resume_simulation)
+            // Plugins
+            .add_plugins(GameUIPlugin)
+            // Systems
+            .add_systems(Update, toggle_simulation.run_if(in_state(AppState::Game)))
             // On Exit Systems
-            .add_systems(OnExit(AppState::Game), resume_simulation);
+            .add_systems(OnExit(AppState::Game), pause_simulation);
     }
 }
 
