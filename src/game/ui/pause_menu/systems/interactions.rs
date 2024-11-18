@@ -1,21 +1,38 @@
+use bevy::app::AppExit;
 use bevy::prelude::*;
 
-use crate::{
-    main_menu::{
-        components::*,
-        styles::{
-            HOVERED_BUTTON, NORMAL_BUTTON, PRESSED_BUTTON, SECONDARY_BUTTON,
-            SECONDARY_HOVERED_BUTTON, SECONDARY_PRESSED_BUTTON,
-        },
-    },
-    AppState,
-};
+use crate::game::ui::pause_menu::components::*;
+use crate::game::ui::pause_menu::styles::*;
+use crate::game::SimulationState;
+use crate::AppState;
 
-// Gives funcationality to the Play Button
-pub fn interact_with_play_button(
+pub fn interact_with_resume_button(
     mut button_query: Query<
         (&Interaction, &mut BackgroundColor),
-        (Changed<Interaction>, With<PlayButton>),
+        (Changed<Interaction>, With<ResumeButton>),
+    >,
+    mut next_state: ResMut<NextState<SimulationState>>,
+) {
+    if let Ok((interaction, mut background_color)) = button_query.get_single_mut() {
+        match *interaction {
+            Interaction::Pressed => {
+                *background_color = PRESSED_BUTTON.into();
+                next_state.set(SimulationState::Running);
+            }
+            Interaction::Hovered => {
+                *background_color = HOVERED_BUTTON.into();
+            }
+            Interaction::None => {
+                *background_color = NORMAL_BUTTON.into();
+            }
+        }
+    }
+}
+
+pub fn interact_with_main_menu_button(
+    mut button_query: Query<
+        (&Interaction, &mut BackgroundColor),
+        (Changed<Interaction>, With<MainMenuButton>),
     >,
     mut next_state: ResMut<NextState<AppState>>,
 ) {
@@ -23,7 +40,7 @@ pub fn interact_with_play_button(
         match *interaction {
             Interaction::Pressed => {
                 *background_color = PRESSED_BUTTON.into();
-                next_state.set(AppState::Game);
+                next_state.set(AppState::MainMenu);
             }
             Interaction::Hovered => {
                 *background_color = HOVERED_BUTTON.into();
