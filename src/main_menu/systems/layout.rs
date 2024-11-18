@@ -67,7 +67,7 @@ pub fn build_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>)
                 ))
                 .with_child((
                     Text::new("Play"),
-                    get_text_style(33.0, &asset_server),
+                    get_text_style(33.0, asset_server),
                     TextColor(TEXT_COLOR),
                 ));
 
@@ -83,7 +83,7 @@ pub fn build_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>)
                 ))
                 .with_child((
                     Text::new("Quit"),
-                    get_text_style(33.0, &asset_server),
+                    get_text_style(33.0, asset_server),
                     TextColor(TEXT_COLOR),
                 ));
         })

@@ -24,8 +24,10 @@ impl Plugin for GamePlugin {
             // States
             .init_state::<SimulationState>()
             // On Enter Systems
-            .add_systems(OnEnter(AppState::Game), resume_simulation)
-            .add_systems(OnEnter(AppState::Game), spawn_biome_on_enter)
+            .add_systems(
+                OnEnter(AppState::Game),
+                (resume_simulation, spawn_biome_on_enter),
+            )
             // Plugins
             .add_plugins(GameUIPlugin)
             // Systems

@@ -17,14 +17,6 @@ pub fn setup(
         Transform::from_xyz(0.0, 5.0, 10.0).looking_at(Vec3::ZERO, Vec3::Y),
     ));
 
-    /*  circular base
-    commands.spawn((
-        Mesh3d(meshes.add(Circle::new(4.0))),
-        MeshMaterial3d(materials.add(Color::WHITE)),
-        Transform::from_rotation(Quat::from_rotation_x(-std::f32::consts::FRAC_PI_2)),
-    ));
-    */
-
     // cube
     commands.spawn((
         Cube,
@@ -50,11 +42,9 @@ pub fn transition_to_game_state(
     app_state: Res<State<AppState>>,
     mut app_state_next_state: ResMut<NextState<AppState>>,
 ) {
-    if keyboard_input.just_pressed(KeyCode::KeyG) {
-        if *app_state.get() != AppState::Game {
-            app_state_next_state.set(AppState::Game);
-            println!("Entered AppState::Game");
-        }
+    if keyboard_input.just_pressed(KeyCode::KeyG) && *app_state.get() != AppState::Game {
+        app_state_next_state.set(AppState::Game);
+        println!("Entered AppState::Game");
     }
 }
 
@@ -64,11 +54,9 @@ pub fn transition_to_main_menu_state(
     app_state: Res<State<AppState>>,
     mut app_state_next_state: ResMut<NextState<AppState>>,
 ) {
-    if keyboard_input.just_pressed(KeyCode::KeyM) {
-        if *app_state.get() != AppState::MainMenu {
-            app_state_next_state.set(AppState::MainMenu);
-            println!("Entered AppState::MainMenu");
-        }
+    if keyboard_input.just_pressed(KeyCode::KeyM) && *app_state.get() != AppState::MainMenu {
+        app_state_next_state.set(AppState::MainMenu);
+        println!("Entered AppState::MainMenu");
     }
 }
 
