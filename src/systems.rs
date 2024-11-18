@@ -108,8 +108,3 @@ pub fn move_cube(
         }
     }
 }
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 1bbe529 (Added simple road to the current enviornment, removed biomes folder, commented out circle base.)
