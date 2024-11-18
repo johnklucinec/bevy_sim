@@ -1,7 +1,9 @@
+mod biome;
 mod systems;
 
 use crate::game::systems::pause_simulation;
 use crate::game::systems::resume_simulation;
+use crate::game::systems::spawn_biome_on_enter;
 use crate::AppState;
 
 use bevy::prelude::*;
@@ -19,6 +21,7 @@ impl Plugin for GamePlugin {
         app.init_state::<SimulationState>()
             // On Enter Systems
             .add_systems(OnEnter(AppState::Game), pause_simulation)
+            .add_systems(OnEnter(AppState::Game), spawn_biome_on_enter)
             // On Exit Systems
             .add_systems(OnExit(AppState::Game), resume_simulation);
     }
