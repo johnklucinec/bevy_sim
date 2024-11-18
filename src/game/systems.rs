@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-
+use crate::game::biome::setup_terrain;
 use crate::game::SimulationState;
 
 /// Pauses the simulation when entering the paused simulation state.
@@ -14,6 +14,7 @@ pub fn resume_simulation(mut simulation_state_next_state: ResMut<NextState<Simul
     simulation_state_next_state.set(SimulationState::Running);
 }
 
+<<<<<<< HEAD
 pub fn toggle_simulation(
     keyboard_input: Res<ButtonInput<KeyCode>>,
     simulation_state: Res<State<SimulationState>>,
@@ -30,3 +31,13 @@ pub fn toggle_simulation(
         }
     }
 }
+=======
+pub fn spawn_biome_on_enter(simulation_state: Res<State<SimulationState>>, mut commands: Commands,
+    mut meshes: ResMut<Assets<Mesh>>, 
+    mut materials: ResMut<Assets<StandardMaterial>>,
+) {
+    if *simulation_state == SimulationState::Running {
+        setup_terrain(&mut commands, &mut meshes, &mut materials);
+    }
+}
+>>>>>>> 1bbe529 (Added simple road to the current enviornment, removed biomes folder, commented out circle base.)

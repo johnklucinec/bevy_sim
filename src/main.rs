@@ -1,12 +1,10 @@
 use bevy::prelude::*;
 mod game;
-mod biomes;
 mod main_menu;
 mod systems;
 
 use game::GamePlugin;
 use main_menu::MainMenuPlugin;
-use biomes::EnvironmentPlugin;
 use systems::*;
 
 fn main() {
@@ -17,7 +15,6 @@ fn main() {
         // Game Plugins
         .add_plugins(MainMenuPlugin)
         .add_plugins(GamePlugin)
-        .add_plugins(EnvironmentPlugin)
         // Game Systems
         .insert_resource(ClearColor(Color::srgb(0.2, 0.2, 0.2)))
         .add_systems(Startup, setup)
