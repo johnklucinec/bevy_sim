@@ -4,4 +4,4 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-bevy = "0.15.0-rc.2"
+bevy = "0.15.0-rc.3"

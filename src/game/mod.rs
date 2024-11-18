@@ -1,6 +1,9 @@
+mod biome;
 mod systems;
 mod ui;
 
+use crate::game::systems::pause_simulation;
+use crate::game::systems::resume_simulation;
 use crate::AppState;
 use systems::*;
 use ui::GameUIPlugin;
@@ -21,11 +24,15 @@ impl Plugin for GamePlugin {
             // States
             .init_state::<SimulationState>()
             // On Enter Systems
-            .add_systems(OnEnter(AppState::Game), resume_simulation)
+            .add_systems(
+                OnEnter(AppState::Game),
+                (resume_simulation, spawn_biome_on_enter),
+            )
             // Plugins
             .add_plugins(GameUIPlugin)
             // Systems
             .add_systems(Update, toggle_simulation.run_if(in_state(AppState::Game)))
+            .add_systems(OnEnter(AppState::Game), pause_simulation)
             // On Exit Systems
             .add_systems(OnExit(AppState::Game), pause_simulation);
     }
