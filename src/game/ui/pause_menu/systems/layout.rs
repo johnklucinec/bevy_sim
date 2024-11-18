@@ -47,7 +47,7 @@ pub fn build_pause_menu(commands: &mut Commands, asset_server: &Res<AssetServer>
                         ))
                         .with_child((
                             Text::new("Resume"),
-                            get_text_style(28.0, &asset_server),
+                            get_text_style(28.0, asset_server),
                             TextColor(TEXT_COLOR),
                         ));
                     // ====== Main Menu Button ======
@@ -62,7 +62,7 @@ pub fn build_pause_menu(commands: &mut Commands, asset_server: &Res<AssetServer>
                         ))
                         .with_child((
                             Text::new("Main Menu"),
-                            get_text_style(28.0, &asset_server),
+                            get_text_style(28.0, asset_server),
                             TextColor(TEXT_COLOR),
                         ));
                     // ====== Quit Button ======
@@ -77,7 +77,7 @@ pub fn build_pause_menu(commands: &mut Commands, asset_server: &Res<AssetServer>
                         ))
                         .with_child((
                             Text::new("Quit"),
-                            get_text_style(28.0, &asset_server),
+                            get_text_style(28.0, asset_server),
                             TextColor(TEXT_COLOR),
                         ));
                 });
