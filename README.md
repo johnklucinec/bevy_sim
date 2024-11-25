@@ -1,5 +1,9 @@
-# Engineering Simulations with Game Development Tools
+# 🔧 Engineering Simulations with Game Development Tools 🎮 
+===============================================
 
-CS 461-400 Fall 2024
+Course: CS 461-400
+Term: Fall-Spring 2024-2025
+Institution: Oregon State University
 
-Oregon State University
+> [!NOTE]  
+> First update coming soon :)
