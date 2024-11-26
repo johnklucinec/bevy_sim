@@ -5,7 +5,9 @@ mod systems;
 use crate::AppState;
 use bevy::prelude::*;
 use systems::{
-    interactions::{interact_with_play_button, interact_with_quit_button},
+    interactions::{
+        interact_with_disabled_button, interact_with_play_button, interact_with_quit_button,
+    },
     layout::*,
 };
 
@@ -25,7 +27,11 @@ impl Plugin for MainMenuPlugin {
             // Systems
             .add_systems(
                 Update,
-                (interact_with_play_button, interact_with_quit_button),
+                (
+                    interact_with_play_button,
+                    interact_with_quit_button,
+                    interact_with_disabled_button,
+                ),
             )
             // OnExit State Systems
             .add_systems(OnExit(AppState::MainMenu), despawn_main_menu);
