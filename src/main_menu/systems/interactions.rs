@@ -58,3 +58,26 @@ pub fn interact_with_quit_button(
         }
     }
 }
+
+// Used for when a button is disabled
+pub fn interact_with_disabled_button(
+    mut button_query: Query<
+        (&Interaction, &mut BackgroundColor),
+        (Changed<Interaction>, With<DisabledButton>),
+    >,
+) {
+    if let Ok((interaction, mut background_color)) = button_query.get_single_mut() {
+        match *interaction {
+            Interaction::Pressed => {
+                *background_color = PRESSED_BUTTON.into();
+                println!("Button is currently disabled");
+            }
+            Interaction::Hovered => {
+                *background_color = PRESSED_BUTTON.into();
+            }
+            Interaction::None => {
+                *background_color = PRESSED_BUTTON.into();
+            }
+        }
+    }
+}
