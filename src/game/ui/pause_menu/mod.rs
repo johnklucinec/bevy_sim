@@ -32,6 +32,7 @@ impl Plugin for PauseMenuPlugin {
                     interact_with_resume_button,
                     interact_with_main_menu_button,
                     interact_with_quit_button,
+                    interact_with_disabled_button,
                 ),
             )
             // OnExit State Systems
