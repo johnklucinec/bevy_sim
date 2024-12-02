@@ -1,4 +1,5 @@
 use crate::game::biome::setup_terrain;
+use crate::game::road::spawn_road;
 use crate::game::SimulationState;
 use bevy::prelude::*;
 
@@ -40,5 +41,16 @@ pub fn spawn_biome_on_enter(
 ) {
     if *simulation_state == SimulationState::Running {
         setup_terrain(&mut commands, &mut meshes, &mut materials);
+
+        //spawn a straight road
+        spawn_road(
+            &mut commands,
+            &mut meshes,
+            &mut materials,
+            Vec3::new(0.0, 0.0, 0.0), // Road position
+            50.0,                     // Road length
+            5.0,
+            1, // Road width
+        );
     }
 }
