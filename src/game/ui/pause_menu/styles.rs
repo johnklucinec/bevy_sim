@@ -11,16 +11,34 @@ pub const SECONDARY_PRESSED_BUTTON: Color = Color::srgb(0.44, 0.16, 0.0);
 
 pub const TEXT_COLOR: Color = Color::srgb(1.0, 1.0, 1.0);
 
-/// Menu style and layout
-pub fn menu_style() -> Node {
+/// Pause menu parent node style
+pub fn pause_menu_parent_style() -> Node {
     Node {
         flex_direction: FlexDirection::Column,
         justify_content: JustifyContent::Center,
         align_items: AlignItems::Center,
         width: Val::Percent(100.0),
         height: Val::Percent(100.0),
-        column_gap: Val::Px(8.0),
-        row_gap: Val::Px(8.0),
+        ..Node::default()
+    }
+}
+/// Menu style and layout
+pub fn pause_menu_style() -> Node {
+    Node {
+        flex_direction: FlexDirection::Column,
+        justify_content: JustifyContent::Center,
+        align_items: AlignItems::Center,
+        width: Val::Auto,
+        height: Val::Auto,
+        border: UiRect::all(Val::Px(3.0)),
+        column_gap: Val::Px(10.0),
+        row_gap: Val::Px(10.0),
+        padding: UiRect {
+            left: Val::Px(10.0),
+            right: Val::Px(10.0),
+            top: Val::Px(10.0),
+            bottom: Val::Px(10.0),
+        },
         ..Node::default()
     }
 }
@@ -28,36 +46,11 @@ pub fn menu_style() -> Node {
 /// Menu button style and layout
 pub fn button_style() -> Node {
     Node {
-        width: Val::Px(300.0),
-        height: Val::Px(80.0),
+        width: Val::Px(250.0),
+        height: Val::Px(50.0),
         border: UiRect::all(Val::Px(3.0)),
         justify_content: JustifyContent::Center,
         align_items: AlignItems::Center,
-        ..Node::default()
-    }
-}
-
-// Image style and layout
-pub fn beaver_image_style() -> Node {
-    Node {
-        width: Val::Px(100.0),
-        height: Val::Px(100.0),
-        justify_content: JustifyContent::Center,
-        align_items: AlignItems::Center,
-        ..Node::default()
-    }
-}
-
-/// Title box style and layout
-pub fn title_style() -> Node {
-    Node {
-        flex_direction: FlexDirection::Row,
-        justify_content: JustifyContent::Center,
-        align_items: AlignItems::Center,
-        width: Val::Px(550.0),
-        height: Val::Px(120.0),
-        column_gap: Val::Px(8.0),
-        row_gap: Val::Px(8.0),
         ..Node::default()
     }
 }
