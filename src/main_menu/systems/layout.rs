@@ -61,13 +61,13 @@ pub fn build_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>)
                     Button,
                     button_style(),
                     BorderColor(Color::BLACK),
-                    BorderRadius::MAX,
+                    BorderRadius::all(Val::Px(10.0)),
                     BackgroundColor(NORMAL_BUTTON),
                     PlayButton {},
                 ))
                 .with_child((
                     Text::new("Play"),
-                    get_text_style(33.0, &asset_server),
+                    get_text_style(33.0, asset_server),
                     TextColor(TEXT_COLOR),
                 ));
 
@@ -77,13 +77,13 @@ pub fn build_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>)
                     Button,
                     button_style(),
                     BorderColor(Color::BLACK),
-                    BorderRadius::MAX,
+                    BorderRadius::all(Val::Px(10.0)),
                     BackgroundColor(NORMAL_BUTTON),
                     QuitButton {},
                 ))
                 .with_child((
                     Text::new("Quit"),
-                    get_text_style(33.0, &asset_server),
+                    get_text_style(33.0, asset_server),
                     TextColor(TEXT_COLOR),
                 ));
         })
