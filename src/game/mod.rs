@@ -6,7 +6,7 @@ mod ui;
 use crate::game::systems::pause_simulation;
 use crate::game::systems::resume_simulation;
 use crate::AppState;
-use camera::{disable_secondary_camera, SecondaryCameraPlugin};
+use camera::{despawn_secondary_camera, SecondaryCameraPlugin};
 use systems::*;
 use ui::GameUIPlugin;
 
@@ -37,7 +37,7 @@ impl Plugin for GamePlugin {
             // On Exit Systems
             .add_systems(
                 OnExit(AppState::Game),
-                (pause_simulation, disable_secondary_camera),
+                (pause_simulation, despawn_secondary_camera),
             );
     }
 }
