@@ -15,25 +15,30 @@ pub fn move_car(
         let forward = transform.forward(); // get car's forward direction
         let mut movement = Vec3::ZERO; // Inital movement vector
         let mut rotation = 0.0; // Inital rotation amount
+        let mut is_moving = false;
 
         // forward/backward movement
         if keyboard_input.pressed(KeyCode::ArrowUp) {
             // move forward
             movement += forward * car.speed;
+            is_moving = true;
         }
         if keyboard_input.pressed(KeyCode::ArrowDown) {
             // move backward
             movement -= forward * car.speed;
+            is_moving = true;
         }
 
-        // rotation
-        if keyboard_input.pressed(KeyCode::ArrowRight) {
-            // rotate clockwise
-            rotation -= delta * car.turn_speed;
-        }
-        if keyboard_input.pressed(KeyCode::ArrowLeft) {
-            // rotate counterclockwise
-            rotation += delta * car.turn_speed;
+        // rotation (only when moving)
+        if is_moving {
+            if keyboard_input.pressed(KeyCode::ArrowRight) {
+                // rotate clockwise
+                rotation -= delta * car.turn_speed;
+            }
+            if keyboard_input.pressed(KeyCode::ArrowLeft) {
+                // rotate counterclockwise
+                rotation += delta * car.turn_speed;
+            }
         }
 
         // Apply movement
