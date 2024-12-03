@@ -1,8 +1,6 @@
 // Defines car components and spawning logic
 
-use bevy::prelude::*;
-use bevy::pbr::{PbrBundle, StandardMaterial};
-use bevy::render::mesh::shape::Cuboid;
+use bevy::{color::palettes::css::GREEN, prelude::*};
 
 #[derive(Component)]
 pub struct Car {
@@ -21,11 +19,11 @@ pub fn spawn_car(
             speed: 5.0,      // units per second
             turn_speed: 2.5, // rad per second
         },
-        PbrBundle {
-            mesh: meshes.add(Cuboid::new(1.0, 0.5, 2.0)),
-            material: materials.add(Color::srgb(0.0, 0.75, 0.0).into()),
-            transform: Transform::from_xyz(0.0, 0.25, 0.0),
-            ..default()
-        },
+        Mesh3d(meshes.add(Cuboid::new(1.0, 0.5, 2.0))),
+        MeshMaterial3d(materials.add(StandardMaterial {
+            base_color: GREEN.into(),
+            ..Default::default()
+        })),
+        Transform::from_xyz(0.0, 0.5, 0.0),
     ));
 }
