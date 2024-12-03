@@ -50,8 +50,8 @@ pub fn build_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>)
                     ));
                     // ====== Image 2 ======
                     parent.spawn((
-                        beaver_image_style(),
                         ImageNode::new(asset_server.load("sprites/beaver.png")),
+                        beaver_image_style(),
                     ));
                 });
 
@@ -67,6 +67,38 @@ pub fn build_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>)
                 ))
                 .with_child((
                     Text::new("Play"),
+                    get_text_style(33.0, asset_server),
+                    TextColor(TEXT_COLOR),
+                ));
+
+            // ====== World Options Button ======
+            parent
+                .spawn((
+                    Button,
+                    button_style(),
+                    BorderColor(Color::BLACK),
+                    BorderRadius::all(Val::Px(10.0)),
+                    BackgroundColor(PRESSED_BUTTON), // Change once enabled
+                    DisabledButton {},               // Change once enabled
+                ))
+                .with_child((
+                    Text::new("World Options"),
+                    get_text_style(33.0, asset_server),
+                    TextColor(TEXT_COLOR),
+                ));
+
+            // ====== Vehicle Options Button ======
+            parent
+                .spawn((
+                    Button,
+                    button_style(),
+                    BorderColor(Color::BLACK),
+                    BorderRadius::all(Val::Px(10.0)),
+                    BackgroundColor(PRESSED_BUTTON), // Change once enabled
+                    DisabledButton {},               // Change once enabled
+                ))
+                .with_child((
+                    Text::new("Vehicle Options"),
                     get_text_style(33.0, asset_server),
                     TextColor(TEXT_COLOR),
                 ));
