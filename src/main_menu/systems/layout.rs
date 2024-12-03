@@ -39,7 +39,7 @@ pub fn build_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>)
                 .with_children(|parent| {
                     // ====== Image 1 ======
                     parent.spawn((
-                        UiImage::new(asset_server.load("sprites/beaver.png")),
+                        ImageNode::new(asset_server.load("sprites/beaver.png")),
                         beaver_image_style(),
                     ));
                     // ====== Text ======
@@ -51,7 +51,7 @@ pub fn build_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>)
                     // ====== Image 2 ======
                     parent.spawn((
                         beaver_image_style(),
-                        UiImage::new(asset_server.load("sprites/beaver.png")),
+                        ImageNode::new(asset_server.load("sprites/beaver.png")),
                     ));
                 });
 
