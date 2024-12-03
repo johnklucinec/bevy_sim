@@ -1,6 +1,7 @@
 mod biome;
 mod systems;
 mod ui;
+pub mod car;
 
 use crate::game::systems::pause_simulation;
 use crate::game::systems::resume_simulation;
