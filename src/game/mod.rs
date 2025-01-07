@@ -1,13 +1,13 @@
 mod biome;
-mod road;
 mod camera;
+mod road;
 mod systems;
 mod ui;
 
 use crate::game::systems::pause_simulation;
 use crate::game::systems::resume_simulation;
 use crate::AppState;
-use camera::{despawn_secondary_camera, SecondaryCameraPlugin};
+use camera::SecondaryCameraPlugin;
 use systems::*;
 use ui::GameUIPlugin;
 
@@ -36,16 +36,13 @@ impl Plugin for GamePlugin {
             // Systems
             .add_systems(Update, toggle_simulation.run_if(in_state(AppState::Game)))
             // On Exit Systems
-            .add_systems(
-                OnExit(AppState::Game),
-                (pause_simulation, despawn_secondary_camera),
-            );
+            .add_systems(OnExit(AppState::Game), pause_simulation);
     }
 }
 
 #[derive(States, Debug, Clone, Copy, Eq, PartialEq, Hash, Default)]
 pub enum SimulationState {
     #[default]
-    Running,
     Paused,
+    Running,
 }

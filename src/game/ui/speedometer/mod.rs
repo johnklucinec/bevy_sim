@@ -7,6 +7,8 @@ use systems::layout::*;
 use crate::AppState;
 use bevy::prelude::*;
 
+use super::HUDOverlayState;
+
 /// Bevy plugin responsible for managing the speedometer state.
 ///
 /// # Functionality
@@ -16,13 +18,9 @@ pub struct SpeedometerPlugin;
 
 impl Plugin for SpeedometerPlugin {
     fn build(&self, app: &mut App) {
-        app
-            // OnEnter State Systems
-            .add_systems(
-                OnEnter(AppState::Game),
-                spawn_speedometer, // Ensure this only runs the when App state is in Game
-            )
-            // OnExit State Systems
+        app.add_systems(OnEnter(AppState::Game), spawn_speedometer)
+            .add_systems(OnExit(HUDOverlayState::Visible), toggle_speedometer)
+            .add_systems(OnExit(HUDOverlayState::Hidden), toggle_speedometer)
             .add_systems(OnExit(AppState::Game), despawn_speedometer);
     }
 }
