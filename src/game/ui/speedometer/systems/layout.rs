@@ -1,5 +1,6 @@
 use crate::game::ui::speedometer::components::Speedometer;
 use crate::game::ui::speedometer::styles::*;
+use crate::game::ui::HUDOverlayState;
 use bevy::prelude::*;
 
 pub fn spawn_speedometer(mut commands: Commands, asset_server: Res<AssetServer>) {
@@ -44,4 +45,24 @@ fn build_speedometer(commands: &mut Commands, asset_server: &Res<AssetServer>) -
                 });
         })
         .id()
+}
+
+pub fn toggle_speedometer(
+    mut commands: Commands,
+    asset_server: Res<AssetServer>,
+    speedometer_query: Query<Entity, With<Speedometer>>,
+    state: Res<State<HUDOverlayState>>,
+) {
+    match state.get() {
+        HUDOverlayState::Visible => {
+            if speedometer_query.is_empty() {
+                build_speedometer(&mut commands, &asset_server);
+            }
+        }
+        HUDOverlayState::Hidden => {
+            if let Ok(entity) = speedometer_query.get_single() {
+                commands.entity(entity).despawn_recursive();
+            }
+        }
+    }
 }

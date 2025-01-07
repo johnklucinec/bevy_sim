@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 use crate::game::camera::{VIEWPORT_POSITION, VIEWPORT_SIZE};
 
-pub const BACKGROUND_COLOR: Color = Color::srgb(0.13, 0.13, 0.13);
+//pub const BACKGROUND_COLOR: Color = Color::srgb(0.13, 0.13, 0.13);
 //pub const TEXT_COLOR: Color = Color::srgb(1.0, 1.0, 1.0);
 
 /// Pause menu parent node style

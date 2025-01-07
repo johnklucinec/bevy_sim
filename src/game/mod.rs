@@ -7,7 +7,7 @@ mod ui;
 use crate::game::systems::pause_simulation;
 use crate::game::systems::resume_simulation;
 use crate::AppState;
-use camera::{despawn_secondary_camera, SecondaryCameraPlugin};
+use camera::SecondaryCameraPlugin;
 use systems::*;
 use ui::GameUIPlugin;
 

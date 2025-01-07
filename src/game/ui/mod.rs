@@ -11,6 +11,16 @@ pub struct GameUIPlugin;
 
 impl Plugin for GameUIPlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins((PauseMenuPlugin, SpeedometerPlugin));
+        app
+            // States
+            .init_state::<HUDOverlayState>()
+            .add_plugins((PauseMenuPlugin, SpeedometerPlugin));
     }
+}
+
+#[derive(States, Debug, Clone, Copy, Eq, PartialEq, Hash, Default)]
+pub enum HUDOverlayState {
+    #[default]
+    Visible,
+    Hidden,
 }
