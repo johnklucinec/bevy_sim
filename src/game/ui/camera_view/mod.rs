@@ -3,6 +3,7 @@ mod styles;
 mod systems;
 
 use crate::game::camera::components::SecondaryCameraState;
+use crate::game::camera::despawn_secondary_camera;
 use crate::AppState;
 use bevy::prelude::*;
 use systems::layout::*;
@@ -22,9 +23,9 @@ impl Plugin for CameraViewUiPlugin {
             // Hide Camera View UI when exiting visible camera state
             .add_systems(
                 OnExit(SecondaryCameraState::Visible),
-                despawn_camera_view_ui,
+                (despawn_camera_view_ui),
             )
             // Hide Camera View UI when exiting the game state
-            .add_systems(OnExit(AppState::Game), despawn_camera_view_ui);
+            .add_systems(OnExit(AppState::Game), (despawn_camera_view_ui));
     }
 }

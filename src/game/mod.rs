@@ -1,6 +1,6 @@
 mod biome;
-mod road;
 mod camera;
+mod road;
 mod systems;
 mod ui;
 
@@ -36,16 +36,13 @@ impl Plugin for GamePlugin {
             // Systems
             .add_systems(Update, toggle_simulation.run_if(in_state(AppState::Game)))
             // On Exit Systems
-            .add_systems(
-                OnExit(AppState::Game),
-                (pause_simulation, despawn_secondary_camera),
-            );
+            .add_systems(OnExit(AppState::Game), pause_simulation);
     }
 }
 
 #[derive(States, Debug, Clone, Copy, Eq, PartialEq, Hash, Default)]
 pub enum SimulationState {
     #[default]
-    Running,
     Paused,
+    Running,
 }

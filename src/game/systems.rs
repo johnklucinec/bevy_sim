@@ -38,7 +38,5 @@ pub fn spawn_biome_on_enter(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
-    if *simulation_state == SimulationState::Running {
-        setup_terrain(&mut commands, &mut meshes, &mut materials);
-    }
+    setup_terrain(&mut commands, &mut meshes, &mut materials);
 }

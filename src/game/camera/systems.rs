@@ -48,8 +48,16 @@ pub fn toggle_secondary_camera(
     }
 }
 
-pub fn despawn_secondary_camera(mut camera_query: Query<&mut Camera, With<SecondaryCamera>>) {
-    if let Ok(mut camera) = camera_query.get_single_mut() {
-        camera.is_active = !camera.is_active;
+pub fn despawn_secondary_camera(
+    mut commands: Commands,
+    camera_query: Query<Entity, With<SecondaryCamera>>,
+    simulation_state: Res<State<SimulationState>>,
+    mut next_camera_state: ResMut<NextState<SecondaryCameraState>>,
+) {
+    if *simulation_state.get() != SimulationState::Running {
+        if let Ok(camera_entity) = camera_query.get_single() {
+            commands.entity(camera_entity).despawn_recursive();
+            next_camera_state.set(SecondaryCameraState::Hidden);
+        }
     }
 }
