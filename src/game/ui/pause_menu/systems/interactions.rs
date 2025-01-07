@@ -3,6 +3,7 @@ use bevy::prelude::*;
 
 use crate::game::ui::pause_menu::components::*;
 use crate::game::ui::pause_menu::styles::*;
+use crate::game::ui::HUDOverlayState;
 use crate::game::SimulationState;
 use crate::AppState;
 
@@ -71,6 +72,41 @@ pub fn interact_with_quit_button(
             }
             Interaction::None => {
                 *background_color = SECONDARY_BUTTON.into();
+            }
+        }
+    }
+}
+
+fn toggle_hud_state(
+    hud_state: Res<State<HUDOverlayState>>,
+    mut next_hud_state: ResMut<NextState<HUDOverlayState>>,
+) {
+    match *hud_state.get() {
+        HUDOverlayState::Hidden => next_hud_state.set(HUDOverlayState::Visible),
+        HUDOverlayState::Visible => next_hud_state.set(HUDOverlayState::Hidden),
+    }
+}
+
+// Used for when a button is disabled
+pub fn interact_with_hud_button(
+    mut button_query: Query<
+        (&Interaction, &mut BackgroundColor),
+        (Changed<Interaction>, With<HUDToggle>),
+    >,
+    hud_state: Res<State<HUDOverlayState>>,
+    next_state: ResMut<NextState<HUDOverlayState>>,
+) {
+    if let Ok((interaction, mut background_color)) = button_query.get_single_mut() {
+        match *interaction {
+            Interaction::Pressed => {
+                *background_color = PRESSED_BUTTON.into();
+                toggle_hud_state(hud_state, next_state);
+            }
+            Interaction::Hovered => {
+                *background_color = HOVERED_BUTTON.into();
+            }
+            Interaction::None => {
+                *background_color = NORMAL_BUTTON.into();
             }
         }
     }
