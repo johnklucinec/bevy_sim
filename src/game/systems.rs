@@ -33,7 +33,6 @@ pub fn toggle_simulation(
 
 //Spawns in roads
 pub fn spawn_biome_on_enter(
-    simulation_state: Res<State<SimulationState>>,
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
