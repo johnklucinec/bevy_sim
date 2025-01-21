@@ -1,4 +1,5 @@
 use crate::game::biome::setup_terrain;
+use crate::game::road::spawn_grid_roads;
 use crate::game::SimulationState;
 use bevy::prelude::*;
 
@@ -40,5 +41,6 @@ pub fn spawn_biome_on_enter(
 ) {
     if *simulation_state == SimulationState::Running {
         setup_terrain(&mut commands, &mut meshes, &mut materials);
+        spawn_grid_roads(&mut commands, &mut meshes, &mut materials, 5, 5, 10.0);
     }
 }

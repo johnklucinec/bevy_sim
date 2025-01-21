@@ -4,6 +4,9 @@ use bevy::prelude::*;
 #[derive(Component)]
 pub struct Cube;
 
+#[derive(Component)]
+pub struct MoveableCamera;
+
 // Function that generates the basic 3D scene.
 // Just here for to make sure everything runs right.
 pub fn setup(
@@ -16,6 +19,7 @@ pub fn setup(
         Camera3d::default(),
         Transform::from_xyz(0.0, 5.0, 10.0).looking_at(Vec3::ZERO, Vec3::Y),
         IsDefaultUiCamera,
+        MoveableCamera,
     ));
 
     // cube
@@ -94,6 +98,40 @@ pub fn move_cube(
         }
         if keyboard_input.pressed(KeyCode::ArrowDown) {
             transform.translation.z += delta;
+        }
+    }
+}
+
+pub fn move_camera(
+    keyboard_input: Res<ButtonInput<KeyCode>>,
+    mut camera_query: Query<&mut Transform, With<MoveableCamera>>,
+    time: Res<Time>,
+) {
+    if let Ok(mut transform) = camera_query.get_single_mut() {
+        let movement_speed = 8.0;
+        let delta = time.delta_secs() * movement_speed;
+
+        if keyboard_input.pressed(KeyCode::KeyA) {
+            transform.translation.x -= delta;
+        }
+        if keyboard_input.pressed(KeyCode::KeyD) {
+            transform.translation.x += delta;
+        }
+        if keyboard_input.pressed(KeyCode::KeyW) {
+            transform.translation.z -= delta;
+        }
+        if keyboard_input.pressed(KeyCode::KeyS) {
+            transform.translation.z += delta;
+        }
+
+        if keyboard_input.pressed(KeyCode::KeyQ) {
+            let up_direction = transform.up();
+            transform.translation -= up_direction * delta;
+        }
+
+        if keyboard_input.pressed(KeyCode::KeyE) {
+            let up_direction = transform.up();
+            transform.translation += up_direction * delta;
         }
     }
 }
