@@ -1,7 +1,6 @@
 /*biome.rs is to create the enviornment around it, I wanted to organize these files
-    to make it easier to read and alter. Only implimented the grass here. */
+to make it easier to read and alter. Only implimented the grass here. */
 
-use crate::game::road;
 use bevy::prelude::*;
 
 pub fn setup_terrain(
@@ -9,7 +8,6 @@ pub fn setup_terrain(
     meshes: &mut ResMut<Assets<Mesh>>,
     materials: &mut ResMut<Assets<StandardMaterial>>,
 ) {
-    road::spawn_roads(commands, meshes, materials);
     spawn_grass(commands, meshes, materials);
 }
 
@@ -24,11 +22,10 @@ pub fn spawn_grass(
         ..Default::default()
     });
 
-    //Flat ground 
+    //Flat ground
     commands.spawn((
-        Mesh3d(meshes.add(Mesh::from(Cuboid::new(50.0, 0.1, 50.0)))),
+        Mesh3d(meshes.add(Mesh::from(Cuboid::new(100.0, 0.1, 100.0)))),
         MeshMaterial3d(grass_material),
         Transform::from_xyz(0.0, -0.05, 0.0),
     ));
 }
-
