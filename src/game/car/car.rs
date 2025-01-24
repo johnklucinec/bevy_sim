@@ -2,6 +2,13 @@
 
 use bevy::{color::palettes::css::GREEN, prelude::*};
 
+#[derive(Component, Default)]
+pub enum GearMode {
+    #[default]
+    Forward,
+    Reverse,
+}
+
 #[derive(Component)]
 pub struct Car {
     pub current_speed: f32,
@@ -10,6 +17,12 @@ pub struct Car {
     pub max_reverse_speed: f32,
     pub acceleration: f32,
     pub deceleration: f32,
+    pub braking_force: f32,
+    pub max_braking_force: f32,
+    pub brake_press_duration: f32,
+    pub max_brake_press_duration: f32,
+    pub friction: f32,
+    pub gear_mode: GearMode,
 }
 
 #[derive(Component)]
@@ -27,12 +40,18 @@ pub fn spawn_car(
     // Spawn car body
     let car_entity = commands.spawn((
         Car {
-            current_speed: 5.0,
+            current_speed: 0.0,
             turn_speed: 2.5,
             max_speed: 10.0,
             max_reverse_speed: -5.0,
             acceleration: 5.0,
             deceleration: 3.0,
+            braking_force: 2.0,
+            max_braking_force: 10.0,
+            brake_press_duration: 0.0,
+            max_brake_press_duration: 2.0,
+            friction: 1.0,
+            gear_mode: GearMode::Forward,
         },
         Mesh3d(meshes.add(Cuboid::new(1.0, 0.5, 2.0))),
         MeshMaterial3d(materials.add(StandardMaterial {
