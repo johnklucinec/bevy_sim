@@ -11,10 +11,7 @@ pub struct Car {
 #[derive(Component)]
 pub struct Wheel {
     pub radius: f32,
-    pub width: f32,
-    pub is_front: bool,  // whether this is a front wheel (for steering)
-    pub rotation: f32,   // current rotation of the wheel
-    pub side: i8,        // -1 for left, 1 for right
+    pub width: f32
 }
 
 // create and spawn car entity into game world
@@ -37,10 +34,12 @@ pub fn spawn_car(
         Transform::from_xyz(0.0, 0.5, 0.0),
     )).id();
 
-    // Wheel dimensions
-    let wheel_radius = 0.25;
-    let wheel_width = 0.2;
-    let wheel_mesh = meshes.add(Cylinder::new(wheel_width, wheel_radius));
+    // Wheel properties
+    let wheel = Wheel {
+        radius: 0.25,
+        width: 0.2
+    };
+    let wheel_mesh = meshes.add(Cylinder::new(wheel.width, wheel.radius));
     let wheel_material = materials.add(StandardMaterial {
         base_color: Color::WHITE,
         ..Default::default()
@@ -48,26 +47,19 @@ pub fn spawn_car(
 
     // Wheel positions relative to car body
     let wheel_configs = [
-        (Vec3::new(-0.5, -0.25, 0.8), true, -1),   // Front left
-        (Vec3::new(0.5, -0.25, 0.8), true, 1),    // Front right
-        (Vec3::new(-0.5, -0.25, -0.8), false, -1), // Rear left
-        (Vec3::new(0.5, -0.25, -0.8), false, 1),  // Rear right
+        (Vec3::new(-0.5, -0.25, 0.8)),   // Front left
+        (Vec3::new(0.5, -0.25, 0.8)),    // Front right
+        (Vec3::new(-0.5, -0.25, -0.8)), // Rear left
+        (Vec3::new(0.5, -0.25, -0.8)),  // Rear right
     ];
 
     // Spawn wheels
-    for (position, is_front, side) in wheel_configs {
+    for position in wheel_configs {
         commands.spawn((
-            Wheel {
-                radius: wheel_radius,
-                width: wheel_width,
-                is_front,
-                rotation: 0.0,
-                side,
-            },
             Mesh3d(wheel_mesh.clone()),
             MeshMaterial3d(wheel_material.clone()),
             Transform::from_translation(position)
-                .with_rotation(Quat::from_rotation_z(std::f32::consts::FRAC_PI_2)),
+                .with_rotation(Quat::from_rotation_z(std::f32::consts::FRAC_PI_2)),   // rotate wheel 90 degrees
         )).set_parent(car_entity);
     }
 }
