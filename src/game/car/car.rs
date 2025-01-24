@@ -1,6 +1,6 @@
 // car.rs - Defines car components and spawning logic
 
-use bevy::{color::palettes::css::GREEN, prelude::*};
+use bevy::prelude::*;
 
 #[derive(Component, Default)]
 pub enum GearMode {
@@ -55,7 +55,7 @@ pub fn spawn_car(
         },
         Mesh3d(meshes.add(Cuboid::new(1.0, 0.5, 2.0))),
         MeshMaterial3d(materials.add(StandardMaterial {
-            base_color: GREEN.into(),
+            base_color: Color::srgba(1.0, 0.5, 0.2, 1.0),
             ..Default::default()
         })),
         Transform::from_xyz(0.0, 0.5, 0.0),
