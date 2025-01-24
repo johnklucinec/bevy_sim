@@ -1,6 +1,6 @@
 // physics.rs - Handles car movement and physics systems
 
-use super::car::Car;
+use super::car::{Car, GearMode};
 use bevy::prelude::*;
 
 // system that handles car movement
@@ -16,43 +16,94 @@ pub fn move_car(
         let mut rotation = 0.0;               // Inital rotation amount
         let mut is_moving = false;           
 
+        // Gear mode toggle
+        if keyboard_input.just_pressed(KeyCode::KeyG) {
+            car.gear_mode = match car.gear_mode {
+                GearMode::Forward => GearMode::Reverse,
+                GearMode::Reverse => GearMode::Forward,
+            };
+        }
+
+        // Check if brake is held
+        let is_brake_held = keyboard_input.pressed(KeyCode::Space);
+
         // Acceleration and Deceleration Logic
-        if keyboard_input.pressed(KeyCode::ArrowUp) {
-            // Accelerate forward
-            car.current_speed += car.acceleration * delta;
-            car.current_speed = car.current_speed.min(car.max_speed);
-            is_moving = true;
-        } else if keyboard_input.pressed(KeyCode::ArrowDown) {
-            // Accelerate in reverse
-            car.current_speed -= car.acceleration * delta;
-            car.current_speed = car.current_speed.max(car.max_reverse_speed);
-            is_moving = true;
-        } else {
-            // Apply deceleration to slow down naturally
+        if !is_brake_held {
+            match car.gear_mode {
+                GearMode::Forward => {
+                    if keyboard_input.pressed(KeyCode::ArrowUp) {
+                        // Accelerate forward
+                        car.current_speed += car.acceleration * delta;
+                        car.current_speed = car.current_speed.min(car.max_speed);
+                        is_moving = true;
+                    } 
+                }
+                GearMode::Reverse => {
+                    if keyboard_input.pressed(KeyCode::ArrowUp) {
+                        // Accelerate in reverse
+                        car.current_speed -= car.acceleration * delta;
+                        car.current_speed = car.current_speed.max(car.max_reverse_speed);
+                        is_moving = true;
+                    }
+                }
+            }
+        }
+
+        if keyboard_input.pressed(KeyCode::Space) {
+            // Progressive braking mechanics
+            car.brake_press_duration += delta;
+            car.brake_press_duration = car.brake_press_duration.min(car.max_brake_press_duration);
+            
+            // Calculate dynamic braking force based on press duration
+            let brake_intensity = car.brake_press_duration / car.max_brake_press_duration;
+            let dynamic_braking_force = car.braking_force * (1.0 + brake_intensity * (car.max_braking_force - car.braking_force));
+            
+            // Apply braking
             if car.current_speed > 0.0 {
-                car.current_speed -= car.deceleration * delta;
+                // Braking when going forward
+                car.current_speed -= car.deceleration * dynamic_braking_force * delta;
                 car.current_speed = car.current_speed.max(0.0);
             } else if car.current_speed < 0.0 {
-                car.current_speed += car.deceleration * delta;
+                // Braking when going reverse
+                car.current_speed += car.deceleration * dynamic_braking_force * delta;
                 car.current_speed = car.current_speed.min(0.0);
+            }
+        } else {
+            // Reset brake press duration when Space is not held
+            car.brake_press_duration = 0.0;
+            
+            // Apply friction to naturally slow down the car
+            if car.current_speed.abs() > 0.0 {
+                let friction_deceleration = car.friction * delta;
+                if car.current_speed > 0.0 {
+                    car.current_speed -= friction_deceleration;
+                    car.current_speed = car.current_speed.max(0.0);
+                } else if car.current_speed < 0.0 {
+                    car.current_speed += friction_deceleration;
+                    car.current_speed = car.current_speed.min(0.0);
+                }
             }
         }
         
-        // rotation (only when moving)
-        if is_moving {
+        // Realistic Turning Mechanics
+        let speed_factor = (car.current_speed.abs() / car.max_speed).clamp(0.0, 1.0);
+        let turn_sensitivity = 1.0; // Adjust this to fine-tune turning responsiveness
+
+        // Only allow turning when moving and with speed-dependent turn rate
+        if is_moving || car.current_speed.abs() > 0.1 {
             if keyboard_input.pressed(KeyCode::ArrowRight) {
-                // rotate clockwise
-                rotation -= delta * car.turn_speed;
+                // Slower turns at lower speeds 
+                rotation -= delta * car.turn_speed * speed_factor * turn_sensitivity;
             }
             if keyboard_input.pressed(KeyCode::ArrowLeft) {
-                // rotate counterclockwise
-                rotation += delta * car.turn_speed;
+                // Slower turns at lower speeds
+                rotation += delta * car.turn_speed * speed_factor * turn_sensitivity;
             }
         }
 
         // Apply movement
         let movement = forward * car.current_speed;
         transform.translation += movement * delta;
-        transform.rotate_y(rotation)
+        transform.rotate_y(rotation);
     }
 }
