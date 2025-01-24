@@ -4,8 +4,12 @@ use bevy::{color::palettes::css::GREEN, prelude::*};
 
 #[derive(Component)]
 pub struct Car {
-    pub speed: f32,      // base movement speed of car
-    pub turn_speed: f32, // rotational speed of car
+    pub current_speed: f32,
+    pub turn_speed: f32,
+    pub max_speed: f32,
+    pub max_reverse_speed: f32,
+    pub acceleration: f32,
+    pub deceleration: f32,
 }
 
 #[derive(Component)]
@@ -23,8 +27,12 @@ pub fn spawn_car(
     // Spawn car body
     let car_entity = commands.spawn((
         Car {
-            speed: 5.0,      // units per second
-            turn_speed: 2.5, // rad per second
+            current_speed: 5.0,
+            turn_speed: 2.5,
+            max_speed: 10.0,
+            max_reverse_speed: -5.0,
+            acceleration: 5.0,
+            deceleration: 3.0,
         },
         Mesh3d(meshes.add(Cuboid::new(1.0, 0.5, 2.0))),
         MeshMaterial3d(materials.add(StandardMaterial {
@@ -47,10 +55,10 @@ pub fn spawn_car(
 
     // Wheel positions relative to car body
     let wheel_configs = [
-        (Vec3::new(-0.5, -0.25, 0.8)),   // Front left
-        (Vec3::new(0.5, -0.25, 0.8)),    // Front right
-        (Vec3::new(-0.5, -0.25, -0.8)), // Rear left
-        (Vec3::new(0.5, -0.25, -0.8)),  // Rear right
+        (Vec3::new(-0.5, -0.25, 0.8)),      // Front left
+        (Vec3::new(0.5, -0.25, 0.8)),       // Front right
+        (Vec3::new(-0.5, -0.25, -0.8)),     // Rear left
+        (Vec3::new(0.5, -0.25, -0.8)),      // Rear right
     ];
 
     // Spawn wheels
