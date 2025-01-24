@@ -29,6 +29,13 @@ pub fn setup(
     //     MeshMaterial3d(materials.add(Color::srgb_u8(124, 144, 255))),
     //     Transform::from_xyz(0.0, 0.5, 0.0),
     // ));
+    // // cube
+    // commands.spawn((
+    //     Cube,
+    //     Mesh3d(meshes.add(Cuboid::new(1.0, 1.0, 1.0))),
+    //     MeshMaterial3d(materials.add(Color::srgb_u8(124, 144, 255))),
+    //     Transform::from_xyz(0.0, 0.5, 0.0),
+    // ));
 
     // Light
     commands.spawn((
