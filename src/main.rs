@@ -4,6 +4,7 @@ mod main_menu;
 mod systems;
 
 use game::car::{car::*, physics::*};
+use game::car::{car::*, physics::*};
 use game::GamePlugin;
 use main_menu::MainMenuPlugin;
 use systems::*;
@@ -19,6 +20,7 @@ fn main() {
         // Game Systems
         .insert_resource(ClearColor(Color::srgb(0.2, 0.2, 0.2)))
         .add_systems(Startup, setup)
+        .add_systems(Startup, spawn_car)
         .add_systems(
             Update,
             (
