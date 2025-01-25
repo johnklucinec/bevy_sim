@@ -2,9 +2,6 @@ use crate::AppState;
 use bevy::prelude::*;
 
 #[derive(Component)]
-pub struct Cube;
-
-#[derive(Component)]
 pub struct MoveableCamera;
 
 // Function that generates the basic 3D scene.
@@ -20,14 +17,6 @@ pub fn setup(
         Transform::from_xyz(0.0, 5.0, 10.0).looking_at(Vec3::ZERO, Vec3::Y),
         IsDefaultUiCamera,
         MoveableCamera,
-    ));
-
-    // cube
-    commands.spawn((
-        Cube,
-        Mesh3d(meshes.add(Cuboid::new(1.0, 1.0, 1.0))),
-        MeshMaterial3d(materials.add(Color::srgb_u8(124, 144, 255))),
-        Transform::from_xyz(0.0, 0.5, 0.0),
     ));
 
     // Light
@@ -74,31 +63,6 @@ pub fn exit_game(
 
     if alt_pressed && keyboard_input.just_pressed(KeyCode::F4) {
         app_exit_event_writer.send(AppExit::Success);
-    }
-}
-
-//cube movement
-pub fn move_cube(
-    keyboard_input: Res<ButtonInput<KeyCode>>,
-    mut cube_query: Query<&mut Transform, With<Cube>>,
-    time: Res<Time>,
-) {
-    if let Ok(mut transform) = cube_query.get_single_mut() {
-        let movement_speed = 5.0;
-        let delta = time.delta_secs() * movement_speed;
-
-        if keyboard_input.pressed(KeyCode::ArrowLeft) {
-            transform.translation.x -= delta;
-        }
-        if keyboard_input.pressed(KeyCode::ArrowRight) {
-            transform.translation.x += delta;
-        }
-        if keyboard_input.pressed(KeyCode::ArrowUp) {
-            transform.translation.z -= delta;
-        }
-        if keyboard_input.pressed(KeyCode::ArrowDown) {
-            transform.translation.z += delta;
-        }
     }
 }
 
