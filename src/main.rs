@@ -8,6 +8,7 @@ use main_menu::MainMenuPlugin;
 use systems::*;
 use game::car::car::*;
 use game::car::physics::*;
+use game::ui::mph::*;
 
 fn main() {
     App::new()
@@ -22,7 +23,8 @@ fn main() {
         .add_systems(Startup, 
             (
                 setup,
-                spawn_car
+                spawn_car,
+                spawn_speedometer,
             )
         )
         .add_systems(
@@ -33,6 +35,7 @@ fn main() {
                 move_car,
                 move_camera,
                 exit_game,
+                update_speedometer,
             ),
         )
         .run();
