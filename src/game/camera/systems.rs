@@ -1,22 +1,23 @@
-use crate::game::ai::{Actions, Observations};
 use crate::game::SimulationState;
 
-use super::components::{CarFollowCamera, RLCamera, SecondaryCamera, SecondaryCameraState};
+use super::components::{CarFollowCamera, SecondaryCamera, SecondaryCameraState};
 use crate::game::car::car::Car;
 
 use bevy::prelude::*;
 use bevy::render::camera::{RenderTarget, Viewport};
-use bevy_rl::AIGymState;
+use bevy::window::{WindowRef, WindowResolution};
 
-pub static VIEWPORT_POSITION: [u32; 2] = [5, 5]; // [x, y]
-pub static VIEWPORT_SIZE: [u32; 2] = [300, 300]; // [width, height]
+pub static VIEWPORT_POSITION: [u32; 2] = [0, 0]; // [x, y]
+pub static VIEWPORT_SIZE: [u32; 2] = [500, 500]; // [width, height]
 
-pub fn spawn_secondary_camera(
-    mut commands: Commands,
-    ai_gym_state: Res<AIGymState<Actions, Observations>>,
-) {
-    let mut ai_gym_state = ai_gym_state.lock().unwrap();
-    let render_image_handle = ai_gym_state.render_image_handles[0].clone();
+pub fn spawn_secondary_camera(mut commands: Commands) {
+    let second_window = commands
+        .spawn(Window {
+            title: "Camera View".into(),
+            resolution: WindowResolution::new(VIEWPORT_SIZE[0] as f32, VIEWPORT_SIZE[1] as f32),
+            ..default()
+        })
+        .id();
 
     commands.spawn((
         Camera3d::default(),
@@ -27,14 +28,13 @@ pub fn spawn_secondary_camera(
                 physical_size: UVec2::new(VIEWPORT_SIZE[0], VIEWPORT_SIZE[1]),
                 ..default()
             }),
-            order: 2,
-            target: RenderTarget::Image(render_image_handle),
-            is_active: true,
+            order: 1,
+            target: RenderTarget::Window(WindowRef::Entity(second_window)),
+            is_active: false,
             ..default()
         },
         SecondaryCamera,
         CarFollowCamera,
-        RLCamera,
     ));
 }
 
