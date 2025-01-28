@@ -1,10 +1,5 @@
 use bevy::prelude::*;
 
-use crate::game::camera::{VIEWPORT_POSITION, VIEWPORT_SIZE};
-
-//pub const BACKGROUND_COLOR: Color = Color::srgb(0.13, 0.13, 0.13);
-//pub const TEXT_COLOR: Color = Color::srgb(1.0, 1.0, 1.0);
-
 /// Pause menu parent node style
 pub fn speedometer_parent_style() -> Node {
     Node {
@@ -14,8 +9,8 @@ pub fn speedometer_parent_style() -> Node {
         position_type: PositionType::Absolute,
         bottom: Val::Px(0.0),
         right: Val::Px(0.0),
-        width: Val::Px(VIEWPORT_SIZE[0] as f32 + (VIEWPORT_POSITION[0] as f32 * 2.0)),
-        height: Val::Px(VIEWPORT_SIZE[1] as f32 + (VIEWPORT_POSITION[0] as f32 * 2.0)),
+        width: Val::Px(300.0),
+        height: Val::Px(300.0),
         ..Node::default()
     }
 }
