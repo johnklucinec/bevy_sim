@@ -1,37 +1,45 @@
 // physics.rs - Handles car movement and physics systems
 
 use super::car::{Car, GearMode};
+use super::input::CarInput;
 use bevy::prelude::*;
 
 // system that handles car movement
 pub fn move_car(
-    keyboard_input: Res<ButtonInput<KeyCode>>,      // Access to keyboard
+    keyboard_input: Res<ButtonInput<KeyCode>>,          // Access to keyboard
+    mut car_input: ResMut<CarInput>,                    // Access to car input
     mut car_query: Query<(&mut Car, &mut Transform)>,   // Query to get car components
-    time: Res<Time>,                                // Time resource for frame-independent movement
+    time: Res<Time>,                                    // Time resource for frame-independent movement
 ) {
+
+    // Update CarInput based on keyboard input
+    car_input.accelerate = keyboard_input.pressed(KeyCode::ArrowUp);
+    car_input.brake = keyboard_input.pressed(KeyCode::ArrowDown);
+    car_input.turn_left = keyboard_input.pressed(KeyCode::ArrowLeft);
+    car_input.turn_right = keyboard_input.pressed(KeyCode::ArrowRight);
+    car_input.toggle_gear = keyboard_input.just_pressed(KeyCode::KeyG);
+
     // Try to get the car entity. if found, continue with movement
     if let Ok((mut car, mut transform)) = car_query.get_single_mut() {
-        let delta = time.delta_secs();        // Time since last frame
-        let forward = transform.forward();   // get car's forward direction
-        let mut rotation = 0.0;               // Inital rotation amount
-        let mut is_moving = false;           
+        let delta = time.delta_secs();      // Time since last frame
+        let forward = transform.forward();  // get car's forward direction
+        let mut rotation = 0.0;             // Inital rotation amount
+        let mut is_moving = false;
 
         // Gear mode toggle
-        if keyboard_input.just_pressed(KeyCode::KeyG) {
+        if car_input.toggle_gear {
             car.gear_mode = match car.gear_mode {
                 GearMode::Forward => GearMode::Reverse,
                 GearMode::Reverse => GearMode::Forward,
             };
         }
 
-        // Check if brake is held
-        let is_brake_held = keyboard_input.pressed(KeyCode::Space);
 
         // Acceleration and Deceleration Logic
-        if !is_brake_held {
+        if !car_input.brake {
             match car.gear_mode {
                 GearMode::Forward => {
-                    if keyboard_input.pressed(KeyCode::ArrowUp) {
+                    if car_input.accelerate {
                         // Accelerate forward
                         car.current_speed += car.acceleration * delta;
                         car.current_speed = car.current_speed.min(car.max_speed);
@@ -39,7 +47,7 @@ pub fn move_car(
                     } 
                 }
                 GearMode::Reverse => {
-                    if keyboard_input.pressed(KeyCode::ArrowUp) {
+                    if car_input.accelerate {
                         // Accelerate in reverse
                         car.current_speed -= car.acceleration * delta;
                         car.current_speed = car.current_speed.max(car.max_reverse_speed);
@@ -49,7 +57,7 @@ pub fn move_car(
             }
         }
 
-        if keyboard_input.pressed(KeyCode::Space) {
+        if car_input.brake {
             // Progressive braking mechanics
             car.brake_press_duration += delta;
             car.brake_press_duration = car.brake_press_duration.min(car.max_brake_press_duration);
@@ -91,11 +99,11 @@ pub fn move_car(
 
         // Only allow turning when moving and with speed-dependent turn rate
         if is_moving || car.current_speed.abs() > 0.1 {
-            if keyboard_input.pressed(KeyCode::ArrowRight) {
+            if car_input.turn_right {
                 // Slower turns at lower speeds 
                 rotation -= delta * car.turn_speed * speed_factor * turn_sensitivity;
             }
-            if keyboard_input.pressed(KeyCode::ArrowLeft) {
+            if car_input.turn_left {
                 // Slower turns at lower speeds
                 rotation += delta * car.turn_speed * speed_factor * turn_sensitivity;
             }
