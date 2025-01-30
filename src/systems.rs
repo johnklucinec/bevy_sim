@@ -8,8 +8,6 @@ pub struct MoveableCamera;
 // Just here for to make sure everything runs right.
 pub fn setup(
     mut commands: Commands,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
     // Camera
     commands.spawn((
@@ -75,3 +73,8 @@ pub fn move_camera(
         }
     }
 }
+
+
+
+
+
