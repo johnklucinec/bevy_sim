@@ -34,8 +34,7 @@ pub fn spawn_grid_roads(
     });
 
     //Rand roads
-    //let mut node_positions = Vec::new();
-    //node_positions.resize(rows * cols, Vec2::ZERO);
+    
     let mut node_positions = vec![Vec2::ZERO; rows * cols];
 
     for r in 0..rows {
