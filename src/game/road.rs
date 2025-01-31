@@ -3,6 +3,9 @@ and horizontal roads. */
 
 use bevy::prelude::*;
 use bevy::render::mesh::Mesh;
+use rand::seq::SliceRandom;
+use rand::Rng;
+use std::collections::HashSet;
 
 #[derive(Component)]
 pub struct Road;
@@ -17,6 +20,8 @@ pub fn spawn_grid_roads(
     cols: usize,
     spacing: f32,
 ) {
+    let mut rng = rand::thread_rng();
+
     //single shared road material
     let road_material = materials.add(StandardMaterial {
         base_color: Color::srgb(0.2, 0.2, 0.2),
@@ -28,38 +33,193 @@ pub fn spawn_grid_roads(
         ..Default::default()
     });
 
+    //Rand roads
+    //let mut node_positions = Vec::new();
+    //node_positions.resize(rows * cols, Vec2::ZERO);
+    let mut node_positions = vec![Vec2::ZERO; rows * cols];
+
     for r in 0..rows {
         for c in 0..cols {
-            //curr position of node x and z horizontal plane
             let x = c as f32 * spacing;
             let z = r as f32 * spacing;
 
-            //connecting horizontally
-            if c + 1 < cols {
-                let x2 = (c + 1) as f32 * spacing;
-                let z2 = z;
+            node_positions[r * cols + c] = Vec2::new(x, z);
+        }
+    }
 
-                spawn_road_segment(
-                    commands,
-                    meshes,
-                    &road_material,
-                    &dash_material,
-                    Vec2::new(x, z),
-                    Vec2::new(x2, z2),
-                );
+    let directions = [
+        (0isize, 1isize), // Right
+        (1, 0),           // Down
+        (0, -1),          //left
+        (-1, 0),          //up
+    ];
+
+    //helper func to convert (r, c) to index
+    let index = |r: isize, c: isize| -> Option<usize> {
+        if r >= 0 && r < rows as isize && c >= 0 && c < cols as isize {
+            Some((r as usize) * cols + (c as usize))
+        } else {
+            None
+        }
+    };
+
+    //isize - pointer sized int type and starting at random node
+    let start_r = rng.gen_range(0..rows) as isize;
+    let start_c = rng.gen_range(0..cols) as isize;
+
+    //dfs stack
+    let mut stack = vec![(start_r, start_c)];
+
+    //define directions and visited
+    let mut visited = vec![false; cols * rows];
+
+    let mut road_segments: HashSet<(usize, usize)> = HashSet::new();
+
+    //These 2 variables are used to limit the number of connections per node
+    let mut node_connections = vec![0; rows * cols];
+    let max_connections_per_node = 3;
+
+    while let Some((current_r, current_c)) = stack.pop() {
+        let current_idx = match index(current_r, current_c) {
+            Some(idx) => idx,
+            None => continue,
+        };
+        if visited[current_idx] {
+            continue;
+        }
+
+        visited[current_idx] = true;
+
+        //randomize
+        let mut dirs = directions.clone();
+        dirs.shuffle(&mut rng);
+
+        for &(dr, dc) in dirs.iter() {
+            let new_r = current_r + dr;
+            let new_c = current_c + dc;
+            ///////////////////////////////////////////////////////////////////
+            // Determine allowed directions based on current node's position
+            let is_edge = |r: isize, c: isize| -> bool {
+                r == 0 || r == (rows as isize - 1) || c == 0 || c == (cols as isize - 1)
+            };
+
+            // Prevent roads from spawning outward on edges
+            if is_edge(current_r, current_c) {
+                // Define allowed directions for edge nodes
+                let allowed_dirs = if current_r == 0 {
+                    //Top edge
+                    vec![(1, 0), (0, 1), (0, -1)]
+                } else if current_r == (rows as isize - 1) {
+                    //bottom edge
+                    vec![(-1, 0), (0, 1), (0, -1)]
+                } else if current_c == 0 {
+                    //left edge
+                    vec![(0, 1), (1, 0), (-1, 0)]
+                } else if current_c == (cols as isize - 1) {
+                    //right edge
+                    vec![(0, -1), (1, 0), (-1, 0)]
+                } else {
+                    directions.to_vec().clone()
+                };
+
+                //check if current direction is allowed
+                if !allowed_dirs.contains(&(dr, dc)) {
+                    continue; // Skip this direction
+                }
             }
-            if r + 1 < rows {
-                let x2 = x;
-                let z2 = (r + 1) as f32 * spacing;
 
-                spawn_road_segment(
-                    commands,
-                    meshes,
-                    &road_material,
-                    &dash_material,
-                    Vec2::new(x, z),
-                    Vec2::new(x2, z2),
-                );
+            if let Some(new_idx) = index(new_r, new_c) {
+                if !visited[new_idx] {
+                    let segment = if current_idx < new_idx {
+                        (current_idx, new_idx)
+                    } else {
+                        (new_idx, current_idx)
+                    };
+
+                    //skips if already connected
+                    // not sure adding a ! works here but it spawns roads by themself and roads have incorrect edges.
+                    if road_segments.contains(&segment) {
+                        continue;
+                    }
+
+                    //limit connections per node
+                    if node_connections[current_idx] >= max_connections_per_node {
+                        continue;
+                    }
+                    if node_connections[new_idx] >= max_connections_per_node {
+                        continue;
+                    }
+
+                    //spawning road between (curr_r, curr_c) and (new_r, new_c)
+                    let current_pos = node_positions[current_idx];
+                    let new_pos = node_positions[new_idx];
+
+                    spawn_road_segment(
+                        commands,
+                        meshes,
+                        &road_material,
+                        &dash_material,
+                        current_pos,
+                        new_pos,
+                    );
+
+                    //record road segement
+                    road_segments.insert(segment);
+
+                    //counting connections that nodes have
+                    node_connections[current_idx] += 1;
+                    node_connections[new_idx] += 1;
+
+                    //add new node to stack
+                    stack.push((new_r, new_c));
+                }
+            }
+        }
+    }
+
+    //Change this to increase or decrease the chance of extra road connections
+    let extra_connection_chance = 0.35;
+
+    for r in 0..rows {
+        for c in 0..cols {
+            let current_idx = r * cols + c;
+            let current_pos = node_positions[current_idx];
+
+            for &(dr, dc) in directions.iter() {
+                let new_r = r as isize + dr;
+                let new_c = c as isize + dc;
+
+                if let Some(new_idx) = index(new_r, new_c) {
+                    //road segment as a sorted tuple
+                    let segment = if current_idx < new_idx {
+                        (current_idx, new_idx)
+                    } else {
+                        (new_idx, current_idx)
+                    };
+
+                    if !road_segments.contains(&segment) {
+                        if rng.gen_bool(extra_connection_chance) {
+                            //Checking node connections limit
+                            if node_connections[current_idx] >= max_connections_per_node {
+                                continue;
+                            }
+                            if node_connections[new_idx] >= max_connections_per_node {
+                                continue;
+                            }
+
+                            let new_pos = node_positions[new_idx];
+                            spawn_road_segment(
+                                commands,
+                                meshes,
+                                &road_material,
+                                &dash_material,
+                                current_pos,
+                                new_pos,
+                            );
+                            road_segments.insert(segment);
+                        }
+                    }
+                }
             }
         }
     }
@@ -77,6 +237,13 @@ fn spawn_road_segment(
     let dz = end.y - start.y;
     let length = (dx * dx + dz * dz).sqrt();
 
+    if !(dx == 0.0 || dz == 0.0) {
+        println!(
+            "Warning atempting to spawn a slanted road segment from ({}, {}) to ({}, {}).",
+            start.x, start.y, end.x, end.y
+        )
+    }
+
     //midpoint
     let mid_x = (start.x + end.x) / 2.0;
     let mid_z = (start.y + end.y) / 2.0;
@@ -84,7 +251,7 @@ fn spawn_road_segment(
     //angle in XZ plane (atan2 takes (y,x) in 2d, but in this y = dz and x = dx)
     let angle = dx.atan2(dz);
 
-    let road_width = 3.0;
+    let road_width = 4.0;
     let road_thickness = 0.1;
 
     commands.spawn((
@@ -105,7 +272,7 @@ fn spawn_road_segment(
     let dash_length = 1.0;
     let dash_space = 1.0;
     let dash_thickness = 0.01;
-    let dash_width = 0.1;
+    let dash_width = 0.15;
     let dash_total = dash_length + dash_space;
 
     //maybe change .floor and take it off
