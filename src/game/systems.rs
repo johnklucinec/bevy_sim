@@ -1,5 +1,4 @@
 use crate::game::biome::setup_terrain;
-use crate::game::road::spawn_grid_roads;
 use crate::game::SimulationState;
 use bevy::prelude::*;
 
