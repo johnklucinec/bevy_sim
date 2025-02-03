@@ -1,4 +1,3 @@
-use crate::AppState;
 use bevy::prelude::*;
 
 #[derive(Component)]
@@ -6,15 +5,17 @@ pub struct MoveableCamera;
 
 // Function that generates the basic 3D scene.
 // Just here for to make sure everything runs right.
-pub fn setup(
-    mut commands: Commands,
-) {
+pub fn setup(mut commands: Commands) {
     // Camera
     commands.spawn((
         Camera3d::default(),
         Transform::from_xyz(0.0, 5.0, 10.0).looking_at(Vec3::ZERO, Vec3::Y),
         IsDefaultUiCamera,
         MoveableCamera,
+        Camera {
+            order: 0,
+            ..default()
+        },
     ));
 
     // Light
