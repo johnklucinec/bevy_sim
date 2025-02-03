@@ -14,10 +14,10 @@ model = YOLO('yolov8n.pt')
 # Enable GPU if available
 if torch.cuda.is_available():
     model.to('cuda')
-	print(f"GPU detected: {torch.cuda.get_device_name(0)}")
+    print(f"GPU detected: {torch.cuda.get_device_name(0)}")
     print(f"CUDA version: {torch.version.cuda}")
 else:
-	print("No GPU available - using CPU")
+    print("No GPU available - using CPU")
 
 wincap = WindowCapture('Camera View')
 
@@ -29,7 +29,7 @@ while True:
     # Inference with confidence threshold
     results = model(frame_rgb, 
                    stream=True,
-                   conf=0.5,  # Confidence threshold
+                   conf=0.1,  # Confidence threshold (0.5 is better, 0.1 for testing)
                    verbose=False)
 
     for r in results:

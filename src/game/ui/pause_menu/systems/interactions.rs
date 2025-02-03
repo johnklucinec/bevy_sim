@@ -60,11 +60,13 @@ pub fn interact_with_quit_button(
         (&Interaction, &mut BackgroundColor),
         (Changed<Interaction>, With<QuitButton>),
     >,
+    mut next_state: ResMut<NextState<AppState>>,
 ) {
     if let Ok((interaction, mut background_color)) = button_query.get_single_mut() {
         match *interaction {
             Interaction::Pressed => {
                 *background_color = SECONDARY_PRESSED_BUTTON.into();
+                next_state.set(AppState::MainMenu);
                 app_exit.send(AppExit::Success);
             }
             Interaction::Hovered => {
