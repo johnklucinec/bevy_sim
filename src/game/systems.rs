@@ -3,6 +3,8 @@ use crate::game::road::spawn_grid_roads;
 use crate::game::SimulationState;
 use bevy::prelude::*;
 
+use super::road::spawn_single_road;
+
 /// Pauses the simulation when entering the paused simulation state.
 pub fn pause_simulation(mut simulation_state_next_state: ResMut<NextState<SimulationState>>) {
     println!("Simulation Paused.");
@@ -39,5 +41,12 @@ pub fn spawn_biome_on_enter(
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
     setup_terrain(&mut commands, &mut meshes, &mut materials);
-    spawn_grid_roads(&mut commands, &mut meshes, &mut materials, 5, 5, 10.0);
+    //spawn_grid_roads(&mut commands, &mut meshes, &mut materials, 5, 5, 10.0);
+    spawn_single_road(
+        &mut commands,
+        &mut meshes,
+        &mut materials,
+        Vec3::new(-60.0, 0.0, 0.0),
+        Vec3::new(60.0, 0.0, 0.0),
+    );
 }

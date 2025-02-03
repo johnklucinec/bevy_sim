@@ -1,6 +1,7 @@
 /* road.rs is a module that creates roads and contains their components creating vertical
 and horizontal roads. */
 
+use bevy::color::palettes::css::{RED, YELLOW};
 use bevy::prelude::*;
 use bevy::render::mesh::Mesh;
 use rand::seq::SliceRandom;
@@ -9,6 +10,95 @@ use std::collections::HashSet;
 
 #[derive(Component)]
 pub struct Road;
+
+/*Testing roads for reinforcment AI learning, simple road with railing on the sides.*/
+pub fn spawn_single_road(
+    commands: &mut Commands,
+    meshes: &mut ResMut<Assets<Mesh>>,
+    materials: &mut ResMut<Assets<StandardMaterial>>,
+    start: Vec3,
+    end: Vec3,
+) {
+    let dx = end.x - start.x;
+    let dz = end.z - start.z;
+
+    let distance = (dx * dx + dz * dz).sqrt();
+
+    let angle = dx.atan2(dz);
+
+    let road_width = 4.0;
+    let road_thickness = 0.1;
+
+    let forward = if distance != 0.0 {
+        Vec3::new(dx, 0.0, dz).normalize()
+    } else {
+        Vec3::ZERO
+    };
+
+    
+
+    let parent_id = commands
+        .spawn((
+            Road, // Your custom marker/component
+            Mesh3d(meshes.add(Mesh::from(Cuboid::new(
+                distance,
+                road_thickness,
+                road_width,
+            )))),
+            MeshMaterial3d(materials.add(StandardMaterial {
+                base_color: Color::srgb(0.2, 0.2, 0.2), // dark-ish gray
+                ..Default::default()
+            })),
+            Transform {
+                translation: Vec3::new(0.0, 0.0, -60.0),
+                rotation: Quat::from_rotation_y(angle),
+                ..Default::default()
+            },
+        ))
+        .id();
+
+    let rail_thickness = 0.1;
+    let rail_height = 0.5;
+    let rail_color = Color::srgb(1.0, 0.0, 0.0);
+
+    let rail_mesh = meshes.add(Mesh::from(Cuboid::new(
+        distance,
+        rail_height,
+        rail_thickness,
+    )));
+
+    let rail_material = materials.add(StandardMaterial {
+        base_color: rail_color,
+        ..Default::default()
+    });
+
+    let rail_offset_z = road_width / 2.0;
+
+    //spawn in as children to inherit
+    commands.entity(parent_id).with_children(|parent| {
+        //left rail
+        parent.spawn((
+            Mesh3d(rail_mesh.clone()),
+            MeshMaterial3d(rail_material.clone()),
+            Transform {
+                // Move it "left" in local z (negative direction)
+                translation: Vec3::new(0.0, rail_height / 2.0, -rail_offset_z),
+                ..Default::default()
+            },
+        ));
+
+        //right rail
+        parent.spawn((
+            Mesh3d(rail_mesh.clone()),
+            MeshMaterial3d(rail_material.clone()),
+            Transform {
+                // Move it "right" in local z (positive direction)
+                translation: Vec3::new(0.0, rail_height / 2.0, rail_offset_z),
+                ..Default::default()
+            },
+        ));
+    });
+}
 
 //spawns a grid of roads using rows, cols, and spacing. Creates a 5x5 10 units apart
 pub fn spawn_grid_roads(
@@ -34,7 +124,7 @@ pub fn spawn_grid_roads(
     });
 
     //Rand roads
-    
+
     let mut node_positions = vec![Vec2::ZERO; rows * cols];
 
     for r in 0..rows {
@@ -96,15 +186,15 @@ pub fn spawn_grid_roads(
         for &(dr, dc) in dirs.iter() {
             let new_r = current_r + dr;
             let new_c = current_c + dc;
-            ///////////////////////////////////////////////////////////////////
+
             // Determine allowed directions based on current node's position
             let is_edge = |r: isize, c: isize| -> bool {
                 r == 0 || r == (rows as isize - 1) || c == 0 || c == (cols as isize - 1)
             };
 
-            // Prevent roads from spawning outward on edges
+            //Prevent roads from spawning outward on edges
             if is_edge(current_r, current_c) {
-                // Define allowed directions for edge nodes
+                //define directions
                 let allowed_dirs = if current_r == 0 {
                     //Top edge
                     vec![(1, 0), (0, 1), (0, -1)]
