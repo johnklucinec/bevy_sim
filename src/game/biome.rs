@@ -24,7 +24,8 @@ pub fn spawn_grass(
 
     //Flat ground
     commands.spawn((
-        Mesh3d(meshes.add(Mesh::from(Cuboid::new(500.0, 0.1, 500.0)))),
+
+        Mesh3d(meshes.add(Mesh::from(Cuboid::new(1000.0, 0.1, 1000.0)))),
         MeshMaterial3d(grass_material),
         Transform::from_xyz(0.0, -0.05, 0.0),
     ));

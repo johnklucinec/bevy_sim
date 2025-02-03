@@ -1,6 +1,8 @@
 use crate::game::SimulationState;
 
-use super::components::{SecondaryCamera, SecondaryCameraState};
+use super::components::{CarFollowCamera, SecondaryCamera, SecondaryCameraState};
+use crate::game::car::car::Car;
+
 use bevy::prelude::*;
 use bevy::render::camera::Viewport;
 
@@ -22,7 +24,32 @@ pub fn spawn_secondary_camera(mut commands: Commands) {
             ..default()
         },
         SecondaryCamera,
+        CarFollowCamera,
     ));
+}
+
+pub fn update_car_camera(
+    car_query: Query<&Transform, With<Car>>,
+    mut camera_query: Query<&mut Transform, (With<SecondaryCamera>, Without<Car>)>,
+) {
+    if let Ok(car_transform) = car_query.get_single() {
+        if let Ok(mut camera_transform) = camera_query.get_single_mut() {
+            // Calculate offset based on car's rotation
+            let back_offset = car_transform.back() * 10.0; // Multiply by distance behind car
+            let up_offset = car_transform.up() * 5.0; // Multiply by height above car
+
+            // Position camera behind and above car
+            camera_transform.translation = car_transform.translation + back_offset + up_offset;
+
+            // Look forward from car's position
+            let target = car_transform.translation + car_transform.forward() * 10.0;
+            camera_transform.look_at(target, Vec3::Y);
+        } else {
+            eprintln!("Error: No camera found with SecondaryCamera component");
+        }
+    } else {
+        eprintln!("Error: No car found with Car component");
+    }
 }
 
 pub fn toggle_secondary_camera(

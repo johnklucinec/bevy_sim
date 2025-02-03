@@ -3,6 +3,9 @@ use bevy::prelude::*;
 #[derive(Component)]
 pub struct SecondaryCamera;
 
+#[derive(Component)]
+pub struct CarFollowCamera;
+
 #[derive(States, Debug, Clone, Copy, Eq, PartialEq, Hash, Default)]
 pub enum SecondaryCameraState {
     #[default]
