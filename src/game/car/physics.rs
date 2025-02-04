@@ -3,6 +3,7 @@
 use super::car::{Car, GearMode};
 use super::input::CarInput;
 use bevy::prelude::*;
+use crate::game::road::Road;
 
 // system that handles car movement
 pub fn move_car(
@@ -113,5 +114,27 @@ pub fn move_car(
         let movement = forward * car.current_speed;
         transform.translation += movement * delta;
         transform.rotate_y(rotation);
+    }
+}
+
+// New system to detect wall collisions and reset car
+pub fn reset_car(
+    mut car_query: Query<(&mut Car, &mut Transform), With<Car>>,
+) {
+    if let Ok((mut car, mut transform)) = car_query.get_single_mut() {
+        let road_width = 4.0; // Match the road_width from road.rs
+        let road_half_width = road_width / 2.0;
+
+        // Check if car is outside the road's width
+        if transform.translation.x.abs() > road_half_width {
+            // Reset car to original spawn point (0, 0.5, 0)
+            transform.translation = Vec3::new(0.0, 0.5, 0.0);
+            transform.rotation = Quat::IDENTITY;
+            
+            // Reset car's speed and other properties
+            car.current_speed = 0.0;
+            car.gear_mode = GearMode::Forward;
+        
+        }
     }
 }
