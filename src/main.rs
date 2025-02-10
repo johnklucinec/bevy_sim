@@ -3,11 +3,14 @@ mod game;
 mod main_menu;
 mod systems;
 
+use game::car::car::*;
+use game::car::physics::*;
+use game::car::input::*;
 use game::GamePlugin;
 use main_menu::MainMenuPlugin;
 use systems::*;
-use game::car::car::*;
-use game::car::physics::*;
+use game::ui::mph::*;
+
 
 fn main() {
     App::new()
@@ -19,21 +22,10 @@ fn main() {
         .add_plugins(GamePlugin)
         // Game Systems
         .insert_resource(ClearColor(Color::srgb(0.2, 0.2, 0.2)))
-        .add_systems(Startup, 
-            (
-                setup,
-                spawn_car
-            )
+        .init_resource::<CarInput>()
+        .add_systems(Startup, (setup, spawn_car, spawn_speedometer)
         )
-        .add_systems(
-            Update,
-            (
-                transition_to_game_state,
-                transition_to_main_menu_state,
-                move_car,
-                move_camera,
-                exit_game,
-            ),
+        .add_systems(Update,(move_car, move_camera, exit_game, update_speedometer),
         )
         .run();
 }

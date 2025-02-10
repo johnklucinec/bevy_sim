@@ -8,8 +8,6 @@ pub struct MoveableCamera;
 // Just here for to make sure everything runs right.
 pub fn setup(
     mut commands: Commands,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
     // Camera
     commands.spawn((
@@ -28,30 +26,6 @@ pub fn setup(
         },
         Transform::from_xyz(4.0, 8.0, 4.0),
     ));
-}
-
-/// Transition to the game state when the 'G' key is pressed.
-pub fn transition_to_game_state(
-    keyboard_input: Res<ButtonInput<KeyCode>>,
-    app_state: Res<State<AppState>>,
-    mut app_state_next_state: ResMut<NextState<AppState>>,
-) {
-    if keyboard_input.just_pressed(KeyCode::KeyG) && *app_state.get() != AppState::Game {
-        app_state_next_state.set(AppState::Game);
-        println!("Entered AppState::Game");
-    }
-}
-
-/// Goes back to the main menu state when the 'M' key is pressed.
-pub fn transition_to_main_menu_state(
-    keyboard_input: Res<ButtonInput<KeyCode>>,
-    app_state: Res<State<AppState>>,
-    mut app_state_next_state: ResMut<NextState<AppState>>,
-) {
-    if keyboard_input.just_pressed(KeyCode::KeyM) && *app_state.get() != AppState::MainMenu {
-        app_state_next_state.set(AppState::MainMenu);
-        println!("Entered AppState::MainMenu");
-    }
 }
 
 /// Exits the game when the 'ALT + F4' key is pressed.
@@ -99,3 +73,8 @@ pub fn move_camera(
         }
     }
 }
+
+
+
+
+
