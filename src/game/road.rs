@@ -35,18 +35,16 @@ pub fn spawn_single_road(
         Vec3::ZERO
     };
 
-    
-
     let parent_id = commands
         .spawn((
-            Road, // Your custom marker/component
+            Road,
             Mesh3d(meshes.add(Mesh::from(Cuboid::new(
                 distance,
                 road_thickness,
                 road_width,
             )))),
             MeshMaterial3d(materials.add(StandardMaterial {
-                base_color: Color::srgb(0.2, 0.2, 0.2), // dark-ish gray
+                base_color: Color::srgb(0.1, 0.1, 0.1),
                 ..Default::default()
             })),
             Transform {
@@ -94,6 +92,53 @@ pub fn spawn_single_road(
             Transform {
                 // Move it "right" in local z (positive direction)
                 translation: Vec3::new(0.0, rail_height / 2.0, rail_offset_z),
+                ..Default::default()
+            },
+        ));
+        // // CENTER WHITE LINE
+        // parent.spawn((
+        //     Mesh3d(meshes.add(Mesh::from(Cuboid::new(
+        //         distance, // Full road length
+        //         0.05,     // Line thickness
+        //         0.15,     // Line width
+        //     )))),
+        //     MeshMaterial3d(materials.add(StandardMaterial {
+        //         base_color: Color::WHITE,
+        //         perceptual_roughness: 0.4,
+        //         ..Default::default()
+        //     })),
+        //     Transform {
+        //         translation: Vec3::new(0.0, 0.051, 0.0), // Slightly above road surface
+        //         ..Default::default()
+        //     },
+        // ));
+
+        // WHITE SIDE LINES
+        let line_width = 0.15;
+        let side_offset = (road_width / 2.0) - (line_width / 1.80);
+
+        // Left line
+        parent.spawn((
+            Mesh3d(meshes.add(Mesh::from(Cuboid::new(distance, 0.05, line_width)))),
+            MeshMaterial3d(materials.add(StandardMaterial {
+                base_color: Color::WHITE,
+                ..Default::default()
+            })),
+            Transform {
+                translation: Vec3::new(0.0, 0.051, -side_offset),
+                ..Default::default()
+            },
+        ));
+
+        // Right line
+        parent.spawn((
+            Mesh3d(meshes.add(Mesh::from(Cuboid::new(distance, 0.05, line_width)))),
+            MeshMaterial3d(materials.add(StandardMaterial {
+                base_color: Color::WHITE,
+                ..Default::default()
+            })),
+            Transform {
+                translation: Vec3::new(0.0, 0.051, side_offset),
                 ..Default::default()
             },
         ));

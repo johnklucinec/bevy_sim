@@ -1,4 +1,8 @@
-use bevy::prelude::*;
+use bevy::{
+    pbr::ScreenSpaceAmbientOcclusion,
+    prelude::*,
+    render::camera::{Exposure, PhysicalCameraParameters},
+};
 
 #[derive(Component)]
 pub struct MoveableCamera;
@@ -12,21 +16,28 @@ pub fn setup(mut commands: Commands) {
         Transform::from_xyz(0.0, 5.0, 10.0).looking_at(Vec3::ZERO, Vec3::Y),
         IsDefaultUiCamera,
         MoveableCamera,
-        Camera {
-            order: 0,
+        Exposure::from_physical_camera(PhysicalCameraParameters {
+            aperture_f_stops: 1.0,
+            shutter_speed_s: 1.0 / 250.0,
+            sensitivity_iso: 100.0,
             ..default()
-        },
+        }),
     ));
 
-    // Light
     commands.spawn((
         PointLight {
-            intensity: 3500.0,
+            intensity: 4500.0,
             shadows_enabled: true,
             ..default()
         },
-        Transform::from_xyz(4.0, 8.0, 4.0),
+        Transform::from_xyz(4.0, 100.0, 4.0),
     ));
+
+    // Ambient light
+    commands.insert_resource(AmbientLight {
+        color: Color::WHITE,
+        brightness: 100.0,
+    });
 }
 
 /// Exits the game when the 'ALT + F4' key is pressed.
@@ -74,8 +85,3 @@ pub fn move_camera(
         }
     }
 }
-
-
-
-
-
