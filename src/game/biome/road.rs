@@ -133,19 +133,19 @@ pub fn spawn_single_road(
                 Visibility::default(),
             ));
         }
-        // Center line
-        parent.spawn((
-            Mesh3d(center_line_mesh),
-            MeshMaterial3d(center_line_material),
-            Transform {
-                translation: Vec3::new(
-                    0.0,
-                    road_thickness * 0.5 + center_line_thickness * 0.5,
-                    0.0,
-                ),
-                ..Default::default()
-            },
-        ));
+        // // Center line
+        // parent.spawn((
+        //     Mesh3d(center_line_mesh),
+        //     MeshMaterial3d(center_line_material),
+        //     Transform {
+        //         translation: Vec3::new(
+        //             0.0,
+        //             road_thickness * 0.5 + center_line_thickness * 0.5,
+        //             0.0,
+        //         ),
+        //         ..Default::default()
+        //     },
+        // ));
 
         // Green line at the "start" (local x = -distance/2)
         parent.spawn((
