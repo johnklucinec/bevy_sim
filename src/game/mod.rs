@@ -1,6 +1,7 @@
 mod biome;
 mod camera;
 pub mod car;
+pub mod python;
 mod road;
 mod systems;
 mod ui;
@@ -9,6 +10,7 @@ use crate::game::systems::pause_simulation;
 use crate::game::systems::resume_simulation;
 use crate::AppState;
 use camera::SecondaryCameraPlugin;
+use python::PythonPlugin;
 use systems::*;
 use ui::GameUIPlugin;
 
@@ -33,7 +35,7 @@ impl Plugin for GamePlugin {
                 (resume_simulation, spawn_biome_on_enter),
             )
             // Plugins
-            .add_plugins((GameUIPlugin, SecondaryCameraPlugin))
+            .add_plugins((GameUIPlugin, SecondaryCameraPlugin, PythonPlugin))
             // Systems
             .add_systems(Update, toggle_simulation.run_if(in_state(AppState::Game)))
             // On Exit Systems
