@@ -1,7 +1,6 @@
 /* road.rs is a module that creates roads and contains their components creating vertical
 and horizontal roads. */
 
-use bevy::color::palettes::css::{RED, YELLOW};
 use bevy::prelude::*;
 use bevy::render::mesh::Mesh;
 use rand::seq::SliceRandom;
@@ -14,6 +13,7 @@ pub struct Road;
 /*Testing roads for reinforcment AI learning, simple road with railing on the sides.*/
 pub fn spawn_single_road(
     commands: &mut Commands,
+    asset_server: &AssetServer,
     meshes: &mut ResMut<Assets<Mesh>>,
     materials: &mut ResMut<Assets<StandardMaterial>>,
     start: Vec3,
@@ -26,14 +26,8 @@ pub fn spawn_single_road(
 
     let angle = dx.atan2(dz);
 
-    let road_width = 4.0;
+    let road_width = 5.0;
     let road_thickness = 0.1;
-
-    let forward = if distance != 0.0 {
-        Vec3::new(dx, 0.0, dz).normalize()
-    } else {
-        Vec3::ZERO
-    };
 
     let parent_id = commands
         .spawn((
@@ -55,43 +49,128 @@ pub fn spawn_single_road(
         ))
         .id();
 
-    let rail_thickness = 0.1;
-    let rail_height = 0.5;
-    let rail_color = Color::srgb(1.0, 0.0, 0.0);
+    //for finish and start line
+    let half_x_thickness = 0.2;
+    let half_y_thickness = 0.01;
+    let half_z_width = road_width;
 
-    let rail_mesh = meshes.add(Mesh::from(Cuboid::new(
-        distance,
-        rail_height,
-        rail_thickness,
+    //Green start line
+    let start_line_mesh = meshes.add(Mesh::from(Cuboid::new(
+        half_x_thickness,
+        half_y_thickness,
+        half_z_width,
     )));
 
-    let rail_material = materials.add(StandardMaterial {
-        base_color: rail_color,
+    let start_line_material = materials.add(StandardMaterial {
+        base_color: Color::srgb(0.0, 1.0, 0.0),
         ..Default::default()
     });
 
-    let rail_offset_z = road_width / 2.0;
+    //Finish line
+    let finish_line_mesh = start_line_mesh.clone();
+    let finish_line_material = materials.add(StandardMaterial {
+        base_color: Color::srgb(1.0, 0.0, 0.0),
+        ..Default::default()
+    });
 
-    //spawn in as children to inherit
+    //Center white line
+    let center_line_thickness = 0.01;
+    let center_line_width = 0.1;
+
+    let center_line_mesh = meshes.add(Mesh::from(Cuboid::new(
+        distance,
+        center_line_thickness,
+        center_line_width,
+    )));
+    let center_line_material = materials.add(StandardMaterial {
+        base_color: Color::WHITE,
+        ..Default::default()
+    });
+
+    //goes from distance x to distance -x
+    let total_road_length = distance * 2.0;
+
+    let cone_handle: Handle<Scene> = asset_server.load("3dmodels/traffic_cone/scene.gltf#Scene0");
+
+    let cone_spacing = 1.0;
+    let mut num_cones = (total_road_length / cone_spacing).floor() as i32;
+
+    let left_edge_z = -road_width * 0.5 - 0.3;
+    let right_edge_z = road_width * 0.5 + 0.3;
+
+    if num_cones < 1 {
+        num_cones = 1;
+    }
+
+    //Traffic cone spawning
+
     commands.entity(parent_id).with_children(|parent| {
-        //left rail
+        for i in 0..=num_cones {
+            let fraction = i as f32 / num_cones as f32;
+            let local_x = -distance + fraction * (2.0 * distance);
+
+            //left edge
+            parent.spawn((
+                SceneRoot(cone_handle.clone()),
+                Transform {
+                    translation: Vec3::new(local_x, road_thickness + 0.4, left_edge_z),
+                    rotation: Quat::IDENTITY,
+                    scale: Vec3::splat(0.5),
+                },
+                GlobalTransform::default(),
+                Visibility::default(),
+            ));
+
+            //right edge
+            parent.spawn((
+                SceneRoot(cone_handle.clone()),
+                Transform {
+                    translation: Vec3::new(local_x, road_thickness + 0.4, right_edge_z),
+                    rotation: Quat::IDENTITY,
+                    scale: Vec3::splat(0.5),
+                },
+                GlobalTransform::default(),
+                Visibility::default(),
+            ));
+        }
+        // Center line
         parent.spawn((
-            Mesh3d(rail_mesh.clone()),
-            MeshMaterial3d(rail_material.clone()),
+            Mesh3d(center_line_mesh),
+            MeshMaterial3d(center_line_material),
             Transform {
-                // Move it "left" in local z (negative direction)
-                translation: Vec3::new(0.0, rail_height / 2.0, -rail_offset_z),
+                translation: Vec3::new(
+                    0.0,
+                    road_thickness * 0.5 + center_line_thickness * 0.5,
+                    0.0,
+                ),
                 ..Default::default()
             },
         ));
 
-        //right rail
+        // Green line at the "start" (local x = -distance/2)
         parent.spawn((
-            Mesh3d(rail_mesh.clone()),
-            MeshMaterial3d(rail_material.clone()),
+            Mesh3d(finish_line_mesh.clone()),
+            MeshMaterial3d(start_line_material),
             Transform {
-                // Move it "right" in local z (positive direction)
-                translation: Vec3::new(0.0, rail_height / 2.0, rail_offset_z),
+                translation: Vec3::new(
+                    -distance / 2.0, // Start
+                    road_thickness + half_y_thickness,
+                    0.0,
+                ),
+                ..Default::default()
+            },
+        ));
+
+        //Finish Line
+        parent.spawn((
+            Mesh3d(finish_line_mesh.clone()),
+            MeshMaterial3d(finish_line_material),
+            Transform {
+                translation: Vec3::new(
+                    distance / 2.0, // far end
+                    road_thickness + half_y_thickness,
+                    0.0,
+                ),
                 ..Default::default()
             },
         ));
