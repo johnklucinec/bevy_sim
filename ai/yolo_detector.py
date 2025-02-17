@@ -10,9 +10,9 @@ class YOLODetector:
         
         if self.device == 'cuda':
             self.model.to('cuda')
-            print(f"Using GPU: {torch.cuda.get_device_name(0)}")
+            print(f"Using GPU: {torch.cuda.get_device_name(0)}", flush=True)
         else:
-            print("Using CPU")
+            print("Using CPU", flush=True)
 
     def process_frame(self, frame):
         results = self.model(
