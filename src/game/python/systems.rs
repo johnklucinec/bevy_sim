@@ -8,6 +8,8 @@ use std::{
     thread,
 };
 
+// Calls the python script and stores the child process, stdin, and stdout
+// This allows us to read and send commands
 pub fn spawn_python_child() -> (Child, ChildStdin, ChildStdout) {
     let mut cmd = Command::new("python")
         .arg("./ai/main.py")
@@ -22,6 +24,8 @@ pub fn spawn_python_child() -> (Child, ChildStdin, ChildStdout) {
     (cmd, stdin, stdout)
 }
 
+// This function sets up a thread to read from the Python script's stdout and send messages to the main thread
+// This is done in a non-blocking way
 pub fn setup_io_threads(tx: Sender<String>, stdout: ChildStdout) {
     thread::spawn(move || {
         let mut reader = BufReader::new(stdout);
@@ -39,6 +43,9 @@ pub fn setup_io_threads(tx: Sender<String>, stdout: ChildStdout) {
 }
 
 // Systems now conditionally run based on PythonComms existence
+
+// Used to send commands to the python script
+// Currently it bases things off keypresses, but that was for proof of conecept
 pub fn send_commands(mut comms: ResMut<PythonComms>, input: Res<ButtonInput<KeyCode>>) {
     if input.just_pressed(KeyCode::Space) {
         writeln!(comms.stdin, "DETECT").unwrap();
@@ -52,14 +59,18 @@ pub fn send_commands(mut comms: ResMut<PythonComms>, input: Res<ButtonInput<KeyC
     }
 }
 
+// This reads everything sent from the python terminal
 pub fn handle_responses(comms: Res<PythonComms>, mut events: EventWriter<components::PythonEvent>) {
     // Process all available messages without blocking
     for msg in comms.rx.try_iter() {
         println!("Python output: {}", msg);
 
+        // Example way to read output
         if msg.contains("Starting") {
             println!("Bevy output: Recieved the word 'Starting'");
         }
+
+        // I think we want to use this to read messages at some point.
         events.send(components::PythonEvent(msg));
     }
 }
