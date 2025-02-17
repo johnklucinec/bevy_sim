@@ -9,7 +9,6 @@ use game::car::physics::*;
 use game::GamePlugin;
 use main_menu::MainMenuPlugin;
 use systems::*;
-//use game::ui::mph::*;
 
 fn main() {
     App::new()
