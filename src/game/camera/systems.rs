@@ -4,7 +4,7 @@ use super::components::{
 use crate::game::car::car::Car;
 use crate::game::SimulationState;
 use bevy::prelude::*;
-use bevy::render::camera::{RenderTarget, Viewport};
+use bevy::render::camera::{Exposure, PhysicalCameraParameters, RenderTarget, Viewport};
 use bevy::window::{WindowRef, WindowResolution};
 use std::process::Command;
 
@@ -38,6 +38,12 @@ pub fn spawn_secondary_camera(mut commands: Commands) {
             is_active: false,
             ..default()
         },
+        Exposure::from_physical_camera(PhysicalCameraParameters {
+            aperture_f_stops: 1.0,
+            shutter_speed_s: 1.0 / 250.0,
+            sensitivity_iso: 100.0,
+            ..default()
+        }),
         SecondaryCamera,
         CarFollowCamera,
     ));
@@ -50,14 +56,14 @@ pub fn update_car_camera(
     match (car_query.get_single(), camera_query.get_single_mut()) {
         (Ok(car_transform), Ok(mut camera_transform)) => {
             // Calculate offset based on car's rotation
-            let back_offset = car_transform.back() * 10.0; // Multiply by distance behind car
-            let up_offset = car_transform.up() * 5.0; // Multiply by height above car
+            let back_offset = car_transform.back() * 3.0; // Multiply by distance behind car
+            let up_offset = car_transform.up() * 2.0; // Multiply by height above car
 
             // Position camera behind and above car
             camera_transform.translation = car_transform.translation + back_offset + up_offset;
 
             // Look forward from car's position
-            let target = car_transform.translation + car_transform.forward() * 10.0;
+            let target = car_transform.translation + car_transform.forward() * 30.0;
             camera_transform.look_at(target, Vec3::Y);
         }
         (Err(_), _) => warn!("No car found with Car component"),
