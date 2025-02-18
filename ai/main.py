@@ -5,7 +5,8 @@ import os
 from windowcapture import WindowCapture
 from line_detector import LineDetector
 from yolo_detector import YOLODetector
-from command_handler import CommandHandler  # Add this line to import CommandHandler
+from command_handler import CommandHandler
+import threading
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
@@ -39,12 +40,9 @@ def normal_display(wincap, yolo_detector, line_detector):
             loop_time = display_fps(final_frame, loop_time)
             cv.imshow('Computer Vision', final_frame)
             
-            # Check for commands
-            while not command_handler.command_queue.empty():
-                command = command_handler.command_queue.get()
-                # add specific frame processing based on commands here
-                
-            if cv.waitKey(1) == ord('q'):
+            # Capture keyboard input for car commands
+            key = cv.waitKey(1) & 0xFF
+            if key == ord('q'):
                 cv.destroyAllWindows()
                 break
                 
