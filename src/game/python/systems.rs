@@ -1,11 +1,11 @@
 use super::components::{CommandQueue, PythonComms};
 use crate::game::python::components;
+
+use crate::CarInput;
 use bevy::prelude::*;
 use crossbeam_channel::Sender;
 use std::{
-    io::{BufRead, BufReader, Write},
-    process::{Child, ChildStdin, ChildStdout, Command, Stdio},
-    thread,
+    io::{BufRead, BufReader, Write}, os::windows::process, process::{Child, ChildStdin, ChildStdout, Command, Stdio}, thread
 };
 
 // Calls the python script and stores the child process, stdin, and stdout
@@ -62,16 +62,25 @@ pub fn process_command_queue(mut comms: ResMut<PythonComms>, mut commands: ResMu
 }
 
 // This reads everything sent from the python terminal
-pub fn handle_responses(comms: Res<PythonComms>, mut events: EventWriter<components::PythonEvent>) {
+pub fn handle_responses(
+    comms: Res<PythonComms>, 
+    mut events: EventWriter<components::PythonEvent>,
+    mut car_input: ResMut<CarInput>
+) {
     // Process all available messages without blocking
     for msg in comms.rx.try_iter() {
         println!("Python output: {}", msg);
 
-        // Example way to read output
-        if msg.contains("Starting") {
-            println!("Bevy output: Recieved the word 'Starting'");
+        // Check for car control commands
+        match msg.to_lowercase().trim() {
+            "go" | "stop" | "left" | "right" | "gear" => {
+                car_input.text_command = Some(msg.to_lowercase());
+                println!("Bevy output: {} command processed", msg);
+            },
+            _ => {
+                
+            }
         }
-
         // I think we want to use this to read messages at some point.
         events.send(components::PythonEvent(msg));
     }

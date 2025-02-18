@@ -19,6 +19,9 @@ pub fn move_car(
     car_input.turn_right = keyboard_input.pressed(KeyCode::ArrowRight);
     car_input.toggle_gear = keyboard_input.just_pressed(KeyCode::KeyG);
 
+    // Parse any text commands
+    car_input.parse_text_command();
+
     // Try to get the car entity. if found, continue with movement
     if let Ok((mut car, mut transform)) = car_query.get_single_mut() {
         let delta = time.delta_secs(); // Time since last frame
