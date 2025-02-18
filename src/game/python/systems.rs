@@ -1,11 +1,11 @@
 use super::components::PythonComms;
 use crate::game::python::components;
+
+use crate::CarInput;
 use bevy::prelude::*;
 use crossbeam_channel::Sender;
 use std::{
-    io::{BufRead, BufReader, Write},
-    process::{Child, ChildStdin, ChildStdout, Command, Stdio},
-    thread,
+    io::{BufRead, BufReader, Write}, os::windows::process, process::{Child, ChildStdin, ChildStdout, Command, Stdio}, thread
 };
 
 // Calls the python script and stores the child process, stdin, and stdout
@@ -47,29 +47,63 @@ pub fn setup_io_threads(tx: Sender<String>, stdout: ChildStdout) {
 // Used to send commands to the python script
 // Currently it bases things off keypresses, but that was for proof of conecept
 pub fn send_commands(mut comms: ResMut<PythonComms>, input: Res<ButtonInput<KeyCode>>) {
-    if input.just_pressed(KeyCode::Space) {
+    if input.pressed(KeyCode::Space) {
         writeln!(comms.stdin, "DETECT").unwrap();
 
         // You can use this to print the command to the console
         // comms.tx.send("DETECT".to_string()).unwrap();
     }
 
-    if input.just_pressed(KeyCode::KeyR) {
+    if input.pressed(KeyCode::KeyZ) {
+        writeln!(comms.stdin, "GO").unwrap()
+        
+    }
+
+    if input.pressed(KeyCode::KeyX) {
+        writeln!(comms.stdin, "STOP").unwrap()
+        
+    }
+
+    if input.pressed(KeyCode::KeyC) {
+        writeln!(comms.stdin, "LEFT").unwrap()
+        
+    }
+
+    if input.pressed(KeyCode::KeyV) {
+        writeln!(comms.stdin, "RIGHT").unwrap()
+        
+    }
+
+    if input.pressed(KeyCode::KeyB) {
+        writeln!(comms.stdin, "GEAR").unwrap()
+        
+    }
+
+    if input.pressed(KeyCode::KeyR) {
         writeln!(comms.stdin, "RESET").unwrap();
     }
 }
 
 // This reads everything sent from the python terminal
-pub fn handle_responses(comms: Res<PythonComms>, mut events: EventWriter<components::PythonEvent>) {
+pub fn handle_responses(
+    comms: Res<PythonComms>, 
+    mut events: EventWriter<components::PythonEvent>,
+    mut car_input: ResMut<CarInput>
+) {
     // Process all available messages without blocking
     for msg in comms.rx.try_iter() {
         println!("Python output: {}", msg);
 
-        // Example way to read output
-        if msg.contains("Starting") {
-            println!("Bevy output: Recieved the word 'Starting'");
+        // Check for car control commands
+        match msg.to_lowercase().trim() {
+            "go" | "stop" | "left" | "right" | "gear" => {
+                car_input.text_command = Some(msg.to_lowercase());
+                println!("Bevy output: {} command processed", msg);
+            },
+            _ => {
+                
+            }
         }
-
         // I think we want to use this to read messages at some point.
         events.send(components::PythonEvent(msg));
     }

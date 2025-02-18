@@ -25,10 +25,15 @@ class CommandHandler:
                 print(f"Error reading command: {e}", flush=True)
 
     def _handle_command(self, command: str):
+        car_commands = ["GO", "STOP", "LEFT", "RIGHT", "GEAR"]
+        
         if command == "DETECT":
             response = "Starting detection"
         elif command == "RESET":
             response = "Resetting detectors"
+        elif command.upper() in car_commands:
+            # Send the command directly to stdout for Rust to process
+            response = f"{command}"
         else:
             response = f"Unknown command: {command}"
         
@@ -40,3 +45,7 @@ class CommandHandler:
 
     def stop(self):
         self.running = False
+        
+    def execute_commands(self, *commands):
+        for command in commands:
+            self._handle_command(command)
