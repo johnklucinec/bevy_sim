@@ -8,9 +8,11 @@ use std::{
 };
 
 #[derive(Event)]
+#[allow(dead_code)]
 pub struct PythonEvent(pub String);
 
 #[derive(Resource)]
+#[allow(dead_code)]
 pub struct PythonComms {
     pub child: Child,
     pub stdin: ChildStdin,
@@ -23,6 +25,7 @@ pub struct CommandQueue {
     queue: VecDeque<CommandMessage>,
 }
 
+#[allow(dead_code)]
 impl CommandQueue {
     pub fn enqueue(&mut self, command: CommandMessage) {
         self.queue.push_back(command);
@@ -32,9 +35,9 @@ impl CommandQueue {
         self.queue.pop_front()
     }
 
-    // pub fn is_empty(&self) -> bool {
-    //     self.queue.is_empty()
-    // }
+    pub fn is_empty(&self) -> bool {
+        self.queue.is_empty()
+    }
 }
 
 pub struct CommandMessage {
