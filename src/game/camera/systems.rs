@@ -160,29 +160,3 @@ pub fn cleanup_python_comms(mut commands: Commands, python_comms: Option<Res<Pyt
         commands.remove_resource::<PythonComms>();
     }
 }
-
-// fn load_opencv_script(mut python_process: ResMut<PythonProcess>) {
-//     let mut cmd = Command::new("python")
-//         .arg("./ai/main.py")
-//         .stdin(Stdio::piped())
-//         .stdout(Stdio::piped())
-//         .spawn()
-//         .expect("Failed to start Python script");
-
-//     let stdin = cmd.stdin.take().unwrap();
-//     let stdout = cmd.stdout.take().unwrap();
-
-//     *python_process = PythonProcess {
-//         child: Some(cmd),
-//         stdin: Some(stdin),
-//         stdout: Some(stdout),
-//     };
-// }
-
-// fn kill_opencv_script(mut python_process: ResMut<PythonProcess>) {
-//     if let Some(mut child) = python_process.child.take() {
-//         child.kill().expect("Failed to kill Python script");
-//     }
-//     python_process.stdin.take(); // Explicit drop
-//     python_process.stdout.take(); // Explicit drop
-// }

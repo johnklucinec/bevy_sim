@@ -48,26 +48,3 @@ impl Plugin for SecondaryCameraPlugin {
             .add_plugins(CameraViewUiPlugin);
     }
 }
-
-// impl Plugin for SecondaryCameraPlugin {
-//     fn build(&self, app: &mut App) {
-//         app.init_state::<SecondaryCameraState>()
-//             .insert_resource(SecondaryWindow(Entity::from_raw(0)))
-//             .add_systems(
-//                 OnEnter(SecondaryCameraState::Visible),
-//                 systems::spawn_python_process,
-//             )
-//             .add_systems(
-//                 OnExit(SecondaryCameraState::Visible),
-//                 systems::kill_python_process,
-//             )
-//             .add_systems(
-//                 Update,
-//                 (
-//                     toggle_secondary_camera,
-//                     update_car_camera.run_if(in_state(SecondaryCameraState::Visible)),
-//                 ),
-//             )
-//             .add_plugins(CameraViewUiPlugin);
-//     }
-// }
