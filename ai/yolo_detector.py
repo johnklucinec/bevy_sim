@@ -22,6 +22,9 @@ class YOLODetector:
             verbose=False
         )
         
+        #store bounding box data in list
+        bounding_box = []
+        
         for r in results:
             boxes = r.boxes.xyxy.cpu().numpy()
             classes = r.boxes.cls.cpu().numpy()
@@ -30,7 +33,10 @@ class YOLODetector:
             for box, cls, conf in zip(boxes, classes, confidences):
                 x1, y1, x2, y2 = map(int, box)
                 label = f"{self.model.names[int(cls)]} {conf:.2f}"
+                
                 cv.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
                 cv.putText(frame, label, (x1, y1-10),
                           cv.FONT_HERSHEY_SIMPLEX, 0.5, (0,255,0), 2)
-        return frame
+                
+                bounding_box.append((x1, y1, x2, y2, int(cls), float(conf)))
+        return frame, bounding_box

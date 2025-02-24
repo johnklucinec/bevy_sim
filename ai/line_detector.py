@@ -100,5 +100,5 @@ class LineDetector:
 				# Draw thick blue lines (BGR format)
 				cv.line(line_image, (x1, y1), (x2, y2), (255, 0, 0), 3)
 		
-		return line_image  # Returns black image with blue lines only
+		return line_image, averaged_lines  # Returns black image with blue lines only
 
