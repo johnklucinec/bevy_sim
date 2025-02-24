@@ -4,8 +4,10 @@ pub mod car;
 pub mod python;
 mod road;
 mod systems;
-mod ui;
+pub mod ui;
 
+use crate::game::biome::BiomePlugin;
+use crate::game::car::CarPlugin;
 use crate::game::systems::pause_simulation;
 use crate::game::systems::resume_simulation;
 use crate::AppState;
@@ -30,12 +32,9 @@ impl Plugin for GamePlugin {
             // States
             .init_state::<SimulationState>()
             // On Enter Systems
-            .add_systems(
-                OnEnter(AppState::Game),
-                (resume_simulation, spawn_biome_on_enter),
-            )
+            .add_systems(OnEnter(AppState::Game), (resume_simulation))
             // Plugins
-            .add_plugins((GameUIPlugin, SecondaryCameraPlugin, PythonPlugin))
+            .add_plugins((GameUIPlugin, SecondaryCameraPlugin, PythonPlugin, CarPlugin, BiomePlugin))
             // Systems
             .add_systems(Update, toggle_simulation.run_if(in_state(AppState::Game)))
             // On Exit Systems
@@ -49,3 +48,4 @@ pub enum SimulationState {
     Paused,
     Running,
 }
+
