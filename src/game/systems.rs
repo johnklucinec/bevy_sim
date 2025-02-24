@@ -1,6 +1,4 @@
-use crate::game::biome::setup_terrain;
-use crate::game::road::spawn_grid_roads;
-use crate::game::road::spawn_single_road;
+
 use crate::game::SimulationState;
 use bevy::prelude::*;
 
@@ -33,21 +31,3 @@ pub fn toggle_simulation(
     }
 }
 
-//Spawns in roads
-pub fn spawn_biome_on_enter(
-    mut commands: Commands,
-    asset_server: Res<AssetServer>,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<StandardMaterial>>,
-) {
-    setup_terrain(&mut commands, &mut meshes, &mut materials);
-    //spawn_grid_roads(&mut commands, &mut meshes, &mut materials, 5, 5, 10.0);
-    spawn_single_road(
-        &mut commands,
-        &asset_server,
-        &mut meshes,
-        &mut materials,
-        Vec3::new(-500.0, 0.0, 0.0),
-        Vec3::new(500.0, 0.0, 0.0),
-    );
-}
