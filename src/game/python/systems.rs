@@ -1,4 +1,4 @@
-use super::components::PythonComms;
+use super::components::{CommandQueue, PythonComms};
 use crate::game::python::components;
 use bevy::prelude::*;
 use crossbeam_channel::Sender;
@@ -44,18 +44,20 @@ pub fn setup_io_threads(tx: Sender<String>, stdout: ChildStdout) {
 
 // Systems now conditionally run based on PythonComms existence
 
-// Used to send commands to the python script
-// Currently it bases things off keypresses, but that was for proof of conecept
-pub fn send_commands(mut comms: ResMut<PythonComms>, input: Res<ButtonInput<KeyCode>>) {
-    if input.just_pressed(KeyCode::Space) {
-        writeln!(comms.stdin, "DETECT").unwrap();
+// // Used to send commands to the python script
+// // Currently it bases things off keypresses, but that was for proof of conecept
+// pub fn send_commands(comms: ResMut<PythonComms>, input: Res<ButtonInput<KeyCode>>) {
+//     get_commands(comms, input);
+// }
 
-        // You can use this to print the command to the console
-        // comms.tx.send("DETECT".to_string()).unwrap();
-    }
+// pub fn send_command(mut comms: ResMut<PythonComms>, command: &CommandMessage) {
+//     let command = CommandMessage::new(CommandType::Reset, String::new());
+//     writeln!(comms.stdin, "{}", command).unwrap();
+// }
 
-    if input.just_pressed(KeyCode::KeyR) {
-        writeln!(comms.stdin, "RESET").unwrap();
+pub fn process_command_queue(mut comms: ResMut<PythonComms>, mut commands: ResMut<CommandQueue>) {
+    while let Some(command) = commands.dequeue() {
+        writeln!(comms.stdin, "{}", command).unwrap();
     }
 }
 
