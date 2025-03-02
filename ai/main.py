@@ -129,7 +129,7 @@ def normal_display():
             cv.imshow('Computer Vision', final_frame)
             
             #slow down frames
-            time.sleep(0.5)
+            time.sleep(0.2)
             
             if cv.waitKey(1) == ord('q'):
                 cv.destroyAllWindows()
