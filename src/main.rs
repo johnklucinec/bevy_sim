@@ -21,7 +21,7 @@ fn main() {
         // Game Systems
         .insert_resource(ClearColor(Color::srgb(0.2, 0.2, 0.2)))
         .init_resource::<CarInput>()
-        .add_systems(Startup, (setup))
+        .add_systems(Startup, setup)
         .add_systems(Update, (move_camera, exit_game))
         .run();
 }

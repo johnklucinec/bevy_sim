@@ -10,3 +10,4 @@ Cargo.lock
 **/*.rs.bk
 ai/__pycache__/
 ai/__pycache__/windowcapture.cpython-313.pyc
+ai/__pycache__/windowcapture.cpython-313.pyc
