@@ -10,9 +10,9 @@ class YOLODetector:
         
         if self.device == 'cuda':
             self.model.to('cuda')
-            print(f"Using GPU: {torch.cuda.get_device_name(0)}")
+            print(f"Using GPU: {torch.cuda.get_device_name(0)}", flush=True)
         else:
-            print("Using CPU")
+            print("Using CPU", flush=True)
 
     def process_frame(self, frame):
         results = self.model(
@@ -37,6 +37,4 @@ class YOLODetector:
                 cv.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
                 cv.putText(frame, label, (x1, y1-10),
                           cv.FONT_HERSHEY_SIMPLEX, 0.5, (0,255,0), 2)
-                
-                bounding_box.append((x1, y1, x2, y2, int(cls), float(conf)))
-        return frame, bounding_box
+        return frame

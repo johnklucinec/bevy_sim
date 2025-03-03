@@ -1,5 +1,4 @@
 mod components;
-mod styles;
 mod systems;
 
 use systems::layout::*;
@@ -20,6 +19,10 @@ impl Plugin for SpeedometerPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(OnEnter(AppState::Game), spawn_speedometer)
             .add_systems(OnExit(HUDOverlayState::Visible), toggle_speedometer)
+            .add_systems(
+                Update,
+                update_speedometer.run_if(in_state(HUDOverlayState::Visible)),
+            )
             .add_systems(OnExit(HUDOverlayState::Hidden), toggle_speedometer)
             .add_systems(OnExit(AppState::Game), despawn_speedometer);
     }
