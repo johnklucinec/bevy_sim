@@ -2,13 +2,14 @@ import sys
 from threading import Thread, Lock
 from queue import Queue
 
+
 class CommandHandler:
     def __init__(self):
         self.command_queue = Queue()
         self.response_queue = Queue()
         self.running = True
         self.lock = Lock()
-        
+
         # Start command listening thread
         self.command_thread = Thread(target=self._listen_for_commands)
         self.command_thread.daemon = True
@@ -25,18 +26,31 @@ class CommandHandler:
                 print(f"Error reading command: {e}", flush=True)
 
     def _handle_command(self, command: str):
-        car_commands = ["GO", "STOP", "LEFT", "RIGHT", "GEAR"]
-        
+        # Get the first word of the command (without parameters)
+        command_parts = command.split()
+        command_name = command_parts[0] if command_parts else ""
+
+        # Check if the command (without parameters) is in the list
+        car_commands = [
+            "GO",
+            "STOP",
+            "LEFT",
+            "RIGHT",
+            "GEAR",
+            "THROTTLE",
+            "TURN"
+            ]
+
         if command == "DETECT":
             response = "Starting detection"
         elif command == "RESET":
             response = "Resetting detectors"
-        elif command.upper() in car_commands:
-            # Send the command directly to stdout for Rust to process
-            response = f"{command}"
+        elif command_name.upper() in car_commands:
+            # Send the entire command including parameters
+            response = command
         else:
             response = f"Unknown command: {command}"
-        
+
         self.send_response(response)
 
     def send_response(self, response: str):
@@ -45,7 +59,7 @@ class CommandHandler:
 
     def stop(self):
         self.running = False
-        
+
     def execute_commands(self, *commands):
         for command in commands:
             self._handle_command(command)
