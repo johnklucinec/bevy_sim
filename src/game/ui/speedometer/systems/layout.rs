@@ -1,6 +1,4 @@
 use crate::game::car::car::*;
-use crate::game::python::commands::CommandType;
-use crate::game::python::components::{CommandMessage, CommandQueue};
 use crate::game::ui::speedometer::components::{Speedometer, SpeedometerText};
 use crate::game::ui::HUDOverlayState;
 use bevy::prelude::*;
@@ -56,19 +54,11 @@ pub fn despawn_speedometer(
 pub fn update_speedometer(
     car_query: Query<&Car>,
     mut text_query: Query<&mut Text, With<SpeedometerText>>,
-    mut commands: ResMut<CommandQueue>,
 ) {
     if let Ok(car) = car_query.get_single() {
         if let Ok(mut text) = text_query.get_single_mut() {
             // Convert m/s to MPH and format with gear indicator
             let speed_mph = car.current_speed.abs() * MPS_TO_MPH;
-
-            if speed_mph > 15.0 && speed_mph < 16.0 {
-                commands.enqueue(CommandMessage::new(
-                    CommandType::Speed,
-                    speed_mph.to_string(),
-                ));
-            }
 
             let gear = match car.gear_mode {
                 GearMode::Forward => "D",
