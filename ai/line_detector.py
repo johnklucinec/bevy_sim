@@ -126,14 +126,41 @@ class LineDetector:
 			maxLineGap=self.hough_params['max_line_gap']
 		)
 		
-		averaged_lines = self.average_slope_intercept(frame, lines)
+		averaged_line = self.average_slope_intercept(frame, lines)
 		line_image = np.zeros_like(frame)
 		
-		if averaged_lines:
-			line = averaged_lines[0]
+		if averaged_line:
+			line = averaged_line[0]
 			x1, y1, x2, y2 = line
 			cv.line(line_image, (x1, y1), (x2, y2), (255, 0, 0), 3)
+
+			# Calculate and print only the x-coordinate of the center point
+			center_x = (x1 + x2) // 2
+			cv.putText(line_image, f'X_VALUE: {center_x:.1f}', (10, 100),
+					cv.FONT_HERSHEY_SIMPLEX, 0.7, (0,255,0), 2)
+
+			# The goal is to always have the car be at center_x = ~250 (the center)
+			# It wont ever be perfect, so maybe have the center be like 247-253
+
+			# For the x values take the last 5-10 (more = less jitter)
+			# good luck with PID equation
 		
 		#return self.display_lines(frame, lines)
 		return line_image
+	
+	# Sample Function for the PID STUFF
+	def pid_controller(self, center):
+		# Placeholder implementation for PID controller
+		# This should be replaced with actual PID control logic
+		kp = 1.0  # Proportional gain
+		ki = 0.0  # Integral gain
+		kd = 0.0  # Derivative gain
+		
+		# Example control logic (to be replaced with actual PID logic)
+		error = center - 250  # Assuming 250 is the desired center
+		control_signal = kp * error  # Simplified proportional control
+
+		# always sending turning command (every 5-10 inputs)
+		
+		return control_signal
 
