@@ -23,6 +23,10 @@ pub struct Car {
     pub max_brake_press_duration: f32,
     pub friction: f32,
     pub gear_mode: GearMode,
+    pub steering_angle: f32,        // Current steering angle in radians
+    pub max_steering_angle: f32,    // Maximum steering angle in radians
+    pub steering_speed: f32,        // How quickly steering angle changes
+    pub wheelbase: f32,             // Distance between front and rear axles
 }
 
 #[derive(Component)]
@@ -52,6 +56,10 @@ pub fn spawn_car(
             max_brake_press_duration: 2.0,
             friction: 1.0,
             gear_mode: GearMode::Forward,
+            steering_angle: 0.0,
+            max_steering_angle: 0.5,  // About 30 degrees in radians
+            steering_speed: 2.0,      // How quickly steering angle changes
+            wheelbase: 1.6,           // Distance between front and rear wheels
         },
         Mesh3d(meshes.add(Cuboid::new(1.0, 0.5, 2.0))),
         MeshMaterial3d(materials.add(StandardMaterial {
