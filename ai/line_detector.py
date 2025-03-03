@@ -1,18 +1,23 @@
 import cv2 as cv
 import numpy as np
+import warnings
 
 class LineDetector:
 	def __init__(self):
+		self.roi_params = {
+			'bottom_offset': 50,    
+			'top_offset': 260,      
+			'center_x_offset': 0    
+		}
 		self.canny_thresholds = (50, 150)
 		self.gaussian_kernel = (5, 5)
 		self.hough_params = {
-			'rho': 2,
+			'rho': 2,            
 			'theta': np.pi/180,
 			'threshold': 100,
 			'min_line_length': 40,
 			'max_line_gap': 5
 		}
-		self.region_polygon = [(0, 0), (500, 0), (500, 500), (0, 500)]
 
 	def canny(self, image):
 		gray = cv.cvtColor(image, cv.COLOR_RGB2GRAY)
@@ -20,61 +25,78 @@ class LineDetector:
 		return cv.Canny(blur, *self.canny_thresholds)
 
 	def region_of_interest(self, image):
-		mask = np.zeros_like(image)
 		height, width = image.shape[:2]
+		bottom = height - self.roi_params['bottom_offset']
+		top = height - self.roi_params['top_offset']
+		
 		poly_coords = np.array([[
-            (0, height),
-            (500, height),
-            (500, height-500),
-            (0, height-500)
+			(0, bottom),
+			(width, bottom),
+			(width, top),
+			(0, top)
 		]], dtype=np.int32)
-		cv.fillPoly(mask, poly_coords, 255)
-		#return mask
+		
+		mask = np.zeros_like(image)
+		mask = cv.fillPoly(mask, poly_coords, 255)
 		return cv.bitwise_and(image, mask)
 
 	def average_slope_intercept(self, image, lines):
-		left_fit = []
-		right_fit = []
-		
 		if lines is None:
 			return []
-			
-		for line in lines:
-			x1, y1, x2, y2 = line.reshape(4)
-			parameters = np.polyfit((x1, x2), (y1, y2), 1)
-			slope, intercept = parameters[0], parameters[1]
-			
-			if slope < -0.5:
-				left_fit.append((slope, intercept))
-			elif slope > 0.5:
-				right_fit.append((slope, intercept))
+		
+		height, width = image.shape[:2]
+		center_x = width // 2
+		best_line = None
+		min_center_distance = float('inf')
+
+		with warnings.catch_warnings():
+			warnings.simplefilter('ignore', np.exceptions.RankWarning)
+			for line in lines:
+				x1, y1, x2, y2 = line.reshape(4)
+				parameters = np.polyfit((x1, x2), (y1, y2), 1)
+				slope, intercept = parameters
 				
-		averaged_lines = []
-		if left_fit:
-			left_avg = np.average(left_fit, axis=0)
-			left_line = self.make_coordinates(image, left_avg)
-			averaged_lines.append(left_line)
-		if right_fit:
-			right_avg = np.average(right_fit, axis=0)
-			right_line = self.make_coordinates(image, right_avg)
-			averaged_lines.append(right_line)
+				# Calculate where the line intersects the bottom of the image
+				y_bottom = height - self.roi_params['bottom_offset']
+				x_bottom = int((y_bottom - intercept) / slope) if slope != 0 else x1
+				
+				# Find line closest to center at the bottom
+				distance = abs(x_bottom - center_x)
+				
+				if distance < min_center_distance:
+					min_center_distance = distance
+					best_line = parameters
+
+		if best_line is None:
+			return []
 			
-		return averaged_lines
+		averaged_line = self.make_coordinates(image, best_line)
+		return [averaged_line]
 
 	def make_coordinates(self, image, line_params):
 		slope, intercept = line_params
-		y1 = image.shape[0]
-		y2 = int(y1 * 3/5)
-		x1 = int((y1 - intercept)/slope)
-		x2 = int((y2 - intercept)/slope)
+		height = image.shape[0]
+		y1 = height - self.roi_params['bottom_offset']
+		y2 = height - self.roi_params['top_offset']
+		
+		try:
+			x1 = int((y1 - intercept)/slope)
+			x2 = int((y2 - intercept)/slope)
+		except ZeroDivisionError:
+			x1, x2 = 0, image.shape[1]
+		
+		x1 = np.clip(x1, 0, image.shape[1])
+		x2 = np.clip(x2, 0, image.shape[1])
+		
 		return [x1, y1, x2, y2]
+
 
 	def display_lines(self, image, lines):
 		line_image = np.zeros_like(image)
 		if lines is not None:
-				for line in lines:
-					x1, y1, x2, y2 = line.reshape(4)
-					cv.line(line_image, (x1, y1), (x2, y2), (255, 0, 0), 2)
+			for line in lines:
+				x1, y1, x2, y2 = line.reshape(4)
+				cv.line(line_image, (x1, y1), (x2, y2), (255, 0, 0), 2)
 		return line_image
 
 	def process_frame(self, frame):
@@ -92,13 +114,11 @@ class LineDetector:
 		)
 		
 		averaged_lines = self.average_slope_intercept(frame, lines)
-		line_image = np.zeros_like(frame)  # Black background
+		line_image = np.zeros_like(frame)
 		
 		if averaged_lines:
-			for line in averaged_lines:
-				x1, y1, x2, y2 = line
-				# Draw thick blue lines (BGR format)
-				cv.line(line_image, (x1, y1), (x2, y2), (255, 0, 0), 3)
+			line = averaged_lines[0]
+			x1, y1, x2, y2 = line
+			cv.line(line_image, (x1, y1), (x2, y2), (255, 0, 0), 3)
 		
-		return line_image  # Returns black image with blue lines only
-
+		return line_image
