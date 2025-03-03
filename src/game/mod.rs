@@ -2,7 +2,6 @@ mod biome;
 mod camera;
 pub mod car;
 pub mod python;
-mod road;
 mod systems;
 pub mod ui;
 
@@ -32,9 +31,15 @@ impl Plugin for GamePlugin {
             // States
             .init_state::<SimulationState>()
             // On Enter Systems
-            .add_systems(OnEnter(AppState::Game), (resume_simulation))
+            .add_systems(OnEnter(AppState::Game), resume_simulation)
             // Plugins
-            .add_plugins((GameUIPlugin, SecondaryCameraPlugin, PythonPlugin))
+            .add_plugins((
+                GameUIPlugin,
+                SecondaryCameraPlugin,
+                CarPlugin,
+                BiomePlugin,
+                PythonPlugin,
+            ))
             // Systems
             .add_systems(Update, toggle_simulation.run_if(in_state(AppState::Game)))
             // On Exit Systems
