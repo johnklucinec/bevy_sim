@@ -1,0 +1,105 @@
+import cv2 as cv
+import numpy as np
+
+# This code works to detect two (a left and right) road lines instead of one. 
+class LineDetector:
+	def __init__(self):
+		self.canny_thresholds = (50, 150)
+		self.gaussian_kernel = (50, 50)
+		self.hough_params = {
+			'rho': 2,
+			'theta': np.pi/180,
+			'threshold': 100,
+			'min_line_length': 40,
+			'max_line_gap': 5
+		}
+		self.region_polygon = [(0, 0), (500, 0), (500, 500), (0, 500)]
+
+	def canny(self, image):
+		gray = cv.cvtColor(image, cv.COLOR_RGB2GRAY)
+		blur = cv.GaussianBlur(gray, self.gaussian_kernel, 0)
+		return cv.Canny(blur, *self.canny_thresholds)
+
+	def region_of_interest(self, image):
+		mask = np.zeros_like(image)
+		height, width = image.shape[:2]
+		poly_coords = np.array([[
+            (0, height),
+            (500, height),
+            (500, height-500),
+            (0, height-500)
+		]], dtype=np.int32)
+		cv.fillPoly(mask, poly_coords, 255)
+		#return mask
+		return cv.bitwise_and(image, mask)
+
+	def average_slope_intercept(self, image, lines):
+		left_fit = []
+		right_fit = []
+		
+		if lines is None:
+			return []
+			
+		for line in lines:
+			x1, y1, x2, y2 = line.reshape(4)
+			parameters = np.polyfit((x1, x2), (y1, y2), 1)
+			slope, intercept = parameters[0], parameters[1]
+			
+			if slope < -0.5:
+				left_fit.append((slope, intercept))
+			elif slope > 0.5:
+				right_fit.append((slope, intercept))
+				
+		averaged_lines = []
+		if left_fit:
+			left_avg = np.average(left_fit, axis=0)
+			left_line = self.make_coordinates(image, left_avg)
+			averaged_lines.append(left_line)
+		if right_fit:
+			right_avg = np.average(right_fit, axis=0)
+			right_line = self.make_coordinates(image, right_avg)
+			averaged_lines.append(right_line)
+			
+		return averaged_lines
+
+	def make_coordinates(self, image, line_params):
+		slope, intercept = line_params
+		y1 = image.shape[0]
+		y2 = int(y1 * 3/5)
+		x1 = int((y1 - intercept)/slope)
+		x2 = int((y2 - intercept)/slope)
+		return [x1, y1, x2, y2]
+
+	def display_lines(self, image, lines):
+		line_image = np.zeros_like(image)
+		if lines is not None:
+				for line in lines:
+					x1, y1, x2, y2 = line.reshape(4)
+					cv.line(line_image, (x1, y1), (x2, y2), (255, 0, 0), 2)
+		return line_image
+
+	def process_frame(self, frame):
+		canny_image = self.canny(frame)
+		cropped_image = self.region_of_interest(canny_image)
+		
+		lines = cv.HoughLinesP(
+			cropped_image,
+			self.hough_params['rho'],
+			self.hough_params['theta'],
+			self.hough_params['threshold'],
+			np.array([]),
+			minLineLength=self.hough_params['min_line_length'],
+			maxLineGap=self.hough_params['max_line_gap']
+		)
+		
+		averaged_lines = self.average_slope_intercept(frame, lines)
+		line_image = np.zeros_like(frame)  # Black background
+		
+		if averaged_lines:
+			for line in averaged_lines:
+				x1, y1, x2, y2 = line
+				# Draw thick blue lines (BGR format)
+				cv.line(line_image, (x1, y1), (x2, y2), (255, 0, 0), 3)
+		
+		return line_image  # Returns black image with blue lines only
+
