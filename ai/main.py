@@ -153,3 +153,27 @@ def debug_display():
 # Uncomment the function you want to use
 normal_display()
 # debug_display()
+
+
+
+
+
+# def handle_reset_car(self, value: str | None = None) -> str:
+#         """Reset the car to a default safe position, e.g., start line."""
+#         # might have to change position, but added this to make it easy to reset, maybe can
+#         # change it so it will use this when it reaches a certain distance or time.
+#         self.car_position = (0.0, 0.0)
+#         self.current_speed = 0.0
+#         return "Car position and speed have been reset."
+    
+    
+# def handle_out_of_bounds(self, value: str | None = None) -> str:
+
+#         # handle car going out of bounds.
+#         # - Stop the car
+#         # - Reset car position
+#         # - Decrement a reward metric
+        
+#         self.current_speed = 0.0
+#         self.car_position = (0.0, 0.0)
+#         return "Car went out of bounds! Resetting position and stopping."
