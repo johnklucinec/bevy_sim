@@ -1,7 +1,6 @@
-use bevy::prelude::*;
-use crate::game::biome::road::spawn_single_road;
-use crate::game::biome::road::spawn_grid_roads;
 use crate::game::biome::biome::setup_terrain;
+use crate::game::biome::road::spawn_single_road;
+use bevy::prelude::*;
 
 //Spawns in roads
 pub fn spawn_biome_on_enter(

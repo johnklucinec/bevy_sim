@@ -1,6 +1,6 @@
 use bevy::prelude::*;
-use components::{PythonProcess, SecondaryCameraState, SecondaryWindow};
-use systems::update_car_camera;
+use components::{SecondaryCameraState, SecondaryWindow};
+use systems::{cleanup_python_comms, update_car_camera};
 pub use systems::{
     despawn_secondary_camera, toggle_secondary_camera, VIEWPORT_POSITION, VIEWPORT_SIZE,
 };
@@ -18,8 +18,6 @@ impl Plugin for SecondaryCameraPlugin {
         app
             // State initialization
             .init_state::<SecondaryCameraState>()
-            // Resource initialization
-            .insert_resource(PythonProcess(None))
             .insert_resource(SecondaryWindow(Entity::from_raw(0)))
             // Camera lifecycle systems
             .add_systems(
@@ -28,16 +26,22 @@ impl Plugin for SecondaryCameraPlugin {
             )
             .add_systems(
                 OnExit(AppState::Game),
-                despawn_secondary_camera, // Remove camera on main menu
+                (despawn_secondary_camera, cleanup_python_comms),
+            )
+            .add_systems(
+                OnEnter(SecondaryCameraState::Visible),
+                systems::spawn_python_process,
+            )
+            .add_systems(
+                OnExit(SecondaryCameraState::Visible),
+                systems::kill_python_process,
             )
             // Camera control systems
             .add_systems(
                 Update,
                 (
                     toggle_secondary_camera,
-                    update_car_camera
-                        .after(systems::spawn_secondary_camera)
-                        .run_if(in_state(AppState::Game)),
+                    update_car_camera.run_if(in_state(SecondaryCameraState::Visible)),
                 ),
             )
             // UI integration

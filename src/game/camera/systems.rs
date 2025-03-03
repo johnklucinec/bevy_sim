@@ -1,12 +1,11 @@
-use super::components::{
-    CarFollowCamera, PythonProcess, SecondaryCamera, SecondaryCameraState, SecondaryWindow,
-};
+use super::components::{CarFollowCamera, SecondaryCamera, SecondaryCameraState, SecondaryWindow};
 use crate::game::car::car::Car;
+use crate::game::python::components::PythonComms;
+use crate::game::python::systems::{setup_io_threads, spawn_python_child};
 use crate::game::SimulationState;
 use bevy::prelude::*;
 use bevy::render::camera::{Exposure, PhysicalCameraParameters, RenderTarget, Viewport};
 use bevy::window::{WindowRef, WindowResolution};
-use std::process::Command;
 
 // Viewport configuration
 pub static VIEWPORT_POSITION: UVec2 = UVec2::new(0, 0);
@@ -74,12 +73,11 @@ pub fn update_car_camera(
 #[allow(clippy::too_many_arguments)]
 pub fn toggle_secondary_camera(
     mut camera_query: Query<&mut Camera, With<SecondaryCamera>>,
-    input: Res<ButtonInput<KeyCode>>,
-    mut windows: Query<&mut Window>,
     simulation_state: Res<State<SimulationState>>,
     camera_state: Res<State<SecondaryCameraState>>,
     mut next_camera_state: ResMut<NextState<SecondaryCameraState>>,
-    python_process: ResMut<PythonProcess>,
+    input: Res<ButtonInput<KeyCode>>,
+    mut windows: Query<&mut Window>,
     second_window: Res<SecondaryWindow>,
 ) {
     // Checks if the game is running and if TAB was pressed
@@ -102,13 +100,11 @@ pub fn toggle_secondary_camera(
             window.visible = true;
             camera.is_active = true;
             next_camera_state.set(SecondaryCameraState::Visible);
-            load_opencv_script(python_process);
         }
         SecondaryCameraState::Visible => {
             camera.is_active = false;
             window.visible = false;
             next_camera_state.set(SecondaryCameraState::Hidden);
-            kill_opencv_script(python_process);
         }
     }
 }
@@ -118,7 +114,6 @@ pub fn despawn_secondary_camera(
     camera_query: Query<Entity, With<SecondaryCamera>>,
     simulation_state: Res<State<SimulationState>>,
     mut next_camera_state: ResMut<NextState<SecondaryCameraState>>,
-    python_process: ResMut<PythonProcess>,
     mut windows: Query<&mut Window>,
     second_window: Res<SecondaryWindow>,
 ) {
@@ -134,22 +129,34 @@ pub fn despawn_secondary_camera(
     if let Ok(camera_entity) = camera_query.get_single() {
         commands.entity(camera_entity).despawn_recursive();
         next_camera_state.set(SecondaryCameraState::Hidden);
-        kill_opencv_script(python_process); // Kills the python script
         window.visible = false;
     }
 }
 
-fn load_opencv_script(mut python_process: ResMut<PythonProcess>) {
-    python_process.0 = Some(
-        Command::new("python")
-            .arg("./ai/main.py")
-            .spawn()
-            .expect("Failed to start Python script"),
-    );
+pub fn spawn_python_process(mut commands: Commands) {
+    let (child, stdin, stdout) = spawn_python_child();
+    let (tx, rx) = crossbeam_channel::bounded(1000);
+
+    setup_io_threads(tx.clone(), stdout);
+
+    commands.insert_resource(PythonComms {
+        child,
+        stdin,
+        tx,
+        rx,
+    });
 }
 
-fn kill_opencv_script(mut python_process: ResMut<PythonProcess>) {
-    if let Some(mut child) = python_process.0.take() {
-        child.kill().expect("Failed to kill Python script");
+pub fn kill_python_process(mut commands: Commands, comms: Option<ResMut<PythonComms>>) {
+    if let Some(mut comms) = comms {
+        comms.child.kill().unwrap();
+        commands.remove_resource::<PythonComms>();
+    }
+}
+
+// Add cleanup system
+pub fn cleanup_python_comms(mut commands: Commands, python_comms: Option<Res<PythonComms>>) {
+    if python_comms.is_some() {
+        commands.remove_resource::<PythonComms>();
     }
 }
