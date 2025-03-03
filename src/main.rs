@@ -31,5 +31,5 @@ pub enum AppState {
     #[default]
     MainMenu, // State for the main menu
     Game,     // State for when the game is running
-    GameOver, // We dont use this for anything yet
+    GameOver, // We dont use this for anything yet :)
 }
