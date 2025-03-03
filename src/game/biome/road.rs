@@ -107,7 +107,7 @@ pub fn spawn_single_road(
     commands.entity(parent_id).with_children(|parent| {
         for i in 0..=num_cones {
             let fraction = i as f32 / num_cones as f32;
-            let local_x = -distance + fraction * (2.0 * distance);
+            let local_x = -distance + fraction * (6.0 * distance);
 
             //left edge
             parent.spawn((

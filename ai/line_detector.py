@@ -5,23 +5,23 @@ import warnings
 class LineDetector:
 	def __init__(self):
 		self.roi_params = {
-			'bottom_offset': 50,    
+			'bottom_offset': 60,    
 			'top_offset': 260,      
 			'center_x_offset': 0    
 		}
-		self.canny_thresholds = (50, 150)
+		self.canny_thresholds = (50, 100)
 		self.gaussian_kernel = (5, 5)
 		self.hough_params = {
 			'rho': 2,            
 			'theta': np.pi/180,
-			'threshold': 100,
+			'threshold': 30,
 			'min_line_length': 40,
-			'max_line_gap': 5
+			'max_line_gap': 1
 		}
 
 	def canny(self, image):
 		gray = cv.cvtColor(image, cv.COLOR_RGB2GRAY)
-		blur = cv.GaussianBlur(gray, self.gaussian_kernel, 0)
+		blur = cv.GaussianBlur(gray, self.gaussian_kernel, 1)
 		return cv.Canny(blur, *self.canny_thresholds)
 
 	def region_of_interest(self, image):
@@ -49,23 +49,33 @@ class LineDetector:
 		best_line = None
 		min_center_distance = float('inf')
 
-		with warnings.catch_warnings():
-			warnings.simplefilter('ignore', np.exceptions.RankWarning)
-			for line in lines:
-				x1, y1, x2, y2 = line.reshape(4)
-				parameters = np.polyfit((x1, x2), (y1, y2), 1)
-				slope, intercept = parameters
-				
-				# Calculate where the line intersects the bottom of the image
-				y_bottom = height - self.roi_params['bottom_offset']
-				x_bottom = int((y_bottom - intercept) / slope) if slope != 0 else x1
-				
-				# Find line closest to center at the bottom
-				distance = abs(x_bottom - center_x)
-				
-				if distance < min_center_distance:
-					min_center_distance = distance
-					best_line = parameters
+		for line in lines:
+			x1, y1, x2, y2 = line.reshape(4)
+			
+			# Handle vertical lines explicitly
+			if x1 == x2:
+				slope = float('inf')
+				intercept = x1
+			else:
+				with warnings.catch_warnings():
+					warnings.simplefilter('ignore', np.exceptions.RankWarning)
+					slope, intercept = np.polyfit((x1, x2), (y1, y2), 1)
+			
+			# Calculate where the line intersects the bottom of the image
+			y_bottom = height - self.roi_params['bottom_offset'] / 2
+			if slope == float('inf'):
+				x_bottom = x1
+			elif slope == 0:
+				x_bottom = center_x  # Horizontal line, use center
+			else:
+				x_bottom = int((y_bottom - intercept) / slope)
+			
+			# Find line closest to center at the bottom
+			distance = abs(x_bottom - center_x)
+			
+			if distance < min_center_distance:
+				min_center_distance = distance
+				best_line = (slope, intercept)
 
 		if best_line is None:
 			return []
@@ -75,20 +85,23 @@ class LineDetector:
 
 	def make_coordinates(self, image, line_params):
 		slope, intercept = line_params
-		height = image.shape[0]
+		height, width = image.shape[:2]
 		y1 = height - self.roi_params['bottom_offset']
-		y2 = height - self.roi_params['top_offset']
+		y2 = int(height * (1 - 0.55))
 		
-		try:
-			x1 = int((y1 - intercept)/slope)
-			x2 = int((y2 - intercept)/slope)
-		except ZeroDivisionError:
-			x1, x2 = 0, image.shape[1]
+		if slope == float('inf'):
+			return [int(intercept), y1, int(intercept), y2]
+		elif slope == 0:
+			return [0, int(intercept), width, int(intercept)]
+		else:
+			x1 = int((y1 - intercept) / slope)
+			x2 = int((y2 - intercept) / slope)	
 		
-		x1 = np.clip(x1, 0, image.shape[1])
-		x2 = np.clip(x2, 0, image.shape[1])
+		x1 = np.clip(x1, 0, width - 1)
+		x2 = np.clip(x2, 0, width - 1)
 		
 		return [x1, y1, x2, y2]
+
 
 
 	def display_lines(self, image, lines):
@@ -121,4 +134,6 @@ class LineDetector:
 			x1, y1, x2, y2 = line
 			cv.line(line_image, (x1, y1), (x2, y2), (255, 0, 0), 3)
 		
+		#return self.display_lines(frame, lines)
 		return line_image
+
