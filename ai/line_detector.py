@@ -146,21 +146,6 @@ class LineDetector:
 			# good luck with PID equation
 		
 		#return self.display_lines(frame, lines)
-		return line_image
+		return line_image, center_x
 	
-	# Sample Function for the PID STUFF
-	def pid_controller(self, center):
-		# Placeholder implementation for PID controller
-		# This should be replaced with actual PID control logic
-		kp = 1.0  # Proportional gain
-		ki = 0.0  # Integral gain
-		kd = 0.0  # Derivative gain
-		
-		# Example control logic (to be replaced with actual PID logic)
-		error = center - 250  # Assuming 250 is the desired center
-		control_signal = kp * error  # Simplified proportional control
-
-		# always sending turning command (every 5-10 inputs)
-		
-		return control_signal
-
+	
