@@ -9,7 +9,6 @@ use game::car::physics::*;
 use game::GamePlugin;
 use main_menu::MainMenuPlugin;
 use systems::*;
-//use game::ui::mph::*;
 
 fn main() {
     App::new()
@@ -22,7 +21,7 @@ fn main() {
         // Game Systems
         .insert_resource(ClearColor(Color::srgb(0.2, 0.2, 0.2)))
         .init_resource::<CarInput>()
-        .add_systems(Startup, (setup))
+        .add_systems(Startup, setup)
         .add_systems(Update, (move_camera, exit_game))
         .run();
 }
@@ -32,5 +31,5 @@ pub enum AppState {
     #[default]
     MainMenu, // State for the main menu
     Game,     // State for when the game is running
-    GameOver, // We dont use this for anything yet
+    GameOver, // We dont use this for anything yet :)
 }

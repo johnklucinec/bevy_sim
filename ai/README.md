@@ -14,6 +14,7 @@ pip install ultralytics
 ```
 
 Install this if you want to have (NVIDIA) GPU accel on the Image Recognition:
+It needs to be 11.8:
 
 https://developer.nvidia.com/cuda-11-8-0-download-archive
 

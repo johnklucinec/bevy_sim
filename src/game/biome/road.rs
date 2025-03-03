@@ -105,9 +105,9 @@ pub fn spawn_single_road(
     //Traffic cone spawning
 
     commands.entity(parent_id).with_children(|parent| {
-        // for i in 0..=num_cones {
-        //     let fraction = i as f32 / num_cones as f32;
-        //     let local_x = -distance + fraction * (2.0 * distance);
+        for i in 0..=num_cones {
+            let fraction = i as f32 / num_cones as f32;
+            let local_x = -distance + fraction * (6.0 * distance);
 
         //     //left edge
         //     parent.spawn((
@@ -121,18 +121,19 @@ pub fn spawn_single_road(
         //         Visibility::default(),
         //     ));
 
-        //     //right edge
-        //     parent.spawn((
-        //         SceneRoot(cone_handle.clone()),
-        //         Transform {
-        //             translation: Vec3::new(local_x, road_thickness + 0.4, right_edge_z),
-        //             rotation: Quat::IDENTITY,
-        //             scale: Vec3::splat(0.5),
-        //         },
-        //         GlobalTransform::default(),
-        //         Visibility::default(),
-        //     ));
-        // }
+            //right edge
+            parent.spawn((
+                SceneRoot(cone_handle.clone()),
+                Transform {
+                    translation: Vec3::new(local_x, road_thickness + 0.4, right_edge_z),
+                    rotation: Quat::IDENTITY,
+                    scale: Vec3::splat(0.5),
+                },
+                GlobalTransform::default(),
+                Visibility::default(),
+            ));
+        }
+
         // Center line
         parent.spawn((
             Mesh3d(center_line_mesh),
@@ -174,57 +175,41 @@ pub fn spawn_single_road(
                 ..Default::default()
             },
         ));
-        // // CENTER WHITE LINE
+
+        // // WHITE SIDE LINES
+        // let line_width = 0.15;
+        // let side_offset = (road_width / 2.0) - (line_width / 1.80);
+
+        // // Left line
         // parent.spawn((
-        //     Mesh3d(meshes.add(Mesh::from(Cuboid::new(
-        //         distance, // Full road length
-        //         0.05,     // Line thickness
-        //         0.15,     // Line width
-        //     )))),
+        //     Mesh3d(meshes.add(Mesh::from(Cuboid::new(distance, 0.05, line_width)))),
         //     MeshMaterial3d(materials.add(StandardMaterial {
         //         base_color: Color::WHITE,
-        //         perceptual_roughness: 0.4,
         //         ..Default::default()
         //     })),
         //     Transform {
-        //         translation: Vec3::new(0.0, 0.051, 0.0), // Slightly above road surface
+        //         translation: Vec3::new(0.0, 0.051, -side_offset),
         //         ..Default::default()
         //     },
         // ));
 
-        // WHITE SIDE LINES
-        let line_width = 0.15;
-        let side_offset = (road_width / 2.0) - (line_width / 1.80);
-
-        // Left line
-        parent.spawn((
-            Mesh3d(meshes.add(Mesh::from(Cuboid::new(distance, 0.05, line_width)))),
-            MeshMaterial3d(materials.add(StandardMaterial {
-                base_color: Color::WHITE,
-                ..Default::default()
-            })),
-            Transform {
-                translation: Vec3::new(0.0, 0.051, -side_offset),
-                ..Default::default()
-            },
-        ));
-
-        // Right line
-        parent.spawn((
-            Mesh3d(meshes.add(Mesh::from(Cuboid::new(distance, 0.05, line_width)))),
-            MeshMaterial3d(materials.add(StandardMaterial {
-                base_color: Color::WHITE,
-                ..Default::default()
-            })),
-            Transform {
-                translation: Vec3::new(0.0, 0.051, side_offset),
-                ..Default::default()
-            },
-        ));
+        // // Right line
+        // parent.spawn((
+        //     Mesh3d(meshes.add(Mesh::from(Cuboid::new(distance, 0.05, line_width)))),
+        //     MeshMaterial3d(materials.add(StandardMaterial {
+        //         base_color: Color::WHITE,
+        //         ..Default::default()
+        //     })),
+        //     Transform {
+        //         translation: Vec3::new(0.0, 0.051, side_offset),
+        //         ..Default::default()
+        //     },
+        // ));
     });
 }
 
 //spawns a grid of roads using rows, cols, and spacing. Creates a 5x5 10 units apart
+#[allow(dead_code)]
 pub fn spawn_grid_roads(
     commands: &mut Commands,
     meshes: &mut ResMut<Assets<Mesh>>,
@@ -304,7 +289,7 @@ pub fn spawn_grid_roads(
         visited[current_idx] = true;
 
         //randomize
-        let mut dirs = directions.clone();
+        let mut dirs = directions;
         dirs.shuffle(&mut rng);
 
         for &(dr, dc) in dirs.iter() {
@@ -410,27 +395,25 @@ pub fn spawn_grid_roads(
                         (new_idx, current_idx)
                     };
 
-                    if !road_segments.contains(&segment) {
-                        if rng.gen_bool(extra_connection_chance) {
-                            //Checking node connections limit
-                            if node_connections[current_idx] >= max_connections_per_node {
-                                continue;
-                            }
-                            if node_connections[new_idx] >= max_connections_per_node {
-                                continue;
-                            }
-
-                            let new_pos = node_positions[new_idx];
-                            spawn_road_segment(
-                                commands,
-                                meshes,
-                                &road_material,
-                                &dash_material,
-                                current_pos,
-                                new_pos,
-                            );
-                            road_segments.insert(segment);
+                    if !road_segments.contains(&segment) && rng.gen_bool(extra_connection_chance) {
+                        //Checking node connections limit
+                        if node_connections[current_idx] >= max_connections_per_node {
+                            continue;
                         }
+                        if node_connections[new_idx] >= max_connections_per_node {
+                            continue;
+                        }
+
+                        let new_pos = node_positions[new_idx];
+                        spawn_road_segment(
+                            commands,
+                            meshes,
+                            &road_material,
+                            &dash_material,
+                            current_pos,
+                            new_pos,
+                        );
+                        road_segments.insert(segment);
                     }
                 }
             }
