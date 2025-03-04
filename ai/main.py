@@ -105,9 +105,8 @@ def debug_display():    # NEED TO ADD COMMAND HANDLER
 #         self.car_position = (0.0, 0.0)
 #         return "Car went out of bounds! Resetting position and stopping."
 
-if __name__ == '__main__':
 
-    # Uncomment the function you want to use
-    normal_display(wincap, yolo_detector, line_detector)
-    # debug_display()
+# Uncomment the function you want to use
+normal_display(wincap, yolo_detector, line_detector)
+# debug_display()
 
