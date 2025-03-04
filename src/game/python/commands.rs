@@ -5,6 +5,8 @@ use bevy::prelude::*;
 pub enum CommandType {
     Detect,
     Reset,
+    Steer,
+    Speed,
 }
 
 // Implementation of the commands
@@ -13,6 +15,8 @@ impl CommandType {
         match self {
             CommandType::Detect => "DETECT",
             CommandType::Reset => "RESET",
+            CommandType::Steer => "STEER",
+            CommandType::Speed => "SPEED",
         }
     }
 }

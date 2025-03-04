@@ -1,4 +1,6 @@
 use bevy::prelude::*;
+use crate::game::python::commands::CommandType;
+use crate::game::python::components::{CommandMessage, CommandQueue};
 
 #[derive(Resource, Default)]
 pub struct CarInput {
@@ -9,26 +11,8 @@ pub struct CarInput {
     pub toggle_gear: bool,
     pub text_command: Option<String>,
     // New continuous control values
-    pub throttle_value: f32,
-    pub turn_angle: f32,
-    // New flag to explicitly reset the car
-    pub reset_car: bool,
-}
-
-impl Default for CarInput {
-    fn default() -> Self {
-        Self {
-            accelerate: false,
-            brake: false,
-            turn_left: false,
-            turn_right: false,
-            toggle_gear: false,
-            text_command: None,
-            throttle_value: 0.0,
-            turn_angle: 0.0,
-            reset_car: false,
-        }
-    }
+    pub speed_value: f32,
+    pub steer_angle: f32,
 }
 
 impl CarInput {
@@ -39,37 +23,17 @@ impl CarInput {
             let parts: Vec<&str> = lowercase_command.trim().split_whitespace().collect();
             
             match parts.as_slice() {
-                ["go"] => {
-                    self.accelerate = true;
-                    self.brake = false;
-                },
-                ["stop"] => {
-                    self.brake = true;
-                    self.accelerate = false;
-                    self.throttle_value = 0.0;
-                },
-                ["left"] => {
-                    self.turn_left = true;
-                    self.turn_right = false;
-                },
-                ["right"] => {
-                    self.turn_right = true;
-                    self.turn_left = false;
-                },
-                ["gear"] => {
-                    self.toggle_gear = true;
-                },
-                ["throttle", value_str] => {
+                ["speed", value_str] => {
                     if let Ok(value) = value_str.parse::<f32>() {
-                        self.throttle_value = value;
+                        self.speed_value = value;
                         // Clear direct control inputs since we're using continuous values
                         self.accelerate = false;
                         self.brake = false;
                     } else {
-                        println!("Invalid throttle value: {}", value_str);
+                        println!("Invalid speed value: {}", value_str);
                     }
                 },
-                ["turn", value_str] => {
+                ["steer", value_str] => {
                     if let Ok(mut value) = value_str.parse::<f32>() {
                         // limit to 30 degrees
                         if value > 30.0 {
@@ -78,18 +42,13 @@ impl CarInput {
                             value = -30.0;
                         }
                         
-                        self.turn_angle = value;
+                        self.steer_angle = value;
                         // Clear direct control inputs since we're using continuous values
                         self.turn_left = false;
                         self.turn_right = false;
                     } else {
                         println!("Invalid turn angle value: {}", value_str);
                     }
-                },
-                ["reset"] => {
-                    self.reset();
-                    // Set the reset_car flag to true
-                    self.reset_car = true;
                 },
                 _ => {
                     // Reset all inputs if command is not recognized
@@ -103,16 +62,32 @@ impl CarInput {
             }
         }
     }
+}
 
-    pub fn reset(&mut self) {
-        self.accelerate = false;
-        self.brake = false;
-        self.turn_left = false;
-        self.turn_right = false;
-        self.toggle_gear = false;
-        // Also reset continuous values
-        self.throttle_value = 0.0;
-        self.turn_angle = 0.0;
-        // Don't reset the reset_car flag here, it will be handled by the reset_car system
+// Keybindings to manually send commands to the Python script
+// This is for proof of concept testing - will be replaced by AI-driven commands later
+pub fn car_commands(mut commands: ResMut<CommandQueue>, input: Res<ButtonInput<KeyCode>>) {
+    if input.just_pressed(KeyCode::Digit1) {
+        commands.enqueue(CommandMessage::new(CommandType::Speed, "10"));
+    }
+
+    if input.just_pressed(KeyCode::Digit2) {
+        commands.enqueue(CommandMessage::new(CommandType::Speed, "50"));
+    }
+
+    if input.just_pressed(KeyCode::Digit3) {
+        commands.enqueue(CommandMessage::new(CommandType::Speed, "0"));
+    }
+
+    if input.just_pressed(KeyCode::Digit4) {
+        commands.enqueue(CommandMessage::new(CommandType::Steer, "10"));
+    }
+
+    if input.just_pressed(KeyCode::Digit5) {
+        commands.enqueue(CommandMessage::new(CommandType::Steer, "-50"));
+    }
+
+    if input.just_pressed(KeyCode::Digit6) {
+        commands.enqueue(CommandMessage::new(CommandType::Steer, "0"));
     }
 }
