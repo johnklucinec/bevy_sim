@@ -64,7 +64,7 @@ def debug_display(): # NEED TO ADD COMMAND HANDLER
 		screenshot = wincap.get_screenshot()
 		
 		# Process frame with both detectors
-		line_frame = line_detector.process_frame(screenshot.copy())
+		line_frame, _ = line_detector.process_frame(screenshot.copy())
 		
 		cv.imshow('Computer Vision', line_frame)
 		
@@ -75,7 +75,7 @@ def debug_display(): # NEED TO ADD COMMAND HANDLER
 ### MAIN ###
 # Uncomment the function you want to use
 normal_display(wincap, yolo_detector, line_detector)
-# debug_display()
+#debug_display()
 
 
 
