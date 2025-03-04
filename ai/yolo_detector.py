@@ -22,8 +22,7 @@ class YOLODetector:
             verbose=False
         )
         
-        #store bounding box data in list
-        bounding_box = []
+        
         
         for r in results:
             boxes = r.boxes.xyxy.cpu().numpy()
