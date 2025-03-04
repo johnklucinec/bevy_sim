@@ -2,13 +2,10 @@ use super::components::{CommandQueue, PythonComms};
 use crate::game::python::components;
 
 use crate::CarInput;
-
-use crate::CarInput;
 use bevy::prelude::*;
 use crossbeam_channel::Sender;
 use std::{
-    io::{BufRead, BufReader, Write}, os::windows::process, process::{Child, ChildStdin, ChildStdout, Command, Stdio}, thread
-    io::{BufRead, BufReader, Write}, os::windows::process, process::{Child, ChildStdin, ChildStdout, Command, Stdio}, thread
+    io::{BufRead, BufReader, Write}, process::{Child, ChildStdin, ChildStdout, Command, Stdio}, thread
 };
 
 // Calls the python script and stores the child process, stdin, and stdout
@@ -45,72 +42,21 @@ pub fn setup_io_threads(tx: Sender<String>, stdout: ChildStdout) {
     });
 }
 
-// Systems now conditionally run based on PythonComms existence
-
-// // Used to send commands to the python script
-// // Currently it bases things off keypresses, but that was for proof of conecept
-// pub fn send_commands(comms: ResMut<PythonComms>, input: Res<ButtonInput<KeyCode>>) {
-//     get_commands(comms, input);
-// }
-
-// pub fn send_command(mut comms: ResMut<PythonComms>, command: &CommandMessage) {
-//     let command = CommandMessage::new(CommandType::Reset, String::new());
-//     writeln!(comms.stdin, "{}", command).unwrap();
-// }
-
 pub fn process_command_queue(mut comms: ResMut<PythonComms>, mut commands: ResMut<CommandQueue>) {
-    while let Some(command) = commands.dequeue() {
-        writeln!(comms.stdin, "{}", command).unwrap();
-    }
-
-    // Test keys for continuous control
-    if input.pressed(KeyCode::Digit1) {
-        writeln!(comms.stdin, "THROTTLE 10").unwrap();
-    }
-
-    if input.pressed(KeyCode::Digit2) {
-        writeln!(comms.stdin, "THROTTLE 50").unwrap();
-    }
-
-    if input.pressed(KeyCode::Digit3) {
-        writeln!(comms.stdin, "THROTTLE 0").unwrap();
-    }
-
-    if input.pressed(KeyCode::Digit4) {
-        writeln!(comms.stdin, "TURN 90").unwrap();
-    }
-
-    if input.pressed(KeyCode::Digit5) {
-        writeln!(comms.stdin, "TURN -10").unwrap();
-    }
-
-    if input.pressed(KeyCode::Digit6) {
-        writeln!(comms.stdin, "TURN 0").unwrap();
-    }
-
-    // Test keys for continuous control
-    if input.pressed(KeyCode::Digit1) {
-        writeln!(comms.stdin, "THROTTLE 10").unwrap();
-    }
-
-    if input.pressed(KeyCode::Digit2) {
-        writeln!(comms.stdin, "THROTTLE 50").unwrap();
-    }
-
-    if input.pressed(KeyCode::Digit3) {
-        writeln!(comms.stdin, "THROTTLE 0").unwrap();
-    }
-
-    if input.pressed(KeyCode::Digit4) {
-        writeln!(comms.stdin, "TURN 90").unwrap();
-    }
-
-    if input.pressed(KeyCode::Digit5) {
-        writeln!(comms.stdin, "TURN -10").unwrap();
-    }
-
-    if input.pressed(KeyCode::Digit6) {
-        writeln!(comms.stdin, "TURN 0").unwrap();
+    // Process all queued commands
+    while let Some(cmd) = commands.dequeue() {
+        // Format the command as a string and send it to Python
+        let cmd_str = cmd.to_string();
+        
+        // Send to Python via stdin
+        if let Err(e) = writeln!(comms.stdin, "{}", cmd_str) {
+            eprintln!("Failed to write to Python stdin: {}", e);
+        }
+        
+        // Flush to ensure command is sent immediately
+        if let Err(e) = comms.stdin.flush() {
+            eprintln!("Failed to flush Python stdin: {}", e);
+        }
     }
 }
 
@@ -120,15 +66,9 @@ pub fn handle_responses(
     mut events: EventWriter<components::PythonEvent>,
     mut car_input: ResMut<CarInput>
 ) {
-pub fn handle_responses(
-    comms: Res<PythonComms>, 
-    mut events: EventWriter<components::PythonEvent>,
-    mut car_input: ResMut<CarInput>
-) {
     // Process all available messages without blocking
     for msg in comms.rx.try_iter() {
         println!("Python output received: '{}'", msg);
-        println!("Python output received: '{}'", msg);
 
         // Check for car control commands
         let parts: Vec<&str> = msg.trim().split_whitespace().collect();
@@ -136,59 +76,21 @@ pub fn handle_responses(
         println!("Command parts: {:?}", parts);
         
         match parts.as_slice() {
-            ["GO"] | ["STOP"] | ["LEFT"] | ["RIGHT"] | ["GEAR"] => {
-                car_input.text_command = Some(msg.to_lowercase());
-                println!("Bevy output: Basic command '{}' processed", msg);
-            },
-            ["TURN", value_str] => {
+            ["STEER", value_str] => {
                 // Pass the entire command to be parsed in CarInput
-                car_input.text_command = Some(format!("turn {}", value_str));
-                println!("Bevy output: TURN {} command processed successfully", value_str);
-
+                car_input.text_command = Some(format!("steer {}", value_str));
+                println!("Bevy output: STEER {} command processed successfully", value_str);
             },
-            ["THROTTLE", value_str] => {
+            ["SPEED", value_str] => {
                 // Pass the entire command to be parsed in CarInput
-                car_input.text_command = Some(format!("throttle {}", value_str));
-                println!("Bevy output: THROTTLE {} command processed successfully", value_str);
-            },
-            ["RESET"] => {
-                car_input.text_command = Some("reset".to_string());
-                println!("Bevy output: RESET command processed");
+                car_input.text_command = Some(format!("speed {}", value_str));
+                println!("Bevy output: SPEED {} command processed successfully", value_str);
             },
             _ => {
-            
+                println!("Bevy output: Unrecognized command format: {:?}", parts);
             }
         }
-        // Check for car control commands
-        let parts: Vec<&str> = msg.trim().split_whitespace().collect();
-        // debugging print
-        println!("Command parts: {:?}", parts);
-        
-        match parts.as_slice() {
-            ["GO"] | ["STOP"] | ["LEFT"] | ["RIGHT"] | ["GEAR"] => {
-                car_input.text_command = Some(msg.to_lowercase());
-                println!("Bevy output: Basic command '{}' processed", msg);
-            },
-            ["TURN", value_str] => {
-                // Pass the entire command to be parsed in CarInput
-                car_input.text_command = Some(format!("turn {}", value_str));
-                println!("Bevy output: TURN {} command processed successfully", value_str);
-
-            },
-            ["THROTTLE", value_str] => {
-                // Pass the entire command to be parsed in CarInput
-                car_input.text_command = Some(format!("throttle {}", value_str));
-                println!("Bevy output: THROTTLE {} command processed successfully", value_str);
-            },
-            ["RESET"] => {
-                car_input.text_command = Some("reset".to_string());
-                println!("Bevy output: RESET command processed");
-            },
-            _ => {
-            
-            }
-        }
-        // I think we want to use this to read messages at some point.
+        // Send the message as an event for any other systems that might need it
         events.send(components::PythonEvent(msg));
     }
 }

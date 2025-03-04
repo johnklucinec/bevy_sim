@@ -36,14 +36,14 @@ pub fn move_car(
         }
 
         // Process continuous throttle value if it's non-zero
-        if car_input.throttle_value != 0.0 {
+        if car_input.speed_value != 0.0 {
             // Convert throttle_value to a speed value between min and max speed
             let target_speed = match car.gear_mode {
                 GearMode::Forward => {
-                    (car_input.throttle_value / 100.0) * car.max_speed
+                    (car_input.speed_value / 100.0) * car.max_speed
                 }
                 GearMode::Reverse => {
-                    -(car_input.throttle_value / 100.0) * car.max_reverse_speed.abs()
+                    -(car_input.speed_value / 100.0) * car.max_reverse_speed.abs()
                 }
             };
             
@@ -115,10 +115,10 @@ pub fn move_car(
         }
 
         // Process continuous turn angle if it's non-zero
-        if car_input.turn_angle != 0.0 {
+        if car_input.steer_angle != 0.0 {
             // Convert turn_angle to a steering angle in radians
             // turn_angle is in degrees and positive is right, negative is left
-            let mut target_steering = -(car_input.turn_angle / 30.0) * car.max_steering_angle;
+            let mut target_steering = -(car_input.steer_angle / 30.0) * car.max_steering_angle;
             
             if target_steering > 30.0 {
                 target_steering = 30.0;

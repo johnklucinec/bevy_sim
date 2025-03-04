@@ -12,7 +12,6 @@ pub enum GearMode {
 #[derive(Component)]
 pub struct Car {
     pub current_speed: f32,
-    pub turn_speed: f32,
     pub max_speed: f32,
     pub max_reverse_speed: f32,
     pub acceleration: f32,
@@ -45,7 +44,6 @@ pub fn spawn_car(
     let car_entity = commands.spawn((
         Car {
             current_speed: 0.0,
-            turn_speed: 2.5,
             max_speed: 10.0,
             max_reverse_speed: -5.0,
             acceleration: 5.0,
