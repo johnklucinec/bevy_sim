@@ -3,6 +3,7 @@ import re
 from threading import Thread, Lock
 from queue import Queue
 from enum import Enum
+from main import debug_display
 
 class CommandType(Enum):
     """Valid command types and their string representations"""
@@ -53,6 +54,13 @@ class CommandHandler:
         if not value:
             return "Speed value missing"
         return f"The current speed is: {value}"
+    
+    def handle_debug(self, value: str | None = None) -> str:
+        """Start debug display in new thread"""
+        debug_thread = Thread(target=debug_display)
+        debug_thread.daemon = True
+        debug_thread.start()
+        return "Starting debug display"
 
     # --------------------------------------------------
     # Response Management
