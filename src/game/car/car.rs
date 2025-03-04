@@ -12,7 +12,6 @@ pub enum GearMode {
 #[derive(Component)]
 pub struct Car {
     pub current_speed: f32,
-    pub turn_speed: f32,
     pub max_speed: f32,
     pub max_reverse_speed: f32,
     pub acceleration: f32,
@@ -23,6 +22,10 @@ pub struct Car {
     pub max_brake_press_duration: f32,
     pub friction: f32,
     pub gear_mode: GearMode,
+    pub steering_angle: f32,        // Current steering angle in radians
+    pub max_steering_angle: f32,    // Maximum steering angle in radians
+    pub steering_speed: f32,        // How quickly steering angle changes
+    pub wheelbase: f32,             // Distance between front and rear axles
 }
 
 #[derive(Component)]
@@ -41,7 +44,6 @@ pub fn spawn_car(
     let car_entity = commands.spawn((
         Car {
             current_speed: 0.0,
-            turn_speed: 2.5,
             max_speed: 10.0,
             max_reverse_speed: -5.0,
             acceleration: 5.0,
@@ -52,6 +54,10 @@ pub fn spawn_car(
             max_brake_press_duration: 2.0,
             friction: 1.0,
             gear_mode: GearMode::Forward,
+            steering_angle: 0.0,
+            max_steering_angle: 0.5,  // About 30 degrees in radians
+            steering_speed: 2.0,      // How quickly steering angle changes
+            wheelbase: 1.6,           // Distance between front and rear wheels
         },
         Mesh3d(meshes.add(Cuboid::new(1.0, 0.5, 2.0))),
         MeshMaterial3d(materials.add(StandardMaterial {
