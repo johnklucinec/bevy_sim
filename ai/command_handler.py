@@ -3,7 +3,27 @@ import re
 from threading import Thread, Lock
 from queue import Queue
 from enum import Enum
-from main import debug_display
+import cv2 as cv
+from windowcapture import WindowCapture
+from line_detector import LineDetector
+
+wincap = WindowCapture('Camera View')
+line_detector = LineDetector()
+
+
+def debug_display(): # NEED TO ADD COMMAND HANDLER
+	while True:
+		screenshot = wincap.get_screenshot()
+		
+		# Process frame with both detectors
+		line_frame, _ = line_detector.process_frame(screenshot.copy())
+		
+		cv.imshow('Computer Vision', line_frame)
+		
+		if cv.waitKey(1) == ord('q'):
+			cv.destroyAllWindows()
+			break
+
 
 class CommandType(Enum):
     """Valid command types and their string representations"""
