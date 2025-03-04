@@ -3,6 +3,27 @@ import re
 from threading import Thread, Lock
 from queue import Queue
 from enum import Enum
+import cv2 as cv
+from windowcapture import WindowCapture
+from line_detector import LineDetector
+
+wincap = WindowCapture('Camera View')
+line_detector = LineDetector()
+
+
+def debug_display(): # NEED TO ADD COMMAND HANDLER
+	while True:
+		screenshot = wincap.get_screenshot()
+		
+		# Process frame with both detectors
+		line_frame, _ = line_detector.process_frame(screenshot.copy())
+		
+		cv.imshow('Computer Vision', line_frame)
+		
+		if cv.waitKey(1) == ord('q'):
+			cv.destroyAllWindows()
+			break
+
 
 
 class CommandType(Enum):
@@ -91,6 +112,17 @@ class CommandHandler:
             return f"STEER {angle}"
         except ValueError:
             return f"Invalid STEER value: {value}"
+
+        return f"The current speed is: {value}"
+    
+    def handle_debug(self, value: str | None = None) -> str:
+        """
+        Start debug display in new thread
+        """
+        debug_thread = Thread(target=debug_display)
+        debug_thread.daemon = True
+        debug_thread.start()
+        return "Starting debug display"
 
     # --------------------------------------------------
     # Response Management
