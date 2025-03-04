@@ -59,18 +59,18 @@ def normal_display(wincap, yolo_detector, line_detector):
     finally:
         command_handler.stop()
 
-def debug_display(): # NEED TO ADD COMMAND HANDLER
-	while True:
-		screenshot = wincap.get_screenshot()
+# def debug_display(): # NEED TO ADD COMMAND HANDLER
+# 	while True:
+# 		screenshot = wincap.get_screenshot()
 		
-		# Process frame with both detectors
-		line_frame, _ = line_detector.process_frame(screenshot.copy())
+# 		# Process frame with both detectors
+# 		line_frame, _ = line_detector.process_frame(screenshot.copy())
 		
-		cv.imshow('Computer Vision', line_frame)
+# 		cv.imshow('Computer Vision', line_frame)
 		
-		if cv.waitKey(1) == ord('q'):
-			cv.destroyAllWindows()
-			break
+# 		if cv.waitKey(1) == ord('q'):
+# 			cv.destroyAllWindows()
+# 			break
 
 ### MAIN ###
 # Uncomment the function you want to use
