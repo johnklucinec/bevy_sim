@@ -1,11 +1,8 @@
 use bevy::prelude::*;
 use components::{SecondaryCameraState, SecondaryWindow};
 use systems::{cleanup_python_comms, update_car_camera};
-pub use systems::{
-    despawn_secondary_camera, toggle_secondary_camera, VIEWPORT_POSITION, VIEWPORT_SIZE,
-};
+pub use systems::{despawn_secondary_camera, toggle_secondary_camera};
 
-use super::ui::CameraViewUiPlugin;
 use crate::game::AppState;
 
 pub mod components;
@@ -26,7 +23,11 @@ impl Plugin for SecondaryCameraPlugin {
             )
             .add_systems(
                 OnExit(AppState::Game),
-                (despawn_secondary_camera, cleanup_python_comms),
+                (
+                    cleanup_python_comms,
+                    systems::kill_python_process,
+                    despawn_secondary_camera,
+                ),
             )
             .add_systems(
                 OnEnter(SecondaryCameraState::Visible),
@@ -43,8 +44,6 @@ impl Plugin for SecondaryCameraPlugin {
                     toggle_secondary_camera,
                     update_car_camera.run_if(in_state(SecondaryCameraState::Visible)),
                 ),
-            )
-            // UI integration
-            .add_plugins(CameraViewUiPlugin);
+            );
     }
 }

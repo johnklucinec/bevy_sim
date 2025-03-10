@@ -1,13 +1,14 @@
 use bevy::prelude::*;
+use car::despawn_cars;
 
 pub mod car;
-pub mod physics;
 pub mod input;
+pub mod physics;
 
 use crate::game::AppState;
-use crate::spawn_car;
 use crate::move_car;
 use crate::reset_car;
+use crate::spawn_car;
 use input::car_commands;
 
 pub struct CarPlugin;
@@ -20,11 +21,9 @@ impl Plugin for CarPlugin {
             // Hide Camera View UI when exiting visible camera state
             .add_systems(
                 Update,
-                (
-                    move_car, 
-                    reset_car,
-                    car_commands
-                ).run_if(in_state(AppState::Game))
-            );
+                (move_car, reset_car, car_commands).run_if(in_state(AppState::Game)),
+            )
+            // Spawning the car
+            .add_systems(OnExit(AppState::Game), despawn_cars);
     }
 }
