@@ -3,9 +3,6 @@ mod game;
 mod main_menu;
 mod systems;
 
-use game::car::car::*;
-use game::car::input::*;
-use game::car::physics::*;
 use game::GamePlugin;
 use main_menu::MainMenuPlugin;
 use systems::*;
@@ -20,7 +17,6 @@ fn main() {
         .add_plugins(GamePlugin)
         // Game Systems
         .insert_resource(ClearColor(Color::srgb(0.2, 0.2, 0.2)))
-        .init_resource::<CarInput>()
         .add_systems(Startup, setup)
         .add_systems(Update, (move_camera, exit_game))
         .run();

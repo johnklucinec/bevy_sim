@@ -7,9 +7,13 @@ use std::{
     process::{Child, ChildStdin},
 };
 
-#[derive(Event)]
 #[allow(dead_code)]
-pub struct PythonEvent(pub String);
+#[derive(Event, Clone, Debug)]
+pub struct CommandEvent {
+    pub command_type: CommandType,
+    pub value: Option<f32>,
+    pub string_value: String,
+}
 
 #[derive(Resource)]
 #[allow(dead_code)]

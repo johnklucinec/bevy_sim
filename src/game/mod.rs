@@ -5,6 +5,8 @@ pub mod python;
 mod systems;
 pub mod ui;
 
+use crate::game::car::input::*;
+
 use crate::game::biome::BiomePlugin;
 use crate::game::car::CarPlugin;
 use crate::game::systems::pause_simulation;
@@ -30,6 +32,7 @@ impl Plugin for GamePlugin {
         app
             // States
             .init_state::<SimulationState>()
+            .init_resource::<CarInput>()
             // On Enter Systems
             .add_systems(OnEnter(AppState::Game), resume_simulation)
             // Plugins
@@ -53,4 +56,3 @@ pub enum SimulationState {
     Paused,
     Running,
 }
-

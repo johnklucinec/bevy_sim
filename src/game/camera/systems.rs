@@ -1,11 +1,17 @@
 use super::components::{CarFollowCamera, SecondaryCamera, SecondaryCameraState, SecondaryWindow};
-use crate::game::car::car::Car;
-use crate::game::python::components::PythonComms;
-use crate::game::python::systems::{setup_io_threads, spawn_python_child};
-use crate::game::SimulationState;
-use bevy::prelude::*;
-use bevy::render::camera::{Exposure, PhysicalCameraParameters, RenderTarget, Viewport};
-use bevy::window::{WindowRef, WindowResolution};
+use crate::game::{
+    car::car::Car,
+    python::{
+        components::PythonComms,
+        systems::{setup_io_threads, spawn_python_child},
+    },
+    SimulationState,
+};
+use bevy::{
+    prelude::*,
+    render::camera::{Exposure, PhysicalCameraParameters, RenderTarget, Viewport},
+    window::{EnabledButtons, WindowRef, WindowResolution},
+};
 
 // Viewport configuration
 pub static VIEWPORT_POSITION: UVec2 = UVec2::new(0, 0);
@@ -17,6 +23,12 @@ pub fn spawn_secondary_camera(mut commands: Commands) {
             title: "Camera View".into(),
             resolution: WindowResolution::new(VIEWPORT_SIZE.x as f32, VIEWPORT_SIZE.y as f32),
             visible: false,
+            enabled_buttons: EnabledButtons {
+                minimize: false,
+                maximize: false,
+                close: false,
+            },
+            resizable: false,
             ..default()
         })
         .id();
@@ -158,5 +170,42 @@ pub fn kill_python_process(mut commands: Commands, comms: Option<ResMut<PythonCo
 pub fn cleanup_python_comms(mut commands: Commands, python_comms: Option<Res<PythonComms>>) {
     if python_comms.is_some() {
         commands.remove_resource::<PythonComms>();
+    }
+}
+
+#[allow(clippy::too_many_arguments)]
+pub fn cleanup_system(
+    mut commands: Commands,
+    exit_events: EventReader<AppExit>,
+    camera_query: Query<Entity, With<SecondaryCamera>>,
+    simulation_state: Res<State<SimulationState>>,
+    mut next_camera_state: ResMut<NextState<SecondaryCameraState>>,
+    mut windows: Query<&mut Window>,
+    second_window: Res<SecondaryWindow>,
+    python_comms: Option<ResMut<PythonComms>>,
+) {
+    if !exit_events.is_empty() {
+        // Kill Python process
+        if let Some(mut comms) = python_comms {
+            comms.child.kill().unwrap();
+            commands.remove_resource::<PythonComms>();
+        }
+
+        // Cleanup Python comms
+        commands.remove_resource::<PythonComms>();
+
+        // Despawn secondary camera
+        if *simulation_state.get() != SimulationState::Running {
+            // Check if camera window exists
+            let Ok(mut window) = windows.get_mut(second_window.0) else {
+                return;
+            };
+
+            if let Ok(camera_entity) = camera_query.get_single() {
+                next_camera_state.set(SecondaryCameraState::Hidden);
+                commands.entity(camera_entity).despawn_recursive();
+                window.visible = false;
+            }
+        }
     }
 }
