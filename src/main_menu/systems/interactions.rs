@@ -60,6 +60,7 @@ pub fn interact_with_quit_button(
 }
 
 // Used for when a button is disabled
+// Logs a message when a disabled button is pressed
 pub fn interact_with_disabled_button(
     mut button_query: Query<
         (&Interaction, &mut BackgroundColor),

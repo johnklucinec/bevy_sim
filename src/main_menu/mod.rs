@@ -30,7 +30,7 @@ impl Plugin for MainMenuPlugin {
                 (
                     interact_with_play_button,
                     interact_with_quit_button,
-                    interact_with_disabled_button,
+                    interact_with_disabled_button, // Used for testing/buttons with no functionality
                 ),
             )
             // OnExit State Systems
