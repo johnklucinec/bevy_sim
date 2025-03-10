@@ -127,8 +127,8 @@ pub fn despawn_secondary_camera(
     };
 
     if let Ok(camera_entity) = camera_query.get_single() {
-        commands.entity(camera_entity).despawn_recursive();
         next_camera_state.set(SecondaryCameraState::Hidden);
+        commands.entity(camera_entity).despawn_recursive();
         window.visible = false;
     }
 }
