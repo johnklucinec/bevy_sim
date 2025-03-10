@@ -33,7 +33,7 @@ impl Plugin for PauseMenuPlugin {
                     interact_with_main_menu_button,
                     interact_with_quit_button,
                     interact_with_hud_button,
-                    interact_with_disabled_button,
+                    interact_with_disabled_button, // Used for testing/buttons with no functionality
                 ),
             )
             // OnExit State Systems

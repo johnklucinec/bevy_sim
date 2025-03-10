@@ -22,8 +22,6 @@ class YOLODetector:
             verbose=False
         )
         
-        
-        
         for r in results:
             boxes = r.boxes.xyxy.cpu().numpy()
             classes = r.boxes.cls.cpu().numpy()
