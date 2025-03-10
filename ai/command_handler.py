@@ -78,7 +78,8 @@ class CommandHandler:
         Handle detection initialization
         """
 
-        return "Starting detection"
+        return "DETECT: We detected a traffic cone."
+        #return "DETECT: 10.1";
 
     def handle_reset(self, value: str | None = None) -> str:
         """
@@ -96,7 +97,7 @@ class CommandHandler:
             return "Speed value missing"
         try:
             speed = float(value)
-            return f"SPEED {speed}"
+            return f"SPEED: {speed}"
         except ValueError:
             return f"Invalid speed value: {value}"
 
@@ -106,12 +107,12 @@ class CommandHandler:
         """
 
         if not value:
-            return "Steer value missing"
+            return CommandType.STEER.value + ": Value missing"
         try:
             angle = float(value)
-            return f"STEER {angle}"
+            return CommandType.STEER.value + f": {angle}"
         except ValueError:
-            return f"Invalid STEER value: {value}"
+            return CommandType.STEER.value + f": Invalid STEER value: {value}"
 
         return f"The current speed is: {value}"
     

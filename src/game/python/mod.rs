@@ -4,7 +4,7 @@ pub mod systems;
 
 use bevy::prelude::*;
 use commands::queue_commands;
-use components::{CommandQueue, PythonComms};
+use components::{CommandEvent, CommandQueue, PythonComms};
 use systems::{handle_responses, process_command_queue};
 
 pub struct PythonPlugin;
@@ -13,7 +13,7 @@ impl Plugin for PythonPlugin {
     fn build(&self, app: &mut App) {
         app
             // Declare but don't initialize PythonComms here
-            .add_event::<components::PythonEvent>()
+            .add_event::<CommandEvent>()
             .init_resource::<CommandQueue>()
             // Add systems that only run when PythonComms exists
             .add_systems(

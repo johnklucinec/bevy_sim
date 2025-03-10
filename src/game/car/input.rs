@@ -1,6 +1,6 @@
-use bevy::prelude::*;
 use crate::game::python::commands::CommandType;
-use crate::game::python::components::{CommandMessage, CommandQueue};
+use crate::game::python::components::{CommandEvent, CommandMessage, CommandQueue};
+use bevy::prelude::*;
 
 #[derive(Resource, Default)]
 pub struct CarInput {
@@ -21,7 +21,7 @@ impl CarInput {
             // Create a longer-lived value by storing the lowercase string
             let lowercase_command = command.to_lowercase();
             let parts: Vec<&str> = lowercase_command.trim().split_whitespace().collect();
-            
+
             match parts.as_slice() {
                 ["speed", value_str] => {
                     if let Ok(value) = value_str.parse::<f32>() {
@@ -32,7 +32,7 @@ impl CarInput {
                     } else {
                         println!("Invalid speed value: {}", value_str);
                     }
-                },
+                }
                 ["steer", value_str] => {
                     if let Ok(mut value) = value_str.parse::<f32>() {
                         // limit to 30 degrees
@@ -41,7 +41,7 @@ impl CarInput {
                         } else if value < -30.0 {
                             value = -30.0;
                         }
-                        
+
                         self.steer_angle = value;
                         // Clear direct control inputs since we're using continuous values
                         self.turn_left = false;
@@ -49,7 +49,7 @@ impl CarInput {
                     } else {
                         println!("Invalid turn angle value: {}", value_str);
                     }
-                },
+                }
                 _ => {
                     // Reset all inputs if command is not recognized
                     // But keep continuous values
@@ -89,5 +89,28 @@ pub fn car_commands(mut commands: ResMut<CommandQueue>, input: Res<ButtonInput<K
 
     if input.just_pressed(KeyCode::Digit6) {
         commands.enqueue(CommandMessage::new(CommandType::Steer, "0"));
+    }
+}
+
+pub fn handle_car_commands(mut event_reader: EventReader<CommandEvent>) {
+    for event in event_reader.read() {
+        match (&event.command_type, event.value) {
+            //Process STEER Commands
+            (CommandType::Steer, value) => match value {
+                // TODO: Set the car steering angle
+                Some(num) => println!("Steering updated to: {}", num),
+                None => println!("Error: {}", event.string_value),
+            },
+
+            //Process SPEED Commands
+            (CommandType::Speed, value) => match value {
+                // TODO: Set the car SPEED
+                Some(num) => println!("Car speed updated to: {}", num),
+                None => println!("Error: {}", event.string_value),
+            },
+
+            // Ignore other commands
+            _ => (),
+        }
     }
 }

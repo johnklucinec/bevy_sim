@@ -1,11 +1,13 @@
 use super::components::{CommandQueue, PythonComms};
-use crate::game::python::components;
+use crate::game::python::{commands::CommandType, components::CommandEvent};
 
-use crate::CarInput;
+//use crate::CarInput;
 use bevy::prelude::*;
 use crossbeam_channel::Sender;
 use std::{
-    io::{BufRead, BufReader, Write}, process::{Child, ChildStdin, ChildStdout, Command, Stdio}, thread
+    io::{BufRead, BufReader, Write},
+    process::{Child, ChildStdin, ChildStdout, Command, Stdio},
+    thread,
 };
 
 // Calls the python script and stores the child process, stdin, and stdout
@@ -47,12 +49,12 @@ pub fn process_command_queue(mut comms: ResMut<PythonComms>, mut commands: ResMu
     while let Some(cmd) = commands.dequeue() {
         // Format the command as a string and send it to Python
         let cmd_str = cmd.to_string();
-        
+
         // Send to Python via stdin
         if let Err(e) = writeln!(comms.stdin, "{}", cmd_str) {
             eprintln!("Failed to write to Python stdin: {}", e);
         }
-        
+
         // Flush to ensure command is sent immediately
         if let Err(e) = comms.stdin.flush() {
             eprintln!("Failed to flush Python stdin: {}", e);
@@ -60,37 +62,38 @@ pub fn process_command_queue(mut comms: ResMut<PythonComms>, mut commands: ResMu
     }
 }
 
-// This reads everything sent from the python terminal
-pub fn handle_responses(
-    comms: Res<PythonComms>, 
-    mut events: EventWriter<components::PythonEvent>,
-    mut car_input: ResMut<CarInput>
-) {
+pub fn handle_responses(comms: Res<PythonComms>, mut command_events: EventWriter<CommandEvent>) {
     // Process all available messages without blocking
     for msg in comms.rx.try_iter() {
         println!("Python output received: '{}'", msg);
 
-        // Check for car control commands
-        let parts: Vec<&str> = msg.trim().split_whitespace().collect();
-        // debugging print
-        println!("Command parts: {:?}", parts);
-        
-        match parts.as_slice() {
-            ["STEER", value_str] => {
-                // Pass the entire command to be parsed in CarInput
-                car_input.text_command = Some(format!("steer {}", value_str));
-                println!("Bevy output: STEER {} command processed successfully", value_str);
-            },
-            ["SPEED", value_str] => {
-                // Pass the entire command to be parsed in CarInput
-                car_input.text_command = Some(format!("speed {}", value_str));
-                println!("Bevy output: SPEED {} command processed successfully", value_str);
-            },
-            _ => {
-                println!("Bevy output: Unrecognized command format: {:?}", parts);
+        // Extract the first word (potential command)
+        if let Some(first_word) = msg.split_whitespace().next() {
+            // Remove any colon if present (e.g., "DETECT:")
+            let command_str = first_word.trim_end_matches(':');
+
+            // Try to parse the command type
+            if let Ok(cmd_type) = command_str.parse::<CommandType>() {
+                // Get everything after the command as the value/message
+                let value_str = msg[command_str.len()..].trim_start_matches(':').trim();
+
+                // Try to parse as float if it looks like a number
+                let value = value_str.parse::<f32>().ok();
+
+                // Create and send the structured command event
+                command_events.send(CommandEvent {
+                    command_type: cmd_type,
+                    value,
+                    string_value: value_str.to_string(),
+                });
+
+                // For Debugging
+                // println!(
+                //     "Bevy output: {:?} command processed with value: {:?}",
+                //     cmd_type, value
+                // );
             }
+            // If not a recognized command, do nothing (no error message)
         }
-        // Send the message as an event for any other systems that might need it
-        events.send(components::PythonEvent(msg));
     }
 }
