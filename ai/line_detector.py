@@ -114,6 +114,7 @@ class LineDetector:
 		return line_image
 
 	def process_frame(self, frame):
+		center_x = None
 		canny_image = self.canny(frame)
 		cropped_image = self.region_of_interest(canny_image)
 		
