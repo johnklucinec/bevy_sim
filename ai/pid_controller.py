@@ -23,7 +23,7 @@ class PIDController:
     def update(self, measure_value, dt=1.0):
         
         #error
-        error = self.setpoint - measure_value
+        error = measure_value - self.setpoint
         
         #proportional term
         p_out = self.kp * error
