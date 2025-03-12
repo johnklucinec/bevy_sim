@@ -1,5 +1,4 @@
 // physics.rs - Handles car movement and physics systems
-
 use super::car::{Car, GearMode};
 use super::input::CarInput;
 use bevy::prelude::*;
@@ -39,14 +38,10 @@ pub fn move_car(
         if car_input.speed_value != 0.0 {
             // Convert throttle_value to a speed value between min and max speed
             let target_speed = match car.gear_mode {
-                GearMode::Forward => {
-                    (car_input.speed_value / 100.0) * car.max_speed
-                }
-                GearMode::Reverse => {
-                    -(car_input.speed_value / 100.0) * car.max_reverse_speed.abs()
-                }
+                GearMode::Forward => (car_input.speed_value / 100.0) * car.max_speed,
+                GearMode::Reverse => -(car_input.speed_value / 100.0) * car.max_reverse_speed.abs(),
             };
-            
+
             // Gradually adjust current speed toward target speed
             if car.current_speed < target_speed {
                 car.current_speed += car.acceleration * delta;
@@ -79,7 +74,8 @@ pub fn move_car(
             if car_input.brake {
                 // Progressive braking mechanics
                 car.brake_press_duration += delta;
-                car.brake_press_duration = car.brake_press_duration.min(car.max_brake_press_duration);
+                car.brake_press_duration =
+                    car.brake_press_duration.min(car.max_brake_press_duration);
 
                 // Calculate dynamic braking force based on press duration
                 let brake_intensity = car.brake_press_duration / car.max_brake_press_duration;
@@ -119,7 +115,7 @@ pub fn move_car(
             // Convert turn_angle to a steering angle in radians
             // turn_angle is in degrees and positive is right, negative is left
             let mut target_steering = -(car_input.steer_angle / 30.0) * car.max_steering_angle;
-            
+
             if target_steering > 30.0 {
                 target_steering = 30.0;
             }
@@ -163,19 +159,20 @@ pub fn move_car(
         // Apply movement based on Ackermann steering model - UPDATED
         if car.current_speed.abs() > 0.1 {
             let speed = car.current_speed * delta;
-            
+
             if car.steering_angle.abs() > 0.001 {
                 // Angular velocity is speed divided by turning radius
                 let angular_velocity = speed / turning_radius;
-                
+
                 // Rotation direction based on steering angle
                 let rotation_direction = car.steering_angle.signum();
-                
+
                 // Apply rotation, reverse direction when going backwards
-                let rotation_amount = angular_velocity * rotation_direction * car.current_speed.signum();
+                let rotation_amount =
+                    angular_velocity * rotation_direction * car.current_speed.signum();
                 transform.rotate_y(rotation_amount);
             }
-            
+
             // Move along the current forward vector
             transform.translation += forward * speed;
         }
@@ -193,6 +190,8 @@ pub fn reset_car(mut car_query: Query<(&mut Car, &mut Transform), With<Car>>) {
             // Reset car to original spawn point (0, 0.5, 0)
             transform.translation = Vec3::new(0.0, 0.5, 0.0);
             transform.rotation = Quat::IDENTITY;
+            //To reset angle when PID is sent
+            car.steering_angle = 0.0;
 
             // Reset car's speed and other properties
             car.current_speed = 0.0;
