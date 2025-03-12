@@ -1,3 +1,4 @@
+/// Author: John Klucinec (@johnklucinec)
 use bevy::{
     prelude::*,
     render::camera::{Exposure, PhysicalCameraParameters},

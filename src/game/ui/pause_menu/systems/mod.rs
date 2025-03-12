@@ -1,3 +1,3 @@
+/// Author: John Klucinec (@johnklucinec)
 pub mod interactions;
 pub mod layout;
-pub mod updates;

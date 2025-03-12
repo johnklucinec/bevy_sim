@@ -1,3 +1,4 @@
+# Author: John Klucinec (@johnklucinec)
 import cv2 as cv
 import numpy as np
 import warnings
@@ -139,12 +140,6 @@ class LineDetector:
 			cv.putText(line_image, f'X_VALUE: {center_x:.1f}', (10, 100),
 					cv.FONT_HERSHEY_SIMPLEX, 0.7, (0,255,0), 2)
 
-			# The goal is to always have the car be at center_x = ~250 (the center)
-			# It wont ever be perfect, so maybe have the center be like 247-253
-
-			# For the x values take the last 5-10 (more = less jitter)
-			# good luck with PID equation
-		
 		#return self.display_lines(frame, lines)
 		return line_image, center_x
 	

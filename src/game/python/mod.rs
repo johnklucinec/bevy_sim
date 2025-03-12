@@ -1,3 +1,4 @@
+/// Author: John Klucinec (@johnklucinec)
 pub mod commands;
 pub mod components;
 pub mod systems;

@@ -1,3 +1,4 @@
+/// Author: John Klucinec (@johnklucinec)
 mod components;
 mod systems;
 

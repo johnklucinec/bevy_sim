@@ -1,3 +1,4 @@
+/// Author: John Klucinec (@johnklucinec)
 use bevy::prelude::*;
 
 pub const BACKGROUND_COLOR: Color = Color::srgb(0.13, 0.13, 0.13);

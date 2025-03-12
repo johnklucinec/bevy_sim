@@ -1,3 +1,4 @@
+/// Author: John Klucinec (@johnklucinec)
 mod biome;
 mod camera;
 pub mod car;
