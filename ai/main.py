@@ -4,13 +4,14 @@ import os
 from windowcapture import WindowCapture
 from line_detector import LineDetector
 from yolo_detector import YOLODetector
-from command_handler import CommandHandler
+from command_handler import CommandHandler, CommandType
 from pid_controller import PIDController
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-# Initialize components
+# Initialize the window capture object
 wincap = WindowCapture('Camera View')
+
 line_detector = LineDetector()
 yolo_detector = YOLODetector()
 
@@ -31,13 +32,23 @@ def normal_display(wincap, yolo_detector, line_detector):
     Main display loop.
     """
     command_handler = CommandHandler()
+
+    # kp (Proportional gain)- Higher kp system will respond more aggressively to error
+    # ki (Integral gain) – Addresses accumulated error over time
+    # kd (Derivative gain) – Reacts to the rate of change of the error
+    
+    pid = PIDController(kp = 0.2, ki = 0.0, kd = 0.1, setpoint = 250.0)
     loop_time = time()
-
-    pid = PIDController(kp = 0.5, ki = 0.0, kd = 0.05, setpoint = 250.0)
-
+    last_time = time()
     try:
         while True:
             screenshot = wincap.get_screenshot()
+            
+            #Get time since last loop
+            current_time = time()
+            dt = current_time - last_time
+            last_time = current_time
+            
 
             # Process frame with both detectors
             yolo_frame = yolo_detector.process_frame(screenshot.copy())
@@ -49,8 +60,13 @@ def normal_display(wincap, yolo_detector, line_detector):
             
             #if valid center_x compute PID
             if center_x is not None:
-                steering_signal = pid.update(center_x)
-                cv.putText(final_frame, f'Steer: {steering_signal:.2f}', (10, 60),
+                raw_pid = pid.update(center_x, dt)
+                scaling_factor = 0.02  # Experiment: try lowering from 0.05 or 0.03
+                scaled_steering = raw_pid * scaling_factor
+                #Send steering signal to command handler
+                val = command_handler._execute_handler(CommandType.STEER, str(scaled_steering))
+                print(val)
+                cv.putText(final_frame, f'Steer: {scaled_steering:.2f}', (10, 60),
                           cv.FONT_HERSHEY_SIMPLEX, 0.7, (0,255,0), 2)
 
             # Display FPS and show result
@@ -83,27 +99,6 @@ def debug_display():    # NEED TO ADD COMMAND HANDLER
         if cv.waitKey(1) == ord('q'):
             cv.destroyAllWindows()
             break
-
-
-# def handle_reset_car(self, value: str | None = None) -> str:
-#         """Reset the car to a default safe position, e.g., start line."""
-#         # might have to change position, but added this to make it easy to reset, maybe can
-#         # change it so it will use this when it reaches a certain distance or time.
-#         self.car_position = (0.0, 0.0)
-#         self.current_speed = 0.0
-#         return "Car position and speed have been reset."
-    
-    
-# def handle_out_of_bounds(self, value: str | None = None) -> str:
-
-#         # handle car going out of bounds.
-#         # - Stop the car
-#         # - Reset car position
-#         # - Decrement a reward metric
-        
-#         self.current_speed = 0.0
-#         self.car_position = (0.0, 0.0)
-#         return "Car went out of bounds! Resetting position and stopping."
 
 
 # Uncomment the function you want to use

@@ -65,7 +65,7 @@ pub fn spawn_car(
                 base_color: Color::srgba(1.0, 0.5, 0.2, 1.0),
                 ..Default::default()
             })),
-            Transform::from_xyz(0.0, 0.5, 0.0),
+            Transform::from_xyz(1.5, 0.5, 0.0),
         ))
         .id();
 
