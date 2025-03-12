@@ -1,3 +1,4 @@
+/// Author: John Klucinec (@johnklucinec)
 use super::components::{CommandQueue, PythonComms};
 use crate::game::python::{commands::CommandType, components::CommandEvent};
 

@@ -1,3 +1,5 @@
+/// Author: John Klucinec (@johnklucinec)
+
 #[allow(unused_imports)]
 use crate::game::ui::pause_menu::components::*;
 use crate::game::ui::pause_menu::styles::*;

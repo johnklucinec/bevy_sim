@@ -1,3 +1,6 @@
+# Author: John Klucinec (@johnklucinec)
+# Modified by: Brant and Ramiro
+
 import sys
 import re
 from threading import Thread, Lock
