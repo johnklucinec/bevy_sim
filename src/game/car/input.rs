@@ -92,24 +92,22 @@ pub fn car_commands(mut commands: ResMut<CommandQueue>, input: Res<ButtonInput<K
     }
 }
 
-pub fn handle_car_commands(mut event_reader: EventReader<CommandEvent>) {
+pub fn handle_car_commands(
+    mut event_reader: EventReader<CommandEvent>,
+    mut car_input: ResMut<CarInput>,
+) {
     for event in event_reader.read() {
         match (&event.command_type, event.value) {
-            //Process STEER Commands
-            (CommandType::Steer, value) => match value {
-                // TODO: Set the car steering angle
-                Some(num) => println!("Steering updated to: {}", num),
-                None => println!("Error: {}", event.string_value),
-            },
+            (CommandType::Steer, Some(num)) => {
+                car_input.steer_angle = num;
+                //println!("Steering updated to: {}", num);
+            }
 
-            //Process SPEED Commands
-            (CommandType::Speed, value) => match value {
-                // TODO: Set the car SPEED
-                Some(num) => println!("Car speed updated to: {}", num),
-                None => println!("Error: {}", event.string_value),
-            },
-
-            // Ignore other commands
+            (CommandType::Speed, Some(num)) => {
+                car_input.speed_value = num;
+                //println!("Car speed updated to: {}", num);
+            }
+            // Ignore other commands or missing values
             _ => (),
         }
     }
