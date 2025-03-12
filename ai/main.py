@@ -32,18 +32,23 @@ def normal_display(wincap, yolo_detector, line_detector):
     Main display loop.
     """
     command_handler = CommandHandler()
-    loop_time = time()
 
     # kp (Proportional gain)- Higher kp system will respond more aggressively to error
     # ki (Integral gain) – Addresses accumulated error over time
     # kd (Derivative gain) – Reacts to the rate of change of the error
     
-    pid = PIDController(kp = 3.0, ki = 0.0, kd = 0.1, setpoint = 250.0)
+    pid = PIDController(kp = 0.2, ki = 0.0, kd = 0.1, setpoint = 250.0)
     loop_time = time()
-
+    last_time = time()
     try:
         while True:
             screenshot = wincap.get_screenshot()
+            
+            #Get time since last loop
+            current_time = time()
+            dt = current_time - last_time
+            last_time = current_time
+            
 
             # Process frame with both detectors
             yolo_frame = yolo_detector.process_frame(screenshot.copy())
@@ -55,14 +60,13 @@ def normal_display(wincap, yolo_detector, line_detector):
             
             #if valid center_x compute PID
             if center_x is not None:
-                steering_signal = pid.update(center_x)
-                print(f"Steering signal: {steering_signal}")
+                raw_pid = pid.update(center_x, dt)
+                scaling_factor = 0.02  # Experiment: try lowering from 0.05 or 0.03
+                scaled_steering = raw_pid * scaling_factor
                 #Send steering signal to command handler
-                command_handler._execute_handler(CommandType.STEER, str(steering_signal))
-                #Slowl speed for testing
-                command_handler._execute_handler(CommandType.SPEED, "1.0")
-                
-                cv.putText(final_frame, f'Steer: {steering_signal:.2f}', (10, 60),
+                val = command_handler._execute_handler(CommandType.STEER, str(scaled_steering))
+                print(val)
+                cv.putText(final_frame, f'Steer: {scaled_steering:.2f}', (10, 60),
                           cv.FONT_HERSHEY_SIMPLEX, 0.7, (0,255,0), 2)
 
             # Display FPS and show result

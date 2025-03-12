@@ -105,7 +105,6 @@ class CommandHandler:
         """
         Handle steer commands
         """
-
         if not value:
             return CommandType.STEER.value + ": Value missing"
         try:
