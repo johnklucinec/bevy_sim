@@ -37,20 +37,18 @@ def normal_display(wincap, yolo_detector, line_detector):
     # ki (Integral gain) – Addresses accumulated error over time
     # kd (Derivative gain) – Reacts to the rate of change of the error
     
-    pid = PIDController(kp = 0.25, ki = 0.01, kd = 0.15, setpoint = 250.0)
-    steady_speed = 40
+    pid = PIDController(kp = 0.25, ki = 0.01, kd = 0.25, setpoint = 250.0)
+    steady_speed = 100
     loop_time = time()
-    last_time = time()
+   
     try:
+        #Send speed signal to command handler
+        speed_val = command_handler._execute_handler(CommandType.SPEED, str(steady_speed))
+        print(speed_val)
+        
         while True:
             screenshot = wincap.get_screenshot()
             
-            #Get time since last loop
-            current_time = time()
-            dt = current_time - last_time
-            last_time = current_time
-            
-
             # Process frame with both detectors
             yolo_frame = yolo_detector.process_frame(screenshot.copy())
 
@@ -61,18 +59,17 @@ def normal_display(wincap, yolo_detector, line_detector):
             
             #if valid center_x compute PID
             if center_x is not None:
-                raw_pid = pid.update(center_x, dt)
-                scaling_factor = 0.03 
+                raw_pid = pid.update(center_x)
+                scaling_factor = 0.02
                 scaled_steering = raw_pid * scaling_factor
+                
                 #Send steering signal to command handler
                 val = command_handler._execute_handler(CommandType.STEER, str(scaled_steering))
                 print(val)
+                         
                 cv.putText(final_frame, f'Steer: {scaled_steering:.2f}', (10, 60),
                           cv.FONT_HERSHEY_SIMPLEX, 0.7, (0,255,0), 2)
                 
-                #Send speed signal to command handler
-                speed_val = command_handler._execute_handler(CommandType.SPEED, str(steady_speed))
-                print(speed_val)
             # Display FPS and show result
             loop_time = display_fps(final_frame, loop_time)
             cv.imshow('Computer Vision', final_frame)
