@@ -1,7 +1,7 @@
 
 class PIDController:
 
-    def __init__(self, kp=1.0, ki=0.0, kd=0.0, setpoint=250.0):
+    def __init__(self, kp=1.0, ki=0.0, kd=0.0, setpoint=250.0, buffer_size=5):
             
             # kp = Proportional gain
             # ki = Integral gain
@@ -16,11 +16,21 @@ class PIDController:
             # PID state
             self._intergral = 0.0
             self._prev_error = 0.0
+            
+            #buffer for output
+            self.output_buffer = []
+            self.buffer_size = buffer_size
+            
+    
+    def reset(self):
+        self._integral = 0.0
+        self._prev_error = 0.0
+        self.output_buffer = []
     
     #calculates the pid output using measured value and returns control signal
     # measured_value = current center_x value
     # dt = time step since last update
-    def update(self, measure_value, dt=1.0):
+    def update(self, measure_value, dt=0.016):
         
         #error
         error = measure_value - self.setpoint
@@ -40,7 +50,13 @@ class PIDController:
         
         self._prev_error = error
         
-        return control_signal
+        self.output_buffer.append(control_signal)
+        if len(self.output_buffer) > self.buffer_size:
+            self.output_buffer.pop(0)
+        
+        avg_pid = sum(self.output_buffer) / len(self.output_buffer)
+               
+        return avg_pid
         
         
         
