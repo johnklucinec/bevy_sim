@@ -3,6 +3,7 @@
 
 import sys
 import re
+import pid_controller as pid
 from threading import Thread, Lock
 from queue import Queue
 from enum import Enum
@@ -38,6 +39,8 @@ class CommandType(Enum):
     RESET = "RESET"
     SPEED = "SPEED"
     STEER = "STEER"
+    PID_RESET = "PID_RESET"
+
 
 
 class CommandHandler:
@@ -66,6 +69,7 @@ class CommandHandler:
         """
 
         self.command_map = {
+            CommandType.PID_RESET: self.handle_pid_reset,
             CommandType.DETECT: self.handle_detect,
             CommandType.RESET: self.handle_reset,
             CommandType.SPEED: self.handle_speed,
@@ -75,6 +79,15 @@ class CommandHandler:
     # --------------------------------------------------
     # Command-specific Handlers
     # --------------------------------------------------
+
+    
+    
+    def handle_pid_reset(self, value: str | None = None) -> str:
+        
+        """Resets values for PID when car resets"""
+        
+        pid.reset()
+        return "RESET: PID controller state cleared"
 
     def handle_detect(self, value: str | None = None) -> str:
         """

@@ -26,7 +26,7 @@ pub fn spawn_single_road(
 
     let angle = dx.atan2(dz);
 
-    let road_width = 5.0;
+    let road_width = 10.0;
     let road_thickness = 0.1;
 
     let parent_id = commands
