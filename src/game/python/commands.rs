@@ -9,6 +9,7 @@ pub enum CommandType {
     Reset,
     Steer,
     Speed,
+    Pidreset,
 }
 
 // Implementation of the commands
@@ -19,6 +20,7 @@ impl CommandType {
             CommandType::Reset => "RESET",
             CommandType::Steer => "STEER",
             CommandType::Speed => "SPEED",
+            CommandType::Pidreset => "PID_RESET",
         }
     }
 }
@@ -32,6 +34,7 @@ impl FromStr for CommandType {
             "RESET" => Ok(CommandType::Reset),
             "STEER" => Ok(CommandType::Steer),
             "SPEED" => Ok(CommandType::Speed),
+            "RESET_PID" => Ok(CommandType::Pidreset),
             _ => Err(format!("Unknown command: {}", s)),
         }
     }
