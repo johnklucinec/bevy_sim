@@ -14,6 +14,7 @@ use std::{
 // This allows us to read and send commands
 pub fn spawn_python_child() -> (Child, ChildStdin, ChildStdout) {
     let mut cmd = Command::new("python")
+        .arg("-u")
         .arg("./ai/main.py")
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
