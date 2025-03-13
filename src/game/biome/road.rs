@@ -90,31 +90,31 @@ pub fn spawn_single_road(
     //goes from distance x to distance -x
     let total_road_length = distance * 2.0;
 
-    let cone_handle: Handle<Scene> = asset_server.load("3dmodels/traffic_cone/scene.gltf#Scene0");
+    let stop_sign_handle: Handle<Scene> =
+        asset_server.load("3dmodels/stop_sign/stop_sign/scene.gltf#Scene0");
 
-    let cone_spacing = 1.0;
-    let mut num_cones = (total_road_length / cone_spacing).floor() as i32;
+    let sign_spacing = 1.0;
+    let mut num_signs = (total_road_length / sign_spacing).floor() as i32;
 
     let left_edge_z = -road_width * 0.5 - 0.3;
     let right_edge_z = road_width * 0.5 + 0.3;
 
-    if num_cones < 1 {
-        num_cones = 1;
+    if num_signs < 1 {
+        num_signs = 1;
     }
 
-    //Traffic cone spawning
-
+    //stop sign placement
     commands.entity(parent_id).with_children(|parent| {
-        for i in 0..=num_cones {
-            let fraction = i as f32 / num_cones as f32;
+        for i in 0..=num_signs {
+            let fraction = i as f32 / num_signs as f32;
             let local_x = -distance + fraction * (6.0 * distance);
 
             //left edge
             parent.spawn((
-                SceneRoot(cone_handle.clone()),
+                SceneRoot(stop_sign_handle.clone()),
                 Transform {
-                    translation: Vec3::new(local_x, road_thickness + 0.4, left_edge_z),
-                    rotation: Quat::IDENTITY,
+                    translation: Vec3::new(local_x, road_thickness + -0.4, left_edge_z),
+                    rotation: Quat::from_rotation_y(angle),
                     scale: Vec3::splat(0.5),
                 },
                 GlobalTransform::default(),
@@ -123,10 +123,10 @@ pub fn spawn_single_road(
 
             //right edge
             parent.spawn((
-                SceneRoot(cone_handle.clone()),
+                SceneRoot(stop_sign_handle.clone()),
                 Transform {
-                    translation: Vec3::new(local_x, road_thickness + 0.4, right_edge_z),
-                    rotation: Quat::IDENTITY,
+                    translation: Vec3::new(local_x, road_thickness + -0.4, right_edge_z),
+                    rotation: Quat::from_rotation_y(angle),
                     scale: Vec3::splat(0.5),
                 },
                 GlobalTransform::default(),
@@ -175,36 +175,6 @@ pub fn spawn_single_road(
                 ..Default::default()
             },
         ));
-
-        // // WHITE SIDE LINES
-        // let line_width = 0.15;
-        // let side_offset = (road_width / 2.0) - (line_width / 1.80);
-
-        // // Left line
-        // parent.spawn((
-        //     Mesh3d(meshes.add(Mesh::from(Cuboid::new(distance, 0.05, line_width)))),
-        //     MeshMaterial3d(materials.add(StandardMaterial {
-        //         base_color: Color::WHITE,
-        //         ..Default::default()
-        //     })),
-        //     Transform {
-        //         translation: Vec3::new(0.0, 0.051, -side_offset),
-        //         ..Default::default()
-        //     },
-        // ));
-
-        // // Right line
-        // parent.spawn((
-        //     Mesh3d(meshes.add(Mesh::from(Cuboid::new(distance, 0.05, line_width)))),
-        //     MeshMaterial3d(materials.add(StandardMaterial {
-        //         base_color: Color::WHITE,
-        //         ..Default::default()
-        //     })),
-        //     Transform {
-        //         translation: Vec3::new(0.0, 0.051, side_offset),
-        //         ..Default::default()
-        //     },
-        // ));
     });
 }
 
@@ -471,7 +441,6 @@ fn spawn_road_segment(
     let dash_width = 0.15;
     let dash_total = dash_length + dash_space;
 
-    //maybe change .floor and take it off
     let dash_count = (length / dash_total) as usize;
 
     for i in 0..dash_count {

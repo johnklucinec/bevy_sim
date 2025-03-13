@@ -188,11 +188,9 @@ pub fn reset_car(mut car_query: Query<(&mut Car, &mut Transform), With<Car>>) {
         // Check if car is outside the road's width
         if transform.translation.x.abs() > road_half_width {
             // Reset car to original spawn point (0, 0.5, 0)
-            transform.translation = Vec3::new(0.0, 0.5, 0.0);
+            transform.translation = Vec3::new(1.5, 0.5, 0.0);
             transform.rotation = Quat::IDENTITY;
-            //To reset angle when PID is sent
-            car.steering_angle = 0.0;
-
+            
             // Reset car's speed and other properties
             car.current_speed = 0.0;
             car.gear_mode = GearMode::Forward;
