@@ -1,11 +1,11 @@
 Model Information:
-* title:	Traffic Cone
-* source:	https://sketchfab.com/3d-models/traffic-cone-66b282e65d3b4da8a883ae8579bfb33c
-* author:	Jamie McFarlane (https://sketchfab.com/jamiemcfarlane)
+* title:	Stop-sign-ts
+* source:	https://sketchfab.com/3d-models/stop-sign-ts-a3963ab8133b45cab4e60da94d255ac3
+* author:	Sardaukar (https://sketchfab.com/C.Paradise)
 
 Model License:
 * license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
 * requirements:	Author must be credited. Commercial use is allowed.
 
 If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
-This work is based on "Traffic Cone" (https://sketchfab.com/3d-models/traffic-cone-66b282e65d3b4da8a883ae8579bfb33c) by Jamie McFarlane (https://sketchfab.com/jamiemcfarlane) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+This work is based on "Stop-sign-ts" (https://sketchfab.com/3d-models/stop-sign-ts-a3963ab8133b45cab4e60da94d255ac3) by Sardaukar (https://sketchfab.com/C.Paradise) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
