@@ -1,6 +1,8 @@
 // physics.rs - Handles car movement and physics systems
 use super::car::{Car, GearMode};
 use super::input::CarInput;
+use crate::game::python::commands::CommandType;
+use crate::game::python::components::{CommandMessage, CommandQueue};
 use bevy::prelude::*;
 //use crate::game::road::Road;
 
@@ -180,17 +182,22 @@ pub fn move_car(
 }
 
 // New system to detect wall collisions and reset car
-pub fn reset_car(mut car_query: Query<(&mut Car, &mut Transform), With<Car>>) {
+pub fn reset_car(
+    mut car_query: Query<(&mut Car, &mut Transform), With<Car>>,
+    mut commands: ResMut<CommandQueue>,
+) {
     if let Ok((mut car, mut transform)) = car_query.get_single_mut() {
-        let road_width = 4.0; // Match the road_width from road.rs
+        let road_width = 9.0; // Match the road_width from road.rs
         let road_half_width = road_width / 2.0;
 
         // Check if car is outside the road's width
         if transform.translation.x.abs() > road_half_width {
             // Reset car to original spawn point (0, 0.5, 0)
-            transform.translation = Vec3::new(1.5, 0.5, 0.0);
+            transform.translation = Vec3::new(3.0, 0.5, 0.0);
             transform.rotation = Quat::IDENTITY;
-            
+
+            commands.enqueue(CommandMessage::new(CommandType::Steer, "0"));
+            commands.enqueue(CommandMessage::new(CommandType::Pidreset, "0"));
             // Reset car's speed and other properties
             car.current_speed = 0.0;
             car.gear_mode = GearMode::Forward;
