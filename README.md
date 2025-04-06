@@ -104,38 +104,41 @@ The simulation uses the Bevy game engine to create the physics and environment, 
 
 ## Contributors
 
+## Contributors
+
 <table>
 <tr>
 <td align="center">
 <a href="https://github.com/johnklucinec">
-<img src="https://via.placeholder.com/100" alt="John Klucinec"><br>
+<img src="https://avatars.githubusercontent.com/u/72411904?v=4" width="150" alt="John Klucinec"><br>
 <sub><b>John Klucinec</b></sub>
 </a><br>
 <sub>Game States, UI, Interprocess Communication, Image Recognition</sub>
 </td>
 <td align="center">
 <a href="https://github.com/brantcass">
-<img src="https://via.placeholder.com/100" alt="Brant Cass"><br>
+<img src="https://avatars.githubusercontent.com/u/94635676?v=4" width="150" alt="Brant Cass"><br>
 <sub><b>Brant Cass</b></sub>
 </a><br>
 <sub>World Generation, PID Controls</sub>
 </td>
 <td align="center">
 <a href="https://github.com/Roxamir">
-<img src="https://via.placeholder.com/100" alt="Ramiro Covarrubias"><br>
+<img src="https://avatars.githubusercontent.com/u/101136913?s=64&v=4" width="150" alt="Ramiro Covarrubias"><br>
 <sub><b>Ramiro Covarrubias</b></sub>
 </a><br>
 <sub>Car Physics, Car Model, PID Controls</sub>
 </td>
 <td align="center">
 <a href="https://github.com/acolli33">
-<img src="https://via.placeholder.com/100" alt="Alex Collins"><br>
+<img src="https://avatars.githubusercontent.com/u/100557101?s=64&v=4" width="150" alt="Alex Collins"><br>
 <sub><b>Alex Collins</b></sub>
 </a><br>
 <sub>Initial Planning, Documentation</sub>
 </td>
 </tr>
 </table>
+
 
 ## License
 
