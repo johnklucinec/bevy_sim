@@ -106,38 +106,12 @@ The simulation uses the Bevy game engine to create the physics and environment, 
 
 ## Contributors
 
-<table>
-<tr>
-<td align="center">
-<a href="https://github.com/johnklucinec">
-<img src="https://avatars.githubusercontent.com/u/72411904?v=4" width="150" alt="John Klucinec"><br>
-<sub><b>John Klucinec</b></sub>
-</a><br>
-<sub>Game States, UI, Interprocess Communication, Image Recognition</sub>
-</td>
-<td align="center">
-<a href="https://github.com/brantcass">
-<img src="https://avatars.githubusercontent.com/u/94635676?v=4" width="150" alt="Brant Cass"><br>
-<sub><b>Brant Cass</b></sub>
-</a><br>
-<sub>World Generation, PID Controls</sub>
-</td>
-<td align="center">
-<a href="https://github.com/Roxamir">
-<img src="https://avatars.githubusercontent.com/u/101136913?s=64&v=4" width="150" alt="Ramiro Covarrubias"><br>
-<sub><b>Ramiro Covarrubias</b></sub>
-</a><br>
-<sub>Car Physics, Car Model, PID Controls</sub>
-</td>
-<td align="center">
-<a href="https://github.com/acolli33">
-<img src="https://avatars.githubusercontent.com/u/100557101?s=64&v=4" width="150" alt="Alex Collins"><br>
-<sub><b>Alex Collins</b></sub>
-</a><br>
-<sub>Initial Planning, Documentation</sub>
-</td>
-</tr>
-</table>
+## Contributors
+
+| [<img src="https://avatars.githubusercontent.com/u/72411904?v=4" width="100" alt="John Klucinec">](https://github.com/johnklucinec) | [<img src="https://avatars.githubusercontent.com/u/94635676?v=4" width="100" alt="Brant Cass">](https://github.com/brantcass) | [<img src="https://avatars.githubusercontent.com/u/101136913?s=64&v=4" width="100" alt="Ramiro Covarrubias">](https://github.com/Roxamir) | [<img src="https://avatars.githubusercontent.com/u/100557101?s=64&v=4" width="100" alt="Alex Collins">](https://github.com/acolli33) |
+|------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------|
+| **[John Klucinec](https://github.com/johnklucinec)**<br>Game States • UI • IPC • Image Recognition                                  | **[Brant Cass](https://github.com/brantcass)**<br>World Generation • PID Controls                                           | **[Ramiro Covarrubias](https://github.com/Roxamir)**<br>Car Physics • PID Controls                                                      | **[Alex Collins](https://github.com/acolli33)**<br>Initial Planning • Documentation                                                  |
+
 
 
 ## License
