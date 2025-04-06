@@ -108,28 +108,28 @@ The simulation uses the Bevy game engine to create the physics and environment, 
 <tr>
 <td align="center">
 <a href="https://github.com/johnklucinec">
-<img><br>
+<img src="https://via.placeholder.com/100" alt="John Klucinec"><br>
 <sub><b>John Klucinec</b></sub>
 </a><br>
 <sub>Game States, UI, Interprocess Communication, Image Recognition</sub>
 </td>
 <td align="center">
 <a href="https://github.com/brantcass">
-<img><br>
+<img src="https://via.placeholder.com/100" alt="Brant Cass"><br>
 <sub><b>Brant Cass</b></sub>
 </a><br>
 <sub>World Generation, PID Controls</sub>
 </td>
 <td align="center">
 <a href="https://github.com/Roxamir">
-<img><br>
+<img src="https://via.placeholder.com/100" alt="Ramiro Covarrubias"><br>
 <sub><b>Ramiro Covarrubias</b></sub>
 </a><br>
 <sub>Car Physics, Car Model, PID Controls</sub>
 </td>
 <td align="center">
 <a href="https://github.com/acolli33">
-<img><br>
+<img src="https://via.placeholder.com/100" alt="Alex Collins"><br>
 <sub><b>Alex Collins</b></sub>
 </a><br>
 <sub>Initial Planning, Documentation</sub>
