@@ -82,21 +82,19 @@ The simulation uses the Bevy game engine to create the physics and environment, 
 
 ## Project Structure
 
-<ul style="list-style: none; padding-left: 0; font-family: monospace;">
-  <li>📁 <strong>bevy_sim</strong></li>
-  <li>├── 📁 <a href="./ai">ai 🔗</a></li>
-  <li>├── 📁 assets</li>
-  <li>├── 📁 src</li>
-  <li style="margin-left: 2em;">├── 📁 game</li>
-  <li style="margin-left: 4em;">├── 📁 biome</li>
-  <li style="margin-left: 4em;">├── 📁 car</li>
-  <li style="margin-left: 4em;">├── 📁 camera</li>
-  <li style="margin-left: 4em;">├── 📁 python</li>
-  <li style="margin-left: 4em;">└── 📁 ui</li>
-  <li style="margin-left: 2em;">└── 📁 <a href="src/main_menu">main_menu 🔗</a></li>
-  <li>├── 📄 main.rs</li>
-  <li>└── 📄 system.rs</li>
-</ul>
+- 📁 **bevy_sim**
+  - 📁 [ai 🔗](./ai)
+  - 📁 assets
+  - 📁 src
+    - 📁 game
+      - 📁 biome
+      - 📁 car
+      - 📁 camera
+      - 📁 python
+      - 📁 ui
+    - 📁 [main_menu 🔗](src/main_menu)
+  - 📄 main.rs
+  - 📄 system.rs
 
 > 📌 **Note:** Folders with 🔗 links contain their own README files with more detailed documentation
 
