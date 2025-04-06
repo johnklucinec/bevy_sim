@@ -83,7 +83,7 @@ The simulation uses the Bevy game engine to create the physics and environment, 
 ## Project Structure
 
 - 📁 **bevy_sim**
-  - 📁 [ai 🔗](./ai)
+  - 📁 [ai](./ai)
   - 📁 assets
   - 📁 src
     - 📁 game
@@ -92,7 +92,7 @@ The simulation uses the Bevy game engine to create the physics and environment, 
       - 📁 camera
       - 📁 python
       - 📁 ui
-    - 📁 [main_menu 🔗](src/main_menu)
+    - 📁 [main_menu](src/main_menu)
   - 📄 main.rs
   - 📄 system.rs
 
