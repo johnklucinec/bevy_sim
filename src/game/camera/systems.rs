@@ -1,4 +1,4 @@
-use super::components::{CarFollowCamera, SecondaryCamera, SecondaryCameraState, SecondaryWindow};
+use super::components::*;
 use crate::game::{
     car::car::Car,
     python::{
@@ -9,8 +9,8 @@ use crate::game::{
 };
 use bevy::{
     prelude::*,
-    render::camera::{Exposure, PhysicalCameraParameters, RenderTarget, Viewport},
-    window::{EnabledButtons, WindowRef, WindowResolution},
+    render::camera::*,
+    window::*,
 };
 
 // Viewport configuration
