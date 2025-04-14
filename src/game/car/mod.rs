@@ -19,7 +19,7 @@ impl Plugin for CarPlugin {
             .add_systems(OnEnter(AppState::Game), spawn_car)
             // Hide Camera View UI when exiting visible camera state
             .add_systems(
-                Update,
+                FixedUpdate,
                 (move_car, reset_car, car_commands, handle_car_commands)
                     .run_if(in_state(AppState::Game)),
             )

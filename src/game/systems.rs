@@ -1,4 +1,4 @@
-
+/// Author: John Klucinec (@johnklucinec)
 use crate::game::SimulationState;
 use bevy::prelude::*;
 
@@ -30,4 +30,3 @@ pub fn toggle_simulation(
         }
     }
 }
-

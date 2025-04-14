@@ -1,3 +1,4 @@
+/// Author: John Klucinec (@johnklucinec)
 use super::commands::CommandType;
 use bevy::prelude::*;
 use crossbeam_channel::{Receiver, Sender};

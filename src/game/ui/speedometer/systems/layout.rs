@@ -1,3 +1,4 @@
+/// Author: John Klucinec (@johnklucinec)
 use crate::game::car::car::*;
 use crate::game::ui::speedometer::components::{Speedometer, SpeedometerText};
 use crate::game::ui::HUDOverlayState;
