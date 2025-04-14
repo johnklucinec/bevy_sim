@@ -1,4 +1,5 @@
-/*biome.rs is to create the enviornment around it */
+/// Author: Brant Cass (@brantcass)
+/*biome.rs is to create the enviornment around the vehicle */
 
 use bevy::prelude::*;
 use bevy::render::mesh::Mesh;
