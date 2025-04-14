@@ -1,5 +1,4 @@
-/*biome.rs is to create the enviornment around it, I wanted to organize these files
-to make it easier to read and alter. Only implimented the grass here. */
+/*biome.rs is to create the enviornment around it */
 
 use bevy::prelude::*;
 use bevy::render::mesh::Mesh;
