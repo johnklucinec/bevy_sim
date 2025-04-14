@@ -1,6 +1,14 @@
+/// Author: Brant Cass (@brantcass)
+
 pub mod biome;
 pub mod road;
+pub mod roadspline;
+pub mod randomroad;
 mod systems;
+
+//pub use randomroad::spawn_grid_roads;
+pub use roadspline::Spline;
+pub use road::{Segment, spawn_single_road};
 
 use crate::AppState;
 use bevy::prelude::*;
