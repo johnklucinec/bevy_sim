@@ -1,4 +1,3 @@
-
 class PIDController:
 
     def __init__(self, kp=1.0, ki=0.0, kd=0.0, setpoint=250.0, buffer_size=5):

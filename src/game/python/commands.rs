@@ -1,3 +1,4 @@
+/// Author: John Klucinec (@johnklucinec)
 use super::components::{CommandMessage, CommandQueue};
 use bevy::prelude::*;
 use std::str::FromStr;

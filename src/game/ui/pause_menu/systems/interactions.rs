@@ -1,3 +1,4 @@
+/// Author: John Klucinec (@johnklucinec)
 use bevy::app::AppExit;
 use bevy::prelude::*;
 

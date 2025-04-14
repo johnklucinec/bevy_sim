@@ -1,3 +1,6 @@
+# Author: John Klucinec (@johnklucinec)
+# Modified by: Brant
+
 import cv2 as cv
 from time import time
 import os
