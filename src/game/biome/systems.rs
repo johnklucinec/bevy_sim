@@ -1,9 +1,8 @@
+use crate::game::biome::biome::setup_terrain;
 /// Author: Brant Cass (@brantcass)
-
 //use crate::game::biome::randomroad::spawn_grid_roads;
 use crate::game::biome::road::spawn_single_road;
 use crate::game::biome::Spline;
-//use crate::game::biome::biome::setup_terrain;
 use bevy::prelude::*;
 
 pub fn spawn_biome_on_enter(
@@ -12,7 +11,6 @@ pub fn spawn_biome_on_enter(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
-    
     //Build the road and grab its segments
     let road_segments = spawn_single_road(
         &mut commands,
@@ -20,7 +18,7 @@ pub fn spawn_biome_on_enter(
         &mut meshes,
         &mut materials,
         Vec3::new(-500.0, 0.0, 0.0),
-        Vec3::new( 500.0, 0.0, 0.0),
+        Vec3::new(500.0, 0.0, 0.0),
     );
 
     // If switch to the grid version, just comment out code above
@@ -35,4 +33,5 @@ pub fn spawn_biome_on_enter(
     //expose as resource
     commands.insert_resource(Spline::from_segments(&road_segments));
 
+    setup_terrain(&mut commands, &mut meshes, &mut materials);
 }
