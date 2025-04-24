@@ -38,7 +38,7 @@ impl Spline {
     pub const HEIGHT: f32 = 0.0;
 }
 
-// Helper – distance from a point to a line segment in 3‑D
+//Helper – distance from a point to a line segment in 3‑D
 fn distance_point_to_segment(p: Vec3, a: Vec3, b: Vec3) -> f32 {
     let ab = b - a;
     let t  = ((p - a).dot(ab) / ab.length_squared()).clamp(0.0, 1.0);
