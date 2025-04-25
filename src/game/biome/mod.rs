@@ -1,5 +1,6 @@
 pub mod biome;
 pub mod road;
+pub mod rand_objects;
 mod systems;
 
 use crate::AppState;

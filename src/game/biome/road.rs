@@ -7,6 +7,8 @@ use rand::seq::SliceRandom;
 use rand::Rng;
 use std::collections::HashSet;
 
+use super::rand_objects::spawn_rocks_on_road;
+
 #[derive(Component)]
 pub struct Road;
 
@@ -48,6 +50,18 @@ pub fn spawn_single_road(
             },
         ))
         .id();
+
+    // Spawn rocks randomly
+    spawn_rocks_on_road(
+        commands,
+        asset_server,
+        parent_id,
+        distance,
+        road_width,
+        road_thickness,
+        30,
+        8.0,
+    );
 
     //for finish and start line
     let half_x_thickness = 0.2;
