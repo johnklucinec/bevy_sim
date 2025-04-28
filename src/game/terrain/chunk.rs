@@ -23,7 +23,10 @@ pub fn spawn_chunk(
     road: &Spline,
     perlin: &NoisePerlin,
     set: &TerrainSettings,
+    player_tf: &Transform,
 ) {
+    let car_x = player_tf.translation.x;
+    let car_z = player_tf.translation.z;
     // Creates a grid of 3d vertices to represent a terrain chunk using perlin noise
     // first it will get the world pos, then determines how far apart each vertex is on the grid
     // then it creates a vector to hold 3d pos
@@ -40,22 +43,14 @@ pub fn spawn_chunk(
         for x in 0..=set.verts_per_side {
             let px = world.x + x as f32 * step;
             let pz = world.y + z as f32 * step;
-            let noise_h = perlin.get([px as f64 * set.freq, pz as f64 * set.freq]) as f32 * set.amp;
+
+            let rel_x = (px - car_x) * set.freq as f32;
+            let rel_z = (pz - car_z) * set.freq as f32;
+
+            let noise_h = perlin.get([rel_x as f64, rel_z as f64]) as f32 * set.amp;
 
             // keep the road strip flat
-            let dist = road.distance_to(Vec3::new(px, 0.0, pz));
-
-            if (x == set.verts_per_side / 2) && (z == set.verts_per_side / 2) {
-                info!(
-                    "TerrainSettings: road_width={}, blend={}",
-                    set.road_width, set.road_blend_distance
-                );
-                info!(
-                    "At center vertex: dist={}, half_width={}",
-                    dist,
-                    set.road_width * 0.5
-                );
-            }
+            let dist = road.distance_to(Vec2::new(px, pz));
 
             let h = if dist <= half_width {
                 flat_h
@@ -75,6 +70,12 @@ pub fn spawn_chunk(
     let verts_per_side = set.verts_per_side + 1;
     for z in 0..set.verts_per_side {
         for x in 0..set.verts_per_side {
+            let center_x = world.x + (x as f32 + 0.5) * step;
+            let center_z = world.y + (z as f32 + 0.5) * step;
+            if road.distance_to(Vec2::new(center_x, center_z)) <= half_width {
+                continue; //skip quad if its within the road width
+            }
+
             let top_left = z * verts_per_side + x;
             let top_right = top_left + 1;
             let bottom_left = top_left + verts_per_side;
@@ -118,10 +119,12 @@ pub fn spawn_initial_chunks(
     perlin: Res<NoisePerlin>,
     road: Res<Spline>,
 ) {
+    let dummy_tf = Transform::default();
     let range = -1..=1;
     for x in range.clone() {
         for z in range.clone() {
             let chunk_coord = IVec2::new(x, z);
+
             spawn_chunk(
                 &mut commands,
                 &mut meshes,
@@ -130,6 +133,7 @@ pub fn spawn_initial_chunks(
                 &road,
                 &*perlin,
                 &terrain_settings,
+                &dummy_tf,
             );
         }
     }
