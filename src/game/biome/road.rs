@@ -1,7 +1,6 @@
 /// Author: Brant Cass (@brantcass)
 /* road.rs is a module that creates roads and contains their components creating vertical
 and horizontal roads. */
-
 use bevy::prelude::*;
 use bevy::render::mesh::Mesh;
 
@@ -23,12 +22,13 @@ pub fn spawn_single_road(
     start: Vec3,
     end: Vec3,
 ) -> Vec<Segment> {
-    let dx = end.x - start.x;
-    let dz = end.z - start.z;
+    let delta = end - start;
+    let dx = delta.x;
+    let dz = delta.z;
+    let distance = delta.length();
+    let angle = dz.atan2(dx);
 
-    let distance = (dx * dx + dz * dz).sqrt();
-
-    let angle = dx.atan2(dz);
+    let midpoint = (start + end) * 0.5;
 
     let road_width = 10.0;
     let road_thickness = 0.1;
@@ -46,7 +46,7 @@ pub fn spawn_single_road(
                 ..Default::default()
             })),
             Transform {
-                translation: Vec3::new(0.0, 0.0, -60.0),
+                translation: midpoint,
                 rotation: Quat::from_rotation_y(angle),
                 ..Default::default()
             },
