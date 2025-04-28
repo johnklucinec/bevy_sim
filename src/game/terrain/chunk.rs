@@ -70,12 +70,7 @@ pub fn spawn_chunk(
     let verts_per_side = set.verts_per_side + 1;
     for z in 0..set.verts_per_side {
         for x in 0..set.verts_per_side {
-            let center_x = world.x + (x as f32 + 0.5) * step;
-            let center_z = world.y + (z as f32 + 0.5) * step;
-            if road.distance_to(Vec2::new(center_x, center_z)) <= half_width {
-                continue; //skip quad if its within the road width
-            }
-
+            
             let top_left = z * verts_per_side + x;
             let top_right = top_left + 1;
             let bottom_left = top_left + verts_per_side;
