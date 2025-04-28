@@ -1,7 +1,9 @@
 /// Author: John Klucinec (@johnklucinec)
 use bevy::{
-    prelude::*, render::camera::{Exposure, PhysicalCameraParameters}
+    prelude::*,
+    render::camera::{Exposure, PhysicalCameraParameters},
 };
+use std::f32::consts::FRAC_PI_4;
 
 use crate::{game::car::car::Car, CameraState};
 
@@ -35,10 +37,29 @@ pub fn setup(mut commands: Commands) {
     ));
 
     // Ambient light
-    commands.insert_resource(AmbientLight {
-        color: Color::WHITE,
-        brightness: 100.0,
-    });
+    // commands.insert_resource(AmbientLight {
+    //     color: Color::WHITE,
+    //     brightness: 100.0,
+    // });
+
+    commands.spawn((
+        DirectionalLight {
+            //full sun
+            color: Color::WHITE,
+            illuminance: 2500.0,
+            shadows_enabled: true,
+            //tweak these if your shadows are clipping
+            shadow_depth_bias: 0.02,
+            shadow_normal_bias: 0.6,
+            ..Default::default()
+        },
+        Transform {
+            translation: Vec3::new(4.0, 100.0, 4.0),
+            rotation: Quat::from_rotation_x(-FRAC_PI_4),
+            ..Default::default()
+        },
+        GlobalTransform::default(),
+    ));
 }
 
 pub fn update_car_camera(
@@ -48,7 +69,6 @@ pub fn update_car_camera(
 ) {
     match (car_query.get_single(), camera_query.get_single_mut()) {
         (Ok(car_transform), Ok(mut camera_transform)) => {
-
             let detla_time = time.delta_secs();
             // Calculate offset based on car's rotation
             let back_offset = car_transform.back() * 10.0; // Multiply by distance behind car
@@ -59,9 +79,9 @@ pub fn update_car_camera(
             let smoothness = 5.0;
 
             // Smoothly move camera towards target position
-            camera_transform.translation = camera_transform.translation.lerp(
-                target_position,
-                detla_time * smoothness);
+            camera_transform.translation = camera_transform
+                .translation
+                .lerp(target_position, detla_time * smoothness);
 
             // Look at the car
             camera_transform.look_at(car_transform.translation, Vec3::Y);
@@ -109,16 +129,28 @@ pub fn move_camera(
         let delta = time.delta_secs() * movement_speed;
 
         // Handle WASD (world axes)
-        if keyboard_input.pressed(KeyCode::KeyA) { transform.translation.x -= delta; }
-        if keyboard_input.pressed(KeyCode::KeyD) { transform.translation.x += delta; }
-        if keyboard_input.pressed(KeyCode::KeyW) { transform.translation.z -= delta; }
-        if keyboard_input.pressed(KeyCode::KeyS) { transform.translation.z += delta; }
+        if keyboard_input.pressed(KeyCode::KeyA) {
+            transform.translation.x -= delta;
+        }
+        if keyboard_input.pressed(KeyCode::KeyD) {
+            transform.translation.x += delta;
+        }
+        if keyboard_input.pressed(KeyCode::KeyW) {
+            transform.translation.z -= delta;
+        }
+        if keyboard_input.pressed(KeyCode::KeyS) {
+            transform.translation.z += delta;
+        }
 
         // Handle QE (local up/down)
         if keyboard_input.pressed(KeyCode::KeyQ) || keyboard_input.pressed(KeyCode::KeyE) {
             let up_direction = transform.up();
-            if keyboard_input.pressed(KeyCode::KeyQ) { transform.translation -= up_direction * delta; }
-            if keyboard_input.pressed(KeyCode::KeyE) { transform.translation += up_direction * delta; }
+            if keyboard_input.pressed(KeyCode::KeyQ) {
+                transform.translation -= up_direction * delta;
+            }
+            if keyboard_input.pressed(KeyCode::KeyE) {
+                transform.translation += up_direction * delta;
+            }
         }
     }
 }
