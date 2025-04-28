@@ -1,5 +1,4 @@
 /// Author: Brant Cass (@brantcass)
-
 use crate::game::biome::biome::setup_terrain;
 //use crate::game::biome::randomroad::spawn_grid_roads;
 use crate::game::biome::road::spawn_single_road;
@@ -18,8 +17,8 @@ pub fn spawn_biome_on_enter(
         &asset_server,
         &mut meshes,
         &mut materials,
-        Vec3::new(-500.0, 0.0, 0.0),
-        Vec3::new(500.0, 0.0, 0.0),
+        Vec3::new(0.0, 0.0, -500.0),
+        Vec3::new(0.0, 0.0, 500.0),
     );
 
     // If switch to the grid version, just comment out code above
