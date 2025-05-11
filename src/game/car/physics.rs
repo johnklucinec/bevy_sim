@@ -192,15 +192,26 @@ pub fn reset_car(
 
         // Check if car is outside the road's width
         if transform.translation.x.abs() > road_half_width {
-            // Reset car to original spawn point (0, 0.5, 0)
-            transform.translation = Vec3::new(3.0, 0.5, 0.0);
-            transform.rotation = Quat::IDENTITY;
-
-            commands.enqueue(CommandMessage::new(CommandType::Steer, "0"));
-            commands.enqueue(CommandMessage::new(CommandType::Pidreset, "0"));
-            // Reset car's speed and other properties
-            car.current_speed = 0.0;
-            car.gear_mode = GearMode::Forward;
+            reset_car_to_spawn(&mut transform, &mut car, &mut commands);
         }
     }
+}
+
+// Function to reset car to spawn point with necessary updates
+pub fn reset_car_to_spawn(
+    transform: &mut Transform,
+    car: &mut Car,
+    commands: &mut ResMut<CommandQueue>,
+) {
+    // Reset car to original spawn point (0, 0.5, 0)
+    transform.translation = Vec3::new(3.0, 0.5, 0.0);
+    transform.rotation = Quat::IDENTITY;
+
+    // Reset command queue
+    commands.enqueue(CommandMessage::new(CommandType::Steer, "0"));
+    commands.enqueue(CommandMessage::new(CommandType::Pidreset, "0"));
+
+    // Reset car's speed and other properties
+    car.current_speed = 0.0;
+    car.gear_mode = GearMode::Forward;
 }

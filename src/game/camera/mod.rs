@@ -8,7 +8,7 @@ use systems::{
 use crate::game::AppState;
 
 pub mod components;
-mod systems;
+pub mod systems;
 
 pub struct SecondaryCameraPlugin;
 

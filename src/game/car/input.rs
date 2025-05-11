@@ -67,13 +67,13 @@ impl CarInput {
 // Keybindings to manually send commands to the Python script
 // This is for proof of concept testing - will be replaced by AI-driven commands later
 pub fn car_commands(mut commands: ResMut<CommandQueue>, input: Res<ButtonInput<KeyCode>>) {
-    if input.just_pressed(KeyCode::Digit1) {
-        commands.enqueue(CommandMessage::new(CommandType::Speed, "10"));
-    }
+    // if input.just_pressed(KeyCode::Digit1) {
+    //     commands.enqueue(CommandMessage::new(CommandType::Speed, "10"));
+    // }
 
-    if input.just_pressed(KeyCode::Digit2) {
-        commands.enqueue(CommandMessage::new(CommandType::Speed, "50"));
-    }
+    // if input.just_pressed(KeyCode::Digit2) {
+    //     commands.enqueue(CommandMessage::new(CommandType::Speed, "50"));
+    // }
 
     if input.just_pressed(KeyCode::Digit3) {
         commands.enqueue(CommandMessage::new(CommandType::Speed, "0"));
