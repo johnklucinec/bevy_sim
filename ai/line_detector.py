@@ -15,7 +15,7 @@ class LineDetector:
 		self.hough_params = {
 			'rho': 2,            
 			'theta': np.pi/180,
-			'threshold': 30,
+			'threshold': 70,
 			'min_line_length': 40,
 			'max_line_gap': 1
 		}
