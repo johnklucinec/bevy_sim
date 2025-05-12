@@ -1,6 +1,8 @@
 use crate::game::python::commands::CommandType;
 use crate::game::python::components::{CommandEvent, CommandMessage, CommandQueue};
 use bevy::prelude::*;
+use super::car::Car; // Added: Import Car component
+use super::DrivingState; // Added: Import DrivingState enum
 
 #[derive(Resource, Default)]
 pub struct CarInput {
@@ -16,7 +18,25 @@ pub struct CarInput {
 }
 
 impl CarInput {
-    pub fn parse_text_command(&mut self) {
+    pub fn parse_text_command(&mut self, car_query: &Query<&Car>) {
+        // Check driving state before parsing
+        match car_query.get_single() {
+            Ok(car) => {
+                if car.driving_state == DrivingState::Manual {
+                    self.text_command.take(); // Consume and discard if manual
+                    return;
+                }
+                // If Autonomous, proceed to parse below
+            }
+            Err(_) => {
+                // Error getting car (no car, or multiple cars)
+                // Safest to consume and discard
+                self.text_command.take();
+                return;
+            }
+        }
+
+        // If we reach here, state is Autonomous and car exists
         if let Some(command) = self.text_command.take() {
             // Create a longer-lived value by storing the lowercase string
             let lowercase_command = command.to_lowercase();
@@ -93,9 +113,30 @@ pub fn car_commands(mut commands: ResMut<CommandQueue>, input: Res<ButtonInput<K
 }
 
 pub fn handle_car_commands(
+    car_query: Query<&Car>,
     mut event_reader: EventReader<CommandEvent>,
     mut car_input: ResMut<CarInput>,
 ) {
+    // Attempt to get the single Car entity.
+    // If there isn't exactly one Car, or if it's in Manual mode, we ignore events.
+    match car_query.get_single() {
+        Ok(car) => {
+            if car.driving_state == DrivingState::Manual {
+                // In Manual mode, ignore commands from the event queue.
+                event_reader.clear(); // Consume events without processing.
+                return; // Exit early.
+            }
+            // If Autonomous, proceed to process events below.
+        }
+        Err(_) => {
+            // If there's no car or multiple cars, it's ambiguous.
+            // For safety, let's also ignore commands in this state.
+            event_reader.clear();
+            return; // Exit early.
+        }
+    }
+
+    // If we're here, it means there's a single car and it's in Autonomous mode.
     for event in event_reader.read() {
         match (&event.command_type, event.value) {
             (CommandType::Steer, Some(num)) => {
@@ -109,6 +150,35 @@ pub fn handle_car_commands(
             }
             // Ignore other commands or missing values
             _ => (),
+        }
+    }
+}
+
+// New system to toggle driving state
+pub fn toggle_driving_state(
+    keyboard_input: Res<ButtonInput<KeyCode>>,
+    mut car_query: Query<&mut Car>,
+    mut car_input: ResMut<CarInput>,
+) {
+    if keyboard_input.just_pressed(KeyCode::KeyM) {
+        if let Ok(mut car) = car_query.get_single_mut() {
+            car.driving_state = match car.driving_state {
+                DrivingState::Autonomous => {
+                    println!("DrivingState changed to: Manual");
+                    // Reset speed and steering commands when switching to Manual
+                    car_input.speed_value = 0.0;
+                    car_input.steer_angle = 0.0;
+                    DrivingState::Manual
+                }
+                DrivingState::Manual => {
+                    println!("DrivingState changed to: Autonomous");
+                    // initialize speed when switching to Autonomous
+                    car_input.speed_value = 100.0;
+                    DrivingState::Autonomous
+                }
+            };
+        } else {
+            println!("Unable to toggle driving state. Please try again.");
         }
     }
 }
