@@ -7,7 +7,7 @@ use rand::seq::SliceRandom;
 use rand::Rng;
 use std::collections::HashSet;
 
-use super::rand_objects::spawn_rocks_on_road;
+use super::rand_objects::spawn_cones_on_road;
 
 #[derive(Component)]
 pub struct Road;
@@ -51,8 +51,8 @@ pub fn spawn_single_road(
         ))
         .id();
 
-    // Spawn rocks randomly
-    spawn_rocks_on_road(
+    // Spawn cones randomly
+    spawn_cones_on_road(
         commands,
         asset_server,
         parent_id,
