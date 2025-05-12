@@ -2,6 +2,7 @@
 use bevy::app::AppExit;
 use bevy::prelude::*;
 
+use crate::game::camera::components::SecondaryCameraState;
 use crate::game::car::car::Car;
 use crate::game::car::input::CarInput;
 use crate::game::car::physics::reset_car_to_spawn;
@@ -125,6 +126,8 @@ pub fn interact_with_reset_button(
     >,
     mut car_query: Query<(&mut Car, &mut Transform), With<Car>>,
     mut car_input: ResMut<CarInput>,
+    camera_state: Res<State<SecondaryCameraState>>,
+    mut next_state: ResMut<NextState<SimulationState>>,
 ) {
     if let Ok((interaction, mut background_color)) = button_query.get_single_mut() {
         match *interaction {
@@ -133,8 +136,11 @@ pub fn interact_with_reset_button(
 
                 // Reset the car
                 if let Ok((mut car, mut transform, )) = car_query.get_single_mut() {
-                    reset_car_to_spawn(&mut transform, &mut car, &mut car_input);
+                    reset_car_to_spawn(&mut transform, &mut car, &mut car_input, camera_state);
                 }
+
+                // Close pause menu
+                next_state.set(SimulationState::Running);
             }
             Interaction::Hovered => {
                 *background_color = HOVERED_BUTTON.into();

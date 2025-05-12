@@ -1,3 +1,4 @@
+use crate::game::camera::components::SecondaryCameraState;
 use crate::game::python::commands::CommandType;
 use crate::game::python::components::{CommandEvent, CommandMessage, CommandQueue};
 use bevy::prelude::*;
@@ -156,29 +157,27 @@ pub fn handle_car_commands(
 
 // New system to toggle driving state
 pub fn toggle_driving_state(
-    keyboard_input: Res<ButtonInput<KeyCode>>,
     mut car_query: Query<&mut Car>,
     mut car_input: ResMut<CarInput>,
+    camera_state: Res<State<SecondaryCameraState>>,
 ) {
-    if keyboard_input.just_pressed(KeyCode::KeyM) {
-        if let Ok(mut car) = car_query.get_single_mut() {
-            car.driving_state = match car.driving_state {
-                DrivingState::Autonomous => {
-                    println!("DrivingState changed to: Manual");
-                    // Reset speed and steering commands when switching to Manual
-                    car_input.speed_value = 0.0;
-                    car_input.steer_angle = 0.0;
-                    DrivingState::Manual
-                }
-                DrivingState::Manual => {
-                    println!("DrivingState changed to: Autonomous");
-                    // initialize speed when switching to Autonomous
-                    car_input.speed_value = 100.0;
-                    DrivingState::Autonomous
-                }
-            };
-        } else {
-            println!("Unable to toggle driving state. Please try again.");
-        }
+    // Only proceed if camera state has changed
+    if !camera_state.is_changed() {
+        return;
+    }
+
+    if let Ok(mut car) = car_query.get_single_mut() {
+        car.driving_state = match *camera_state.get() {
+            SecondaryCameraState::Hidden => {
+                println!("DrivingState changed to: Manual");
+                car_input.speed_value = 0.0;
+                car_input.steer_angle = 0.0;
+                DrivingState::Manual
+            }
+            SecondaryCameraState::Visible => {
+                println!("DrivingState changed to: Autonomous");
+                DrivingState::Autonomous
+            }
+        };
     }
 }

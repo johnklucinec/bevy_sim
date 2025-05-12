@@ -21,9 +21,9 @@ impl Plugin for CarPlugin {
             .add_systems(
                 FixedUpdate,
                 (
-                    move_car, 
-                    reset_car, 
-                    car_commands, 
+                    move_car,
+                    reset_car,
+                    car_commands,
                     handle_car_commands,
                 )
                     .run_if(in_state(AppState::Game)),

@@ -1,6 +1,7 @@
 // physics.rs - Handles car movement and physics systems
 use super::car::{Car, GearMode};
 use super::input::CarInput;
+use crate::game::camera::components::SecondaryCameraState;
 use crate::game::car::DrivingState;
 use bevy::prelude::*;
 
@@ -189,6 +190,7 @@ pub fn move_car(
 pub fn reset_car(
     mut car_query: Query<(&mut Car, &mut Transform), With<Car>>,
     mut car_input: ResMut<CarInput>,
+    camera_state: Res<State<SecondaryCameraState>>,
 ) {
     if let Ok((mut car, mut transform)) = car_query.get_single_mut() {
         let road_width = 9.0; // Match the road_width from road.rs
@@ -196,7 +198,7 @@ pub fn reset_car(
 
         // Check if car is outside the road's width
         if transform.translation.x.abs() > road_half_width {
-            reset_car_to_spawn(&mut transform, &mut car, &mut car_input);
+            reset_car_to_spawn(&mut transform, &mut car, &mut car_input, camera_state);
         }
     }
 }
@@ -206,19 +208,24 @@ pub fn reset_car_to_spawn(
     transform: &mut Transform,
     car: &mut Car,
     car_input: &mut ResMut<CarInput>,
+    camera_state: Res<State<SecondaryCameraState>>,
 ) {
-    // Reset car to original spawn point (0, 0.5, 0)
+    // Always reset car position and rotation
     transform.translation = Vec3::new(3.0, 0.5, 0.0);
     transform.rotation = Quat::IDENTITY;
 
-    // Reset speed and steering commands when resetting
-    car_input.speed_value = 0.0;
-    car_input.steer_angle = 0.0;
+    // Only reset speed, gear, and driving state if camera is hidden (Manual mode)
+    if *camera_state.get() == SecondaryCameraState::Hidden {
+        // Reset speed and steering commands
+        car_input.speed_value = 0.0;
+        car_input.steer_angle = 0.0;
 
-    // Reset car's speed and other properties
-    car.current_speed = 0.0;
-    car.gear_mode = GearMode::Forward;
+        // Reset car's speed and other properties
+        car.current_speed = 0.0;
+        car.gear_mode = GearMode::Forward;
 
-    // Reset driving state
-    car.driving_state = DrivingState::Manual;
+        // Reset driving state
+        car.driving_state = DrivingState::Manual;
+    }
+    // When camera is visible (Autonomous mode), keep current speed, gear, and driving state
 }

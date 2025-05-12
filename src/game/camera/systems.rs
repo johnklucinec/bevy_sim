@@ -82,7 +82,6 @@ pub fn update_car_camera(
     }
 }
 
-#[allow(clippy::too_many_arguments)]
 pub fn toggle_secondary_camera(
     mut camera_query: Query<&mut Camera, With<SecondaryCamera>>,
     simulation_state: Res<State<SimulationState>>,
