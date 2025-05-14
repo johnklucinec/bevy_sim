@@ -70,17 +70,17 @@
     {
       "mimeType": "image/jpeg",
       "name": "forrest_ground_01_nor_gl_4k",
-      "uri": "textures/forrest_ground_01_nor_gl_4k.jpg"
+      "uri": "textures/forrest_ground_01_nor_gl_4k.png"
     },
     {
       "mimeType": "image/jpeg",
       "name": "forrest_ground_01_diff_4k",
-      "uri": "textures/forrest_ground_01_diff_4k.jpg"
+      "uri": "textures/forrest_ground_01_diff_4k.png"
     },
     {
       "mimeType": "image/jpeg",
       "name": "forrest_ground_01_rough_4k",
-      "uri": "textures/forrest_ground_01_rough_4k.jpg"
+      "uri": "textures/forrest_ground_01_rough_4k.png"
     }
   ],
   "accessors": [

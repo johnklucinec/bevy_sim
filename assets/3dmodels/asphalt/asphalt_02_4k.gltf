@@ -70,17 +70,17 @@
     {
       "mimeType": "image/jpeg",
       "name": "asphalt_02_nor_gl_4k",
-      "uri": "textures/asphalt_02_nor_gl_4k.jpg"
+      "uri": "textures/asphalt_02_nor_gl_4k.png"
     },
     {
       "mimeType": "image/jpeg",
       "name": "asphalt_02_diff_4k",
-      "uri": "textures/asphalt_02_diff_4k.jpg"
+      "uri": "textures/asphalt_02_diff_4k.png"
     },
     {
       "mimeType": "image/jpeg",
       "name": "asphalt_02_rough_4k",
-      "uri": "textures/asphalt_02_rough_4k.jpg"
+      "uri": "textures/asphalt_02_rough_4k.png"
     }
   ],
   "accessors": [

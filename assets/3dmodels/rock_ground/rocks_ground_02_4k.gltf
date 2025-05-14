@@ -70,17 +70,17 @@
     {
       "mimeType": "image/jpeg",
       "name": "rocks_ground_02_nor_gl_4k",
-      "uri": "textures/rocks_ground_02_nor_gl_4k.jpg"
+      "uri": "textures/rocks_ground_02_nor_gl_4k.png"
     },
     {
       "mimeType": "image/jpeg",
       "name": "rocks_ground_02_col_4k",
-      "uri": "textures/rocks_ground_02_col_4k.jpg"
+      "uri": "textures/rocks_ground_02_col_4k.png"
     },
     {
       "mimeType": "image/jpeg",
       "name": "rocks_ground_02_rough_4k",
-      "uri": "textures/rocks_ground_02_rough_4k.jpg"
+      "uri": "textures/rocks_ground_02_rough_4k.png"
     }
   ],
   "accessors": [
