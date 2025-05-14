@@ -2,18 +2,18 @@
 mod biome;
 mod camera;
 pub mod car;
-pub mod terrain;
 pub mod python;
 mod systems;
+pub mod terrain;
 pub mod ui;
 
 use crate::game::car::input::*;
 
 use crate::game::biome::BiomePlugin;
 use crate::game::car::CarPlugin;
-use crate::game::terrain::TerrainPlugin;
 use crate::game::systems::pause_simulation;
 use crate::game::systems::resume_simulation;
+use crate::game::terrain::TerrainPlugin;
 use crate::AppState;
 use camera::SecondaryCameraPlugin;
 use python::PythonPlugin;
@@ -43,8 +43,8 @@ impl Plugin for GamePlugin {
                 GameUIPlugin,
                 SecondaryCameraPlugin,
                 CarPlugin,
-                TerrainPlugin,
                 BiomePlugin,
+                TerrainPlugin,
                 PythonPlugin,
             ))
             // Systems

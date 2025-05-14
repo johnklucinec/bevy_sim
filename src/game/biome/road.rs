@@ -33,18 +33,13 @@ pub fn spawn_single_road(
     let road_width = 10.0;
     let road_thickness = 0.1;
 
+    let asphalt_scene: Handle<Scene> =
+        asset_server.load("3dmodels/asphalt/asphalt_02_4k.gltf#Scene0");
+
     let parent_id = commands
         .spawn((
+            SceneRoot(asphalt_scene.clone()),
             Road,
-            Mesh3d(meshes.add(Mesh::from(Cuboid::new(
-                distance,
-                road_thickness,
-                road_width,
-            )))),
-            MeshMaterial3d(materials.add(StandardMaterial {
-                base_color: Color::srgb(0.1, 0.1, 0.1),
-                ..Default::default()
-            })),
             Transform {
                 translation: midpoint,
                 rotation: Quat::from_rotation_y(angle),

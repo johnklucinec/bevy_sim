@@ -4,7 +4,7 @@ use bevy::prelude::*;
 use noise::Perlin;
 
 pub mod chunk;
-mod noisewrapper;
+pub mod noisewrapper;
 pub mod updatechunk;
 
 use crate::game::biome::roadspline::Spline;
@@ -13,6 +13,9 @@ use crate::game::terrain::noisewrapper::NoisePerlin;
 use crate::AppState;
 pub use updatechunk::update_chunks;
 pub struct TerrainPlugin;
+
+#[derive(Resource)]
+pub struct TerrainMaterial(pub Handle<StandardMaterial>);
 
 #[derive(Resource)]
 pub struct TerrainSettings {
@@ -36,12 +39,11 @@ impl Plugin for TerrainPlugin {
         })
         .insert_resource(NoisePerlin(Perlin::new(42)))
         .add_systems(
-            OnEnter(AppState::Game),
-            spawn_initial_chunks.run_if(|world: &World| world.contains_resource::<Spline>()),
-        );
-        app.add_systems(
             Update,
-            update_chunks.run_if(|world: &World| world.contains_resource::<Spline>()),
+            update_chunks
+                .run_if(|world: &World| world.contains_resource::<Spline>())
+                .run_if(|world: &World| world.contains_resource::<TerrainMaterial>())
+                .run_if(|world: &World| world.contains_resource::<Spline>()),
         );
     }
 }

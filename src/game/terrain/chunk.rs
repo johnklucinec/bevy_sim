@@ -5,10 +5,12 @@ use crate::game::biome::roadspline::Spline;
 use crate::game::terrain::noisewrapper::NoisePerlin;
 use crate::game::terrain::TerrainSettings;
 use bevy::pbr::MeshMaterial3d;
-use bevy::prelude::*;
 use bevy::render::mesh::{Indices, Mesh, PrimitiveTopology};
+use bevy::{asset, prelude::*, text};
 use noise::NoiseFn;
 use noise::Perlin;
+
+use super::TerrainMaterial;
 
 #[derive(Component)]
 pub struct Chunk {
@@ -24,6 +26,7 @@ pub fn spawn_chunk(
     perlin: &NoisePerlin,
     set: &TerrainSettings,
     player_tf: &Transform,
+    material: Handle<StandardMaterial>,
 ) {
     let car_x = player_tf.translation.x;
     let car_z = player_tf.translation.z;
@@ -70,7 +73,6 @@ pub fn spawn_chunk(
     let verts_per_side = set.verts_per_side + 1;
     for z in 0..set.verts_per_side {
         for x in 0..set.verts_per_side {
-            
             let top_left = z * verts_per_side + x;
             let top_right = top_left + 1;
             let bottom_left = top_left + verts_per_side;
@@ -87,19 +89,28 @@ pub fn spawn_chunk(
         }
     }
 
+    // Spawning in tiles to use textures on the hills
+    //repeating for each chunk
+    let tile_factor = 4.0;
+    let mut uvs = Vec::with_capacity(((set.verts_per_side + 1).pow(2)) as usize);
+    for z in 0..=set.verts_per_side {
+        for x in 0..=set.verts_per_side {
+            let u = (x as f32 / set.verts_per_side as f32) * tile_factor;
+            let v = (z as f32 / set.verts_per_side as f32) * tile_factor;
+            uvs.push([u, v]);
+        }
+    }
+
     let mut mesh = Mesh::new(PrimitiveTopology::TriangleList, Default::default());
     mesh.insert_attribute(Mesh::ATTRIBUTE_POSITION, verts);
+    mesh.insert_attribute(Mesh::ATTRIBUTE_UV_0, uvs);
     mesh.insert_indices(Indices::U32(indices));
 
     let mesh_handle = meshes.add(mesh);
-    let material_handle = materials.add(StandardMaterial {
-        base_color: Color::srgb(0.3, 0.8, 0.3),
-        ..Default::default()
-    });
 
     cmds.spawn((
         Mesh3d(mesh_handle),
-        MeshMaterial3d(material_handle),
+        MeshMaterial3d(material),
         Transform::default(),
     ))
     .insert(Chunk { coord: chunk_coord });
@@ -110,10 +121,16 @@ pub fn spawn_initial_chunks(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
+    asset_server: Res<AssetServer>,
     terrain_settings: Res<TerrainSettings>,
     perlin: Res<NoisePerlin>,
-    road: Res<Spline>,
+    road: Spline,
 ) {
+    let rock_material: Handle<StandardMaterial> =
+        asset_server.load("3dmodels/rock_ground/rocks_ground_02_4k.gltf#Material0");
+
+    commands.insert_resource(TerrainMaterial(rock_material.clone()));
+
     let dummy_tf = Transform::default();
     let range = -1..=1;
     for x in range.clone() {
@@ -129,6 +146,7 @@ pub fn spawn_initial_chunks(
                 &*perlin,
                 &terrain_settings,
                 &dummy_tf,
+                rock_material.clone(),
             );
         }
     }
