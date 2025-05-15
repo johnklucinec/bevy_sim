@@ -43,7 +43,8 @@ def normal_display(wincap, yolo_detector, line_detector):
     pid = PIDController(kp = 0.25, ki = 0.01, kd = 0.25, setpoint = 250.0)
     steady_speed = 100
     loop_time = time()
-   
+    commands = []
+    buffer_size = 30
     try:
         #Send speed signal to command handler
         speed_val = command_handler._execute_handler(CommandType.SPEED, str(steady_speed))
@@ -66,9 +67,13 @@ def normal_display(wincap, yolo_detector, line_detector):
                 scaling_factor = 0.02
                 scaled_steering = raw_pid * scaling_factor
                 
-                #Send steering signal to command handler
-                val = command_handler._execute_handler(CommandType.STEER, str(scaled_steering))
-                print(val)
+                if len(commands) == buffer_size:
+                    val = command_handler._execute_handler(CommandType.STEER, str(sum(commands)/len(commands)))
+                    print(val)
+                    commands = []
+                else:
+                    commands.append(scaled_steering)
+                    
                          
                 cv.putText(final_frame, f'Steer: {scaled_steering:.2f}', (10, 60),
                           cv.FONT_HERSHEY_SIMPLEX, 0.7, (0,255,0), 2)

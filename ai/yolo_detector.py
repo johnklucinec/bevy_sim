@@ -4,7 +4,7 @@ import torch
 from ultralytics import YOLO
 
 class YOLODetector:
-    def __init__(self, model_path='yolov8n.pt', conf_threshold=0.5):
+    def __init__(self, model_path='safety_cone.pt', conf_threshold=0.2):
         self.model = YOLO(model_path)
         self.conf_threshold = conf_threshold
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'

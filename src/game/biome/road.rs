@@ -7,7 +7,7 @@ use rand::seq::SliceRandom;
 use rand::Rng;
 use std::collections::HashSet;
 
-use super::rand_objects::spawn_rocks_on_road;
+use super::rand_objects::spawn_cones_on_road;
 
 #[derive(Component)]
 pub struct Road;
@@ -51,8 +51,8 @@ pub fn spawn_single_road(
         ))
         .id();
 
-    // Spawn rocks randomly
-    spawn_rocks_on_road(
+    // Spawn cones randomly
+    spawn_cones_on_road(
         commands,
         asset_server,
         parent_id,
@@ -60,7 +60,7 @@ pub fn spawn_single_road(
         road_width,
         road_thickness,
         30,
-        8.0,
+        10.0,
     );
 
     //for finish and start line
@@ -107,7 +107,7 @@ pub fn spawn_single_road(
     let stop_sign_handle: Handle<Scene> =
         asset_server.load("3dmodels/stop_sign/stop_sign/scene.gltf#Scene0");
 
-    let sign_spacing = 1.0;
+    let sign_spacing = 10.0;
     let mut num_signs = (total_road_length / sign_spacing).floor() as i32;
 
     let left_edge_z = -road_width * 0.5 - 0.3;
@@ -129,7 +129,7 @@ pub fn spawn_single_road(
                 Transform {
                     translation: Vec3::new(local_x, road_thickness + -0.4, left_edge_z),
                     rotation: Quat::from_rotation_y(angle),
-                    scale: Vec3::splat(0.5),
+                    scale: Vec3::splat(1.5),
                 },
                 GlobalTransform::default(),
                 Visibility::default(),
@@ -141,7 +141,7 @@ pub fn spawn_single_road(
                 Transform {
                     translation: Vec3::new(local_x, road_thickness + -0.4, right_edge_z),
                     rotation: Quat::from_rotation_y(angle),
-                    scale: Vec3::splat(0.5),
+                    scale: Vec3::splat(1.5),
                 },
                 GlobalTransform::default(),
                 Visibility::default(),
