@@ -2,6 +2,10 @@
 use bevy::app::AppExit;
 use bevy::prelude::*;
 
+use crate::game::camera::components::SecondaryCameraState;
+use crate::game::car::car::Car;
+use crate::game::car::input::CarInput;
+use crate::game::car::physics::reset_car_to_spawn;
 use crate::game::ui::pause_menu::components::*;
 use crate::game::ui::pause_menu::styles::*;
 use crate::game::ui::HUDOverlayState;
@@ -114,6 +118,41 @@ pub fn interact_with_hud_button(
         }
     }
 }
+
+pub fn interact_with_reset_button(
+    mut button_query: Query<
+        (&Interaction, &mut BackgroundColor),
+        (Changed<Interaction>, With<ResetButton>),
+    >,
+    mut car_query: Query<(&mut Car, &mut Transform), With<Car>>,
+    mut car_input: ResMut<CarInput>,
+    camera_state: Res<State<SecondaryCameraState>>,
+    mut next_state: ResMut<NextState<SimulationState>>,
+) {
+    if let Ok((interaction, mut background_color)) = button_query.get_single_mut() {
+        match *interaction {
+            Interaction::Pressed => {
+                *background_color = PRESSED_BUTTON.into();
+
+                // Reset the car
+                if let Ok((mut car, mut transform, )) = car_query.get_single_mut() {
+                    reset_car_to_spawn(&mut transform, &mut car, &mut car_input, camera_state);
+                }
+
+                // Close pause menu
+                next_state.set(SimulationState::Running);
+            }
+            Interaction::Hovered => {
+                *background_color = HOVERED_BUTTON.into();
+            }
+            Interaction::None => {
+                *background_color = NORMAL_BUTTON.into();
+            }
+        }
+    }
+}
+
+
 
 // Used for when a button is disabled
 // Logs a message when a disabled button is pressed
