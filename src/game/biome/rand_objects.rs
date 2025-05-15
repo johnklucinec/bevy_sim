@@ -61,7 +61,7 @@ pub fn spawn_cones_on_road(
                         Transform {
                             translation: Vec3::new(local_x, local_y, local_z),
                             rotation: Quat::IDENTITY, 
-                            scale: Vec3::splat(2.5),
+                            scale: Vec3::splat(1.5),
                         },
                         GlobalTransform::default(),
                         Visibility::default(),
