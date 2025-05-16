@@ -19,7 +19,7 @@ pub fn spawn_cones_on_road(
 
     let half_distance = road_distance / 2.0;
     // Keep cones slightly away from the absolute edges
-    let spawnable_half_width = road_width / 2.0 - 1.0; 
+    let spawnable_half_width = road_width / 2.0 - 3.0; 
 
     const MAX_PLACEMENT_ATTEMPTS: u32 = 100;
 
@@ -28,7 +28,6 @@ pub fn spawn_cones_on_road(
         loop {
             if attempts >= MAX_PLACEMENT_ATTEMPTS {
                 // Avoid infinite loop if space is too crowded
-                eprintln!("Warning: Could not place a cone after {} attempts. Skipping.", MAX_PLACEMENT_ATTEMPTS);
                 break; 
             }
             attempts += 1;
@@ -61,7 +60,7 @@ pub fn spawn_cones_on_road(
                         Transform {
                             translation: Vec3::new(local_x, local_y, local_z),
                             rotation: Quat::IDENTITY, 
-                            scale: Vec3::splat(1.5),
+                            scale: Vec3::splat(2.0),
                         },
                         GlobalTransform::default(),
                         Visibility::default(),
