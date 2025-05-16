@@ -138,7 +138,7 @@ class LineDetector:
 
 			# Calculate and print only the x-coordinate of the center point
 			center_x = (x1 + x2) // 2
-			cv.putText(line_image, f'X_VALUE: {center_x:.1f}', (10, 100),
+			cv.putText(line_image, f'X_VALUE: {center_x:.1f}', (10, 120),
 					cv.FONT_HERSHEY_SIMPLEX, 0.7, (0,255,0), 2)
 
 		#return self.display_lines(frame, lines)
