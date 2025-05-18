@@ -42,6 +42,7 @@ impl FromStr for CommandType {
 }
 
 // Keyboard Commands
+// These are not actually used in the project, but just examples for my teammates.
 pub fn queue_commands(mut commands: ResMut<CommandQueue>, input: Res<ButtonInput<KeyCode>>) {
     if input.just_pressed(KeyCode::Space) {
         commands.enqueue(CommandMessage::new(CommandType::Detect, "traffic cone"));

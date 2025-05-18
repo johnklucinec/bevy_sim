@@ -2,7 +2,6 @@
 use super::components::{CommandQueue, PythonComms};
 use crate::game::python::{commands::CommandType, components::CommandEvent};
 
-//use crate::CarInput;
 use bevy::prelude::*;
 use crossbeam_channel::Sender;
 use std::{

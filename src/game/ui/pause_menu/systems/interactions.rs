@@ -1,16 +1,13 @@
 /// Author: John Klucinec (@johnklucinec)
-use bevy::app::AppExit;
-use bevy::prelude::*;
-
-use crate::game::camera::components::SecondaryCameraState;
-use crate::game::car::car::Car;
-use crate::game::car::input::CarInput;
-use crate::game::car::physics::reset_car_to_spawn;
-use crate::game::ui::pause_menu::components::*;
-use crate::game::ui::pause_menu::styles::*;
-use crate::game::ui::HUDOverlayState;
-use crate::game::SimulationState;
+use bevy::{app::AppExit, prelude::*};
+use crate::game::{
+    camera::components::SecondaryCameraState,
+    car::{car::Car, input::CarInput, physics::reset_car_to_spawn},
+    ui::{pause_menu::{components::*, styles::*}, HUDOverlayState},
+    SimulationState,
+};
 use crate::AppState;
+
 
 pub fn interact_with_resume_button(
     mut button_query: Query<
