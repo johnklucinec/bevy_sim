@@ -43,10 +43,10 @@ pub fn setup(mut commands: Commands) {
     ));
 
     // Ambient light
-    // commands.insert_resource(AmbientLight {
-    //     color: Color::WHITE,
-    //     brightness: 100.0,
-    // });
+    commands.insert_resource(AmbientLight {
+        color: Color::WHITE,
+        brightness: 100.0,
+    });
 
     commands.spawn((
         DirectionalLight {
