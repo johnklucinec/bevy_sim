@@ -4,6 +4,8 @@ and horizontal roads. */
 use bevy::prelude::*;
 use bevy::render::mesh::Mesh;
 
+use super::rand_objects::spawn_cones_on_road;
+
 #[derive(Component)]
 pub struct Road;
 
@@ -53,6 +55,18 @@ pub fn spawn_single_road(
         ))
         .id();
 
+    // Spawn cones randomly
+    spawn_cones_on_road(
+        commands,
+        asset_server,
+        parent_id,
+        distance,
+        road_width,
+        road_thickness,
+        20,
+        15.0,
+    );
+
     //for finish and start line
     let half_x_thickness = 0.2;
     let half_y_thickness = 0.01;
@@ -97,7 +111,7 @@ pub fn spawn_single_road(
     let stop_sign_handle: Handle<Scene> =
         asset_server.load("3dmodels/stop_sign/stop_sign/scene.gltf#Scene0");
 
-    let sign_spacing = 1.0;
+    let sign_spacing = 10.0;
     let mut num_signs = (total_road_length / sign_spacing).floor() as i32;
 
     let left_edge_z = -road_width * 0.5 - 0.3;
@@ -109,34 +123,34 @@ pub fn spawn_single_road(
 
     //stop sign placement
     commands.entity(parent_id).with_children(|parent| {
-        for i in 0..=num_signs {
-            let fraction = i as f32 / num_signs as f32;
-            let local_x = -distance + fraction * (6.0 * distance);
+        // for i in 0..=num_signs {
+        //     let fraction = i as f32 / num_signs as f32;
+        //     let local_x = -distance + fraction * (6.0 * distance);
 
-            //left edge
-            parent.spawn((
-                SceneRoot(stop_sign_handle.clone()),
-                Transform {
-                    translation: Vec3::new(local_x, road_thickness + -0.4, left_edge_z),
-                    rotation: Quat::from_rotation_y(angle),
-                    scale: Vec3::splat(0.5),
-                },
-                GlobalTransform::default(),
-                Visibility::default(),
-            ));
+        //     //left edge
+        //     parent.spawn((
+        //         SceneRoot(stop_sign_handle.clone()),
+        //         Transform {
+        //             translation: Vec3::new(local_x, road_thickness + -0.4, left_edge_z),
+        //             rotation: Quat::from_rotation_y(angle),
+        //             scale: Vec3::splat(1.5),
+        //         },
+        //         GlobalTransform::default(),
+        //         Visibility::default(),
+        //     ));
 
-            //right edge
-            parent.spawn((
-                SceneRoot(stop_sign_handle.clone()),
-                Transform {
-                    translation: Vec3::new(local_x, road_thickness + -0.4, right_edge_z),
-                    rotation: Quat::from_rotation_y(angle),
-                    scale: Vec3::splat(0.5),
-                },
-                GlobalTransform::default(),
-                Visibility::default(),
-            ));
-        }
+        //     //right edge
+        //     parent.spawn((
+        //         SceneRoot(stop_sign_handle.clone()),
+        //         Transform {
+        //             translation: Vec3::new(local_x, road_thickness + -0.4, right_edge_z),
+        //             rotation: Quat::from_rotation_y(angle),
+        //             scale: Vec3::splat(1.5),
+        //         },
+        //         GlobalTransform::default(),
+        //         Visibility::default(),
+        //     ));
+        // }
 
         // Center line
         parent.spawn((

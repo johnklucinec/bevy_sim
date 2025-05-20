@@ -4,6 +4,8 @@ pub mod biome;
 pub mod road;
 pub mod roadspline;
 pub mod randomroad;
+
+pub mod rand_objects;
 mod systems;
 
 //pub use randomroad::spawn_grid_roads;

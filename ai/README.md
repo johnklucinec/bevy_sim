@@ -2,35 +2,30 @@
 
 ## Installation
 
-To get started with the Bevy Simulation AI, you need to install the following dependencies:
+To get started with the Bevy Simulation AI, follow these steps:
+
+### 1. Install Python Dependencies
 
 ```sh
-pip install opencv-python
-pip install pyautogui
-pip install Pillow
-pip install pywin32
-pip install torch
-pip install ultralytics
+pip install opencv-python pyautogui Pillow pywin32 torch ultralytics
 ```
 
-Install this if you want to have (NVIDIA) GPU accel on the Image Recognition:
-It needs to be 11.8:
 
-https://developer.nvidia.com/cuda-11-8-0-download-archive
+### 2. Install CUDA for GPU Acceleration
 
-After that you need to reinstall pytorch with CUDA support
+> ⚠️ **IMPORTANT**: You **MUST** use CUDA 11.8.0 specifically for compatibility!
+
+Download CUDA 11.8.0 from the official NVIDIA archive:
+[CUDA 11.8.0 Download](https://developer.nvidia.com/cuda-11-8-0-download-archive)
+
+After installing CUDA, reinstall PyTorch with CUDA support:
+
 ```sh
 pip uninstall torch torchvision torchaudio
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
 ```
 
-## Running the Capture
 
-To run the capture, execute the following command:
+## Troubleshooting
 
-```sh
-python main.py
-```
-
-To stop the capture, press 'q'. Eventually this will be done automatically. 
-
+**Window Update Issues**: If the secondary window doesn't update in your Bevy project, try setting the Vulkan/OpenGL present method to "native" in your graphics settings (NVIDIA control panel).

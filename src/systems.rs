@@ -112,10 +112,8 @@ pub fn change_camera_state(
 
     if car_cam_pressed {
         camera_state.set(CameraState::CarCam);
-        println!("Switched to CarCam");
     } else if free_cam_pressed {
         camera_state.set(CameraState::FreeCam);
-        println!("Switched to FreeCam");
     }
 }
 

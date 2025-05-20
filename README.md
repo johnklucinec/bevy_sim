@@ -60,13 +60,27 @@ The simulation uses the Bevy game engine to create the physics and environment, 
 
 ## Getting Started
 
-### Prerequisites
-
-*Coming soon*
 
 ### Installation
 
-*Coming soon*
+1. **Clone the Repository**
+
+```sh
+git clone https://github.com/username/bevy-simulator.git
+cd bevy-simulator
+```
+
+2. **Rust Setup**
+    - Ensure Rust and Cargo are installed on your system
+    - Cargo will automatically handle all Bevy dependencies
+3. **Python Setup**
+    - Navigate to the Python module directory:
+
+```sh
+cd src/game/python
+```
+4. **Python Setup Continued**
+    - Follow the instructions in the [Python README](src/game/python) to set up the AI components
 
 ## Usage
 
@@ -90,7 +104,7 @@ The simulation uses the Bevy game engine to create the physics and environment, 
       - 📁 biome
       - 📁 car
       - 📁 camera
-      - 📁 python
+      - 📁 [python](src/game/python)
       - 📁 ui
     - 📁 [main_menu](src/main_menu)
   - 📄 main.rs
@@ -105,10 +119,7 @@ The simulation uses the Bevy game engine to create the physics and environment, 
 |------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------|
 | **[John Klucinec](https://github.com/johnklucinec)**<br>Game States • UI • IPC • Image Recognition                                  | **[Brant Cass](https://github.com/brantcass)**<br>World Generation • PID Controls                                           | **[Ramiro Covarrubias](https://github.com/Roxamir)**<br>Car Physics • PID Controls                                                      | **[Alex Collins](https://github.com/acolli33)**<br>Initial Planning • Documentation                                                  |
 
-## License
-
-*Coming soon*
 
 ---
 
-*This project was created as part of the CS 462 course, Spring 2025.*
+*This project was created as part of the CS 462 course, Spring 2025*

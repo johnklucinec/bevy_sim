@@ -7,11 +7,7 @@ use crate::game::{
     },
     SimulationState,
 };
-use bevy::{
-    prelude::*,
-    render::camera::*,
-    window::*,
-};
+use bevy::{prelude::*, render::camera::*, window::*};
 
 // Viewport configuration
 pub static VIEWPORT_POSITION: UVec2 = UVec2::new(0, 0);
@@ -82,7 +78,6 @@ pub fn update_car_camera(
     }
 }
 
-#[allow(clippy::too_many_arguments)]
 pub fn toggle_secondary_camera(
     mut camera_query: Query<&mut Camera, With<SecondaryCamera>>,
     simulation_state: Res<State<SimulationState>>,
@@ -112,6 +107,7 @@ pub fn toggle_secondary_camera(
             window.visible = true;
             camera.is_active = true;
             next_camera_state.set(SecondaryCameraState::Visible);
+            // TODO: Stop the car from driving
         }
         SecondaryCameraState::Visible => {
             camera.is_active = false;

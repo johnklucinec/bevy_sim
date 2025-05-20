@@ -15,7 +15,7 @@ class LineDetector:
 		self.hough_params = {
 			'rho': 2,            
 			'theta': np.pi/180,
-			'threshold': 30,
+			'threshold': 70,
 			'min_line_length': 40,
 			'max_line_gap': 1
 		}
@@ -138,7 +138,7 @@ class LineDetector:
 
 			# Calculate and print only the x-coordinate of the center point
 			center_x = (x1 + x2) // 2
-			cv.putText(line_image, f'X_VALUE: {center_x:.1f}', (10, 100),
+			cv.putText(line_image, f'X_VALUE: {center_x:.1f}', (10, 120),
 					cv.FONT_HERSHEY_SIMPLEX, 0.7, (0,255,0), 2)
 
 		#return self.display_lines(frame, lines)

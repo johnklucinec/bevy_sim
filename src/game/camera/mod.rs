@@ -1,14 +1,13 @@
 use bevy::{prelude::*, window::exit_on_primary_closed};
 use components::{SecondaryCameraState, SecondaryWindow};
 use systems::{
-    cleanup_python_comms, cleanup_system, despawn_secondary_camera, kill_python_process,
-    spawn_python_process, spawn_secondary_camera, toggle_secondary_camera, update_car_camera,
+    cleanup_python_comms, cleanup_system, despawn_secondary_camera, kill_python_process, spawn_python_process, spawn_secondary_camera, toggle_secondary_camera, update_car_camera
 };
 
 use crate::game::AppState;
 
 pub mod components;
-mod systems;
+pub mod systems;
 
 pub struct SecondaryCameraPlugin;
 
