@@ -1,8 +1,10 @@
+use crate::game::biome::roadspline::Spline;
 /// Author: Brant Cass (@brantcass)
 /* road.rs is a module that creates roads and contains their components creating vertical
 and horizontal roads. */
 use bevy::prelude::*;
 use bevy::render::mesh::Mesh;
+use bevy::render::mesh::{Indices, PrimitiveTopology};
 
 #[derive(Component)]
 pub struct Road;
@@ -33,15 +35,47 @@ pub fn spawn_single_road(
     let road_width = 10.0;
     let road_thickness = 0.1;
 
-    let asphalt_scene: Handle<Scene> =
-        asset_server.load("3dmodels/asphalt/asphalt_02_4k.gltf#Scene0");
+    // 1) Build a flat quad with tiling UVs:
+    let half_len = distance * 0.5;
+    let half_w = road_width * 0.5;
+
+    // how many texture tiles per world‐unit:
+    let tile_repeat_len = 1.0; // 1 tile per 1 meter along length
+    let tile_repeat_w = 1.0; // 1 tile per 1 meter across width
+
+    let positions = vec![
+        [-half_len, 0.0, -half_w],
+        [half_len, 0.0, -half_w],
+        [half_len, 0.0, half_w],
+        [-half_len, 0.0, half_w],
+    ];
+    let normals = vec![[0.0, 1.0, 0.0]; 4];
+    let uvs = vec![
+        [0.0, 0.0],
+        [distance * tile_repeat_len, 0.0],
+        [distance * tile_repeat_len, road_width * tile_repeat_w],
+        [0.0, road_width * tile_repeat_w],
+    ];
+    let indices = Indices::U32(vec![0, 1, 2, 0, 2, 3]);
+
+    let mut mesh = Mesh::new(PrimitiveTopology::TriangleList, Default::default());
+    mesh.insert_attribute(Mesh::ATTRIBUTE_POSITION, positions);
+    mesh.insert_attribute(Mesh::ATTRIBUTE_NORMAL, normals);
+    mesh.insert_attribute(Mesh::ATTRIBUTE_UV_0, uvs);
+    mesh.insert_indices(indices);
+
+    let road_handle = meshes.add(mesh);
+
+    let asphalt_mat: Handle<StandardMaterial> =
+        asset_server.load("3dmodels/asphalt/asphalt_02_4k.gltf#Material0");
 
     let parent_id = commands
         .spawn((
-            SceneRoot(asphalt_scene.clone()),
             Road,
+            Mesh3d(road_handle),
+            MeshMaterial3d(asphalt_mat.clone()),
             Transform {
-                translation: midpoint,
+                translation: Vec3::new(midpoint.x, 0.1, midpoint.z),
                 rotation: Quat::from_rotation_y(angle),
                 ..Default::default()
             },

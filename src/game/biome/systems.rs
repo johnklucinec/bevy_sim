@@ -2,10 +2,10 @@
 use crate::game::biome::biome::setup_terrain;
 //use crate::game::biome::randomroad::spawn_grid_roads;
 use crate::game::biome::road::spawn_single_road;
-use crate::game::terrain::TerrainSettings;
+use crate::game::biome::Spline;
 use crate::game::terrain::chunk::spawn_initial_chunks;
 use crate::game::terrain::noisewrapper::NoisePerlin;
-use crate::game::biome::Spline;
+use crate::game::terrain::TerrainSettings;
 use bevy::prelude::*;
 
 pub fn spawn_biome_on_enter(
@@ -25,6 +25,8 @@ pub fn spawn_biome_on_enter(
         Vec3::new(0.0, 0.0, -500.0),
         Vec3::new(0.0, 0.0, 500.0),
     );
+
+    //setup_terrain(&mut commands, &mut meshes, &mut materials);
 
     let spline = Spline::from_segments(&road_segments);
 
@@ -46,9 +48,6 @@ pub fn spawn_biome_on_enter(
         asset_server,
         terrain_settings,
         perlin,
-        spline,    // pass ownership of your freshly built road spline
+        spline,
     );
-    
-    
-    
 }
