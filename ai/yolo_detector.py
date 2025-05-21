@@ -36,7 +36,8 @@ class YOLODetector:
                 cv.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
                 cv.putText(frame, label, (x1, y1-10),
                           cv.FONT_HERSHEY_SIMPLEX, 0.5, (0,255,0), 2)
-                cv.circle(frame, (x1 + (x2 - x1) // 2, y2), 3, (0, 0, 255), -1)
                 cone_center = (x1 + (x2 - x1) // 2, y2)
+                cv.circle(frame, cone_center, 3, (0, 0, 255), -1)
+                
 
         return frame, cone_center

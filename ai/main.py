@@ -47,7 +47,7 @@ def normal_display(wincap, yolo_detector, line_detector):
     buffer_size = 15
 
     # Threshold for cone targeting
-    cone_avoidance_region = (175,325,300) # left, right, top
+    cone_avoidance_region = (175,325,275) # left, right, top coordinates
     center_of_avoidance_region = (cone_avoidance_region[0] + cone_avoidance_region[1]) / 2
     cone_safety_cushion = 25
 
@@ -94,10 +94,10 @@ def normal_display(wincap, yolo_detector, line_detector):
                         
                         # Stronger avoidance when directly in front, gradually decrease as cone moves to sides
                         avoidance_strength = 250 * (1 - min(1, abs(distance_from_center) / 50))
-                        avoidance_offset = avoidance_direction * max(150, avoidance_strength)  # Minimum 150 offset
+                        avoidance_offset = avoidance_direction * max(100, avoidance_strength)  # Minimum 150 offset
                     else:
                         # For cones not in dead center, use proportional avoidance
-                        avoidance_strength = 2.5
+                        avoidance_strength = 2
                         avoidance_offset = -distance_from_center * avoidance_strength
                     
                     # Add safety cushion in the direction we're steering
