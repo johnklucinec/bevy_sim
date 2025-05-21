@@ -13,7 +13,6 @@ pub struct MoveableCamera;
 // Function that generates the basic 3D scene.
 // Just here for to make sure everything runs right.
 pub fn setup(mut commands: Commands) {
-
     // Camera
     commands.spawn((
         Camera3d::default(),
@@ -34,14 +33,14 @@ pub fn setup(mut commands: Commands) {
         }),
     ));
 
-    commands.spawn((
-        PointLight {
-            intensity: 4500.0,
-            shadows_enabled: true,
-            ..default()
-        },
-        Transform::from_xyz(4.0, 100.0, 4.0),
-    ));
+    // commands.spawn((
+    //     PointLight {
+    //         intensity: 4000.0,
+    //         shadows_enabled: true,
+    //         ..default()
+    //     },
+    //     Transform::from_xyz(4.0, 100.0, 4.0),
+    // ));
 
     // Ambient light
     commands.insert_resource(AmbientLight {
