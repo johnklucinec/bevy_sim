@@ -46,8 +46,8 @@ pub fn spawn_chunk(
             let px = world.x + x as f32 * step;
             let pz = world.y + z as f32 * step;
 
-            let rel_x = (px - car_x) * set.freq as f32;
-            let rel_z = (pz - car_z) * set.freq as f32;
+            let rel_x = (px - car_x) * set.freq as f32 + chunk_coord.x as f32 * 1000.0;
+            let rel_z = (pz - car_z) * set.freq as f32 + chunk_coord.y as f32 * 1000.0;
 
             let noise_h = perlin.get([rel_x as f64, rel_z as f64]) as f32 * set.amp;
 
