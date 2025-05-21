@@ -5,6 +5,8 @@ use crate::game::biome::Spline;
 use crate::game::terrain::chunk::spawn_initial_chunks;
 use crate::game::terrain::noisewrapper::NoisePerlin;
 use crate::game::terrain::TerrainSettings;
+use crate::game::biome::biome::setup_terrain;
+
 use bevy::prelude::*;
 
 pub fn spawn_biome_on_enter(
@@ -25,7 +27,6 @@ pub fn spawn_biome_on_enter(
         Vec3::new(0.0, 0.0, 500.0),
     );
 
-    //setup_terrain(&mut commands, &mut meshes, &mut materials);
 
     let spline = Spline::from_segments(&road_segments);
 
@@ -40,6 +41,8 @@ pub fn spawn_biome_on_enter(
     //     5, 5, 10.0,
     // );
 
+    setup_terrain(&mut commands, &mut meshes, &mut materials, &asset_server);
+
     spawn_initial_chunks(
         commands,
         meshes,
@@ -49,4 +52,6 @@ pub fn spawn_biome_on_enter(
         perlin,
         spline,
     );
+
+
 }
