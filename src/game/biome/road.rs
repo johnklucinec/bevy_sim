@@ -24,64 +24,38 @@ pub fn spawn_single_road(
     start: Vec3,
     end: Vec3,
 ) -> Vec<Segment> {
+    //asphalt texture
+
     let delta = end - start;
     let dx = delta.x;
     let dz = delta.z;
     let distance = delta.length();
     let angle = dz.atan2(dx);
 
-    let midpoint = (start + end) * 0.5;
-
     let road_width = 10.0;
     let road_thickness = 0.1;
-
-    // 1) Build a flat quad with tiling UVs:
-    let half_len = distance * 0.5;
-    let half_w = road_width * 0.5;
-
-    // how many texture tiles per world‐unit:
-    let tile_repeat_len = 1.0; // 1 tile per 1 meter along length
-    let tile_repeat_w = 1.0; // 1 tile per 1 meter across width
-
-    let positions = vec![
-        [-half_len, 0.0, -half_w],
-        [half_len, 0.0, -half_w],
-        [half_len, 0.0, half_w],
-        [-half_len, 0.0, half_w],
-    ];
-    let normals = vec![[0.0, 1.0, 0.0]; 4];
-    let uvs = vec![
-        [0.0, 0.0],
-        [distance * tile_repeat_len, 0.0],
-        [distance * tile_repeat_len, road_width * tile_repeat_w],
-        [0.0, road_width * tile_repeat_w],
-    ];
-    let indices = Indices::U32(vec![0, 1, 2, 0, 2, 3]);
-
-    let mut mesh = Mesh::new(PrimitiveTopology::TriangleList, Default::default());
-    mesh.insert_attribute(Mesh::ATTRIBUTE_POSITION, positions);
-    mesh.insert_attribute(Mesh::ATTRIBUTE_NORMAL, normals);
-    mesh.insert_attribute(Mesh::ATTRIBUTE_UV_0, uvs);
-    mesh.insert_indices(indices);
-
-    let road_handle = meshes.add(mesh);
-
-    let asphalt_mat: Handle<StandardMaterial> =
-        asset_server.load("3dmodels/asphalt/asphalt_02_4k.gltf#Material0");
 
     let parent_id = commands
         .spawn((
             Road,
-            Mesh3d(road_handle),
-            MeshMaterial3d(asphalt_mat.clone()),
+            Mesh3d(meshes.add(Mesh::from(Cuboid::new(
+                distance,
+                road_thickness,
+                road_width,
+            )))),
+            MeshMaterial3d(materials.add(StandardMaterial {
+                base_color: Color::srgb(0.1, 0.1, 0.1),
+                metallic: 0.0, // non-metal
+                perceptual_roughness: 1.0,
+                ..Default::default()
+            })),
             Transform {
-                translation: Vec3::new(midpoint.x, 0.1, midpoint.z),
+                translation: Vec3::new(0.0, 0.0, -60.0),
                 rotation: Quat::from_rotation_y(angle),
                 ..Default::default()
             },
         ))
         .id();
-
     //for finish and start line
     let half_x_thickness = 0.2;
     let half_y_thickness = 0.01;
