@@ -6,9 +6,8 @@ use crate::game::terrain::noisewrapper::NoisePerlin;
 use crate::game::terrain::TerrainSettings;
 use bevy::pbr::MeshMaterial3d;
 use bevy::render::mesh::{Indices, Mesh, PrimitiveTopology};
-use bevy::{asset, prelude::*, text};
+use bevy::prelude::*;
 use noise::NoiseFn;
-use noise::Perlin;
 
 use super::TerrainMaterial;
 
@@ -20,7 +19,7 @@ pub struct Chunk {
 pub fn spawn_chunk(
     cmds: &mut Commands,
     meshes: &mut ResMut<Assets<Mesh>>,
-    materials: &mut ResMut<Assets<StandardMaterial>>,
+    _materials: &mut ResMut<Assets<StandardMaterial>>,
     chunk_coord: IVec2,
     road: &Spline,
     perlin: &NoisePerlin,

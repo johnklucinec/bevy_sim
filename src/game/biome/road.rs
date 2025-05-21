@@ -1,10 +1,8 @@
-use crate::game::biome::roadspline::Spline;
 /// Author: Brant Cass (@brantcass)
 /* road.rs is a module that creates roads and contains their components creating vertical
 and horizontal roads. */
 use bevy::prelude::*;
 use bevy::render::mesh::Mesh;
-use bevy::render::mesh::{Indices, PrimitiveTopology};
 
 #[derive(Component)]
 pub struct Road;

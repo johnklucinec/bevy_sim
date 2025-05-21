@@ -8,9 +8,7 @@ pub mod noisewrapper;
 pub mod updatechunk;
 
 use crate::game::biome::roadspline::Spline;
-use crate::game::terrain::chunk::spawn_initial_chunks;
 use crate::game::terrain::noisewrapper::NoisePerlin;
-use crate::AppState;
 pub use updatechunk::update_chunks;
 pub struct TerrainPlugin;
 

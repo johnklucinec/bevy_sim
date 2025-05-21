@@ -13,8 +13,6 @@ pub struct MoveableCamera;
 // Function that generates the basic 3D scene.
 // Just here for to make sure everything runs right.
 pub fn setup(mut commands: Commands) {
-    //sky
-    commands.insert_resource(ClearColor(Color::srgb(0.275, 0.51, 0.71)));
 
     // Camera
     commands.spawn((

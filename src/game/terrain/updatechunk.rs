@@ -8,7 +8,6 @@ use crate::game::terrain::noisewrapper::NoisePerlin;
 use crate::game::terrain::TerrainSettings;
 use crate::game::terrain::TerrainMaterial;
 use bevy::prelude::*;
-use noise::Perlin;
 use std::collections::HashSet;
 
 pub fn update_chunks(

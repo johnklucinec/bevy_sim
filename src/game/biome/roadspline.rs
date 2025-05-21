@@ -29,15 +29,6 @@ impl Spline {
             .fold(f32::MAX, f32::min)
     }
 
-    //If spline has at least two points it returns the start and end of the first segment
-    pub fn first_segment(&self) -> Option<(Vec3, Vec3)> {
-        if self.points.len() >= 2 {
-            Some((self.points[0], self.points[1]))
-        } else {
-            None
-        }
-    }
-
     // road is flat at y = 0.0
     pub const HEIGHT: f32 = 0.0;
 }
