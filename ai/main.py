@@ -26,7 +26,7 @@ def display_fps(frame, last_time):
 
     fps = 1 / (time() - last_time)
     cv.putText(frame, f'FPS: {fps:.1f}', (10, 30),
-               cv.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+               cv.FONT_HERSHEY_SIMPLEX, 0.7, (0, 140, 255), 2)
     return time()
 
 
@@ -129,10 +129,13 @@ def normal_display(wincap, yolo_detector, line_detector):
                 
                 # Display steering info on frame
                 cv.putText(final_frame, f'Target: {steering_source}', (10, 60),
-                           cv.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+                           cv.FONT_HERSHEY_SIMPLEX, 0.7, (0, 140, 255), 2)
                 if scaled_steering is not None: # Ensure scaled_steering is valid before drawing
                     cv.putText(final_frame, f'SteerVal: {scaled_steering:.2f}', (10, 90),
-                               cv.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+                               cv.FONT_HERSHEY_SIMPLEX, 0.7, (0, 140, 255), 2)
+                # Display Center Line X value
+                cv.putText(final_frame, f'Center Line X: {center_x:.1f}', (10, 120),
+                           cv.FONT_HERSHEY_SIMPLEX, 0.7, (0, 140, 255), 2)
 
             loop_time = display_fps(final_frame, loop_time)
             cv.imshow('Final View', final_frame)

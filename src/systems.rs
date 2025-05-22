@@ -51,8 +51,8 @@ pub fn setup(mut commands: Commands) {
     commands.spawn((
         DirectionalLight {
             //full sun
-            color: Color::WHITE,
-            illuminance: 2300.0,
+            color: Color::srgb(1.0, 0.98, 0.9), // Changed to a warmer daylight color
+            illuminance: 1000.0,
             //might have to turn off shadows for preformance
             shadows_enabled: true,
             //tweak these if your shadows are clipping

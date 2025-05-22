@@ -44,7 +44,7 @@ pub fn spawn_single_road(
                 road_width,
             )))),
             MeshMaterial3d(materials.add(StandardMaterial {
-                base_color: Color::srgb(0.1, 0.1, 0.1),
+                base_color: Color::srgb(0.05, 0.03, 0.00),
                 ..Default::default()
             })),
             Transform {

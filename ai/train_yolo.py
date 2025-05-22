@@ -28,3 +28,5 @@ if __name__ == '__main__':
         print(f"An error occurred during training: {e}")
         print("Please ensure your dataset is correctly formatted and paths in data.yaml are valid.")
         print("Consider starting with a smaller number of epochs or batch size if you encounter memory issues.")
+
+
