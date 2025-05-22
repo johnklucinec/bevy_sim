@@ -19,6 +19,12 @@ pub fn setup(mut commands: Commands) {
         Transform::from_xyz(0.0, 5.0, 10.0).looking_at(Vec3::ZERO, Vec3::Y),
         IsDefaultUiCamera,
         MoveableCamera,
+        Projection::Perspective(PerspectiveProjection {
+            fov: std::f32::consts::FRAC_PI_4,
+            near: 0.1,     // how close can the camera see
+            far: 10_000.0, // how far before things disappear
+            aspect_ratio: 16.0 / 9.0,
+        }),
         Exposure::from_physical_camera(PhysicalCameraParameters {
             aperture_f_stops: 1.0,
             shutter_speed_s: 1.0 / 250.0,
@@ -27,31 +33,32 @@ pub fn setup(mut commands: Commands) {
         }),
     ));
 
-    commands.spawn((
-        PointLight {
-            intensity: 4500.0,
-            shadows_enabled: true,
-            ..default()
-        },
-        Transform::from_xyz(4.0, 100.0, 4.0),
-    ));
+    // commands.spawn((
+    //     PointLight {
+    //         intensity: 4000.0,
+    //         shadows_enabled: true,
+    //         ..default()
+    //     },
+    //     Transform::from_xyz(4.0, 100.0, 4.0),
+    // ));
 
     // Ambient light
-    // commands.insert_resource(AmbientLight {
-    //     color: Color::WHITE,
-    //     brightness: 100.0,
-    // });
+    commands.insert_resource(AmbientLight {
+        color: Color::WHITE,
+        brightness: 100.0,
+    });
 
     commands.spawn((
         DirectionalLight {
             //full sun
             color: Color::WHITE,
-            illuminance: 2500.0,
+            illuminance: 2300.0,
+            //might have to turn off shadows for preformance
             shadows_enabled: true,
             //tweak these if your shadows are clipping
-            shadow_depth_bias: 0.02,
-            shadow_normal_bias: 0.6,
-            ..Default::default()
+            shadow_depth_bias: 0.1,
+            shadow_normal_bias: 2.0,
+            ..default()
         },
         Transform {
             translation: Vec3::new(4.0, 100.0, 4.0),

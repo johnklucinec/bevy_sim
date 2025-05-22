@@ -6,8 +6,8 @@ use crate::game::car::car::Car;
 use crate::game::terrain::chunk::{spawn_chunk, Chunk};
 use crate::game::terrain::noisewrapper::NoisePerlin;
 use crate::game::terrain::TerrainSettings;
+use crate::game::terrain::TerrainMaterial;
 use bevy::prelude::*;
-use noise::Perlin;
 use std::collections::HashSet;
 
 pub fn update_chunks(
@@ -17,6 +17,7 @@ pub fn update_chunks(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
     terrain_settings: Res<TerrainSettings>,
+    terrain_material: Res<TerrainMaterial>,
     perlin: Res<NoisePerlin>,
     road: Res<Spline>,
     
@@ -59,6 +60,9 @@ pub fn update_chunks(
 
     let loaded_coords: HashSet<IVec2> = chunk_query.iter().map(|(_, chunk)| chunk.coord).collect();
 
+    //for texutre on hills
+    let mat_handle = terrain_material.0.clone();
+
     for coord in desired_coords {
         
         if !loaded_coords.contains(&coord) {
@@ -72,6 +76,7 @@ pub fn update_chunks(
                 &*perlin,
                 &terrain_settings,
                 player_tf,
+                mat_handle.clone(),
             );
         }
     }

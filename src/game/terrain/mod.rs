@@ -1,18 +1,19 @@
-// This file handles the meshe generation for the ground level of the enviornment
+/// This file handles the meshe generation for the ground level of the enviornment
 
 use bevy::prelude::*;
 use noise::Perlin;
 
 pub mod chunk;
-mod noisewrapper;
+pub mod noisewrapper;
 pub mod updatechunk;
 
 use crate::game::biome::roadspline::Spline;
-use crate::game::terrain::chunk::spawn_initial_chunks;
 use crate::game::terrain::noisewrapper::NoisePerlin;
-use crate::AppState;
 pub use updatechunk::update_chunks;
 pub struct TerrainPlugin;
+
+#[derive(Resource)]
+pub struct TerrainMaterial(pub Handle<StandardMaterial>);
 
 #[derive(Resource)]
 pub struct TerrainSettings {
@@ -27,21 +28,20 @@ pub struct TerrainSettings {
 impl Plugin for TerrainPlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(TerrainSettings {
-            chunk_size: 64,
-            verts_per_side: 64,
-            amp: 8.0,
-            freq: 0.05,
-            road_width: 10.0,
-            road_blend_distance: 6.0,
+            chunk_size: 120,
+            verts_per_side: 164,
+            amp: 4.5,
+            freq: 0.03,
+            road_width: 12.0,
+            road_blend_distance: 15.0,
         })
         .insert_resource(NoisePerlin(Perlin::new(42)))
         .add_systems(
-            OnEnter(AppState::Game),
-            spawn_initial_chunks.run_if(|world: &World| world.contains_resource::<Spline>()),
-        );
-        app.add_systems(
             Update,
-            update_chunks.run_if(|world: &World| world.contains_resource::<Spline>()),
+            update_chunks
+                .run_if(|world: &World| world.contains_resource::<Spline>())
+                .run_if(|world: &World| world.contains_resource::<TerrainMaterial>())
+                .run_if(|world: &World| world.contains_resource::<Spline>()),
         );
     }
 }
