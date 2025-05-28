@@ -4,6 +4,9 @@ and horizontal roads. */
 use bevy::prelude::*;
 use bevy::render::mesh::Mesh;
 
+use super::rand_objects::spawn_cones_on_road;
+
+
 #[derive(Component)]
 pub struct Road;
 

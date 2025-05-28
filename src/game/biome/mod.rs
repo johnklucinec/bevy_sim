@@ -1,10 +1,11 @@
 /// Author: Brant Cass (@brantcass)
-
 pub mod biome;
+pub mod randomroad;
 pub mod road;
 pub mod roadspline;
-pub mod randomroad;
 mod systems;
+
+pub mod rand_objects;
 
 //pub use randomroad::spawn_grid_roads;
 pub use roadspline::Spline;
@@ -12,7 +13,6 @@ pub use roadspline::Spline;
 use crate::AppState;
 use bevy::prelude::*;
 use systems::spawn_biome_on_enter; // Import systems
-
 
 ///Plugin for generating the biome (trees, grass, roads)
 pub struct BiomePlugin;
