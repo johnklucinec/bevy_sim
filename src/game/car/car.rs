@@ -111,4 +111,3 @@ pub fn despawn_cars(mut commands: Commands, query: Query<Entity, With<Car>>) {
         commands.entity(entity).despawn_recursive();
     }
 }
-

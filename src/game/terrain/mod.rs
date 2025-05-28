@@ -1,4 +1,4 @@
-/// This file handles the meshe generation for the ground level of the enviornment
+// This file handles the meshe generation for the ground level of the enviornment
 
 use bevy::prelude::*;
 use noise::Perlin;

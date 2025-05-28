@@ -6,6 +6,7 @@ use bevy::render::mesh::Mesh;
 
 use super::rand_objects::spawn_cones_on_road;
 
+
 #[derive(Component)]
 pub struct Road;
 
@@ -24,13 +25,12 @@ pub fn spawn_single_road(
     start: Vec3,
     end: Vec3,
 ) -> Vec<Segment> {
+
     let delta = end - start;
     let dx = delta.x;
     let dz = delta.z;
     let distance = delta.length();
     let angle = dz.atan2(dx);
-
-    let midpoint = (start + end) * 0.5;
 
     let road_width = 10.0;
     let road_thickness = 0.1;
@@ -44,11 +44,13 @@ pub fn spawn_single_road(
                 road_width,
             )))),
             MeshMaterial3d(materials.add(StandardMaterial {
-                base_color: Color::srgb(0.05, 0.03, 0.00),
+                base_color: Color::srgb(0.1, 0.1, 0.1),
+                metallic: 0.0, // non-metal
+                perceptual_roughness: 1.0,
                 ..Default::default()
             })),
             Transform {
-                translation: midpoint,
+                translation: Vec3::new(0.0, 0.0, -60.0),
                 rotation: Quat::from_rotation_y(angle),
                 ..Default::default()
             },
