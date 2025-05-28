@@ -1,16 +1,18 @@
 // physics.rs - Handles car movement and physics systems
 use super::car::{Car, GearMode};
 use super::input::CarInput;
-use crate::game::python::commands::CommandType;
-use crate::game::python::components::{CommandMessage, CommandQueue};
+use crate::game::camera::components::SecondaryCameraState;
+use crate::game::car::DrivingState;
 use bevy::prelude::*;
-//use crate::game::road::Road;
 
 // system that handles car movement
 pub fn move_car(
     keyboard_input: Res<ButtonInput<KeyCode>>, // Access to keyboard
     mut car_input: ResMut<CarInput>,           // Access to car input
-    mut car_query: Query<(&mut Car, &mut Transform)>, // Query to get car components
+    mut car_params: ParamSet<(
+        Query<(&mut Car, &mut Transform)>, // Index 0: For movement
+        Query<&Car>,                       // Index 1: For reading state in parse_text_command
+    )>,
     time: Res<Time>,                           // Time resource for frame-independent movement
 ) {
     // Update CarInput based on keyboard input
@@ -20,11 +22,14 @@ pub fn move_car(
     car_input.turn_right = keyboard_input.pressed(KeyCode::ArrowRight);
     car_input.toggle_gear = keyboard_input.just_pressed(KeyCode::KeyG);
 
-    // Parse any text commands
-    car_input.parse_text_command();
+    // Parse any text commands using the read-only query from ParamSet
+    {
+        let car_state_query = car_params.p1();
+        car_input.parse_text_command(&car_state_query);
+    }
 
-    // Try to get the car entity. if found, continue with movement
-    if let Ok((mut car, mut transform)) = car_query.get_single_mut() {
+    // Try to get the car entity for movement using the mutable query from ParamSet
+    if let Ok((mut car, mut transform)) = car_params.p0().get_single_mut() {
         let delta = time.delta_secs(); // Time since last frame
         let forward = transform.forward(); // get car's forward direction
 
@@ -184,7 +189,8 @@ pub fn move_car(
 // New system to detect wall collisions and reset car
 pub fn reset_car(
     mut car_query: Query<(&mut Car, &mut Transform), With<Car>>,
-    mut commands: ResMut<CommandQueue>,
+    mut car_input: ResMut<CarInput>,
+    camera_state: Res<State<SecondaryCameraState>>,
 ) {
     if let Ok((mut car, mut transform)) = car_query.get_single_mut() {
         let road_width = 9.0; // Match the road_width from road.rs
@@ -192,15 +198,34 @@ pub fn reset_car(
 
         // Check if car is outside the road's width
         if transform.translation.x.abs() > road_half_width {
-            // Reset car to original spawn point (0, 0.5, 0)
-            transform.translation = Vec3::new(3.0, 0.5, 0.0);
-            transform.rotation = Quat::IDENTITY;
-
-            commands.enqueue(CommandMessage::new(CommandType::Steer, "0"));
-            commands.enqueue(CommandMessage::new(CommandType::Pidreset, "0"));
-            // Reset car's speed and other properties
-            car.current_speed = 0.0;
-            car.gear_mode = GearMode::Forward;
+            reset_car_to_spawn(&mut transform, &mut car, &mut car_input, camera_state);
         }
     }
+}
+
+// Function to reset car to spawn point with necessary updates
+pub fn reset_car_to_spawn(
+    transform: &mut Transform,
+    car: &mut Car,
+    car_input: &mut ResMut<CarInput>,
+    camera_state: Res<State<SecondaryCameraState>>,
+) {
+    // Always reset car position and rotation
+    transform.translation = Vec3::new(3.0, 0.5, 0.0);
+    transform.rotation = Quat::IDENTITY;
+
+    // Only reset speed, gear, and driving state if camera is hidden (Manual mode)
+    if *camera_state.get() == SecondaryCameraState::Hidden {
+        // Reset speed and steering commands
+        car_input.speed_value = 0.0;
+        car_input.steer_angle = 0.0;
+
+        // Reset car's speed and other properties
+        car.current_speed = 0.0;
+        car.gear_mode = GearMode::Forward;
+
+        // Reset driving state
+        car.driving_state = DrivingState::Manual;
+    }
+    // When camera is visible (Autonomous mode), keep current speed, gear, and driving state
 }

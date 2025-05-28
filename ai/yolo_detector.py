@@ -4,7 +4,7 @@ import torch
 from ultralytics import YOLO
 
 class YOLODetector:
-    def __init__(self, model_path='yolov8n.pt', conf_threshold=0.5):
+    def __init__(self, model_path='safety_cone.pt', conf_threshold=0.7):
         self.model = YOLO(model_path)
         self.conf_threshold = conf_threshold
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -16,6 +16,7 @@ class YOLODetector:
             print("Using CPU", flush=True)
 
     def process_frame(self, frame):
+        cone_center = None
         results = self.model(
             frame, 
             stream=True,
@@ -35,4 +36,8 @@ class YOLODetector:
                 cv.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
                 cv.putText(frame, label, (x1, y1-10),
                           cv.FONT_HERSHEY_SIMPLEX, 0.5, (0,255,0), 2)
-        return frame
+                cone_center = (x1 + (x2 - x1) // 2, y2)
+                cv.circle(frame, cone_center, 3, (0, 0, 255), -1)
+                
+
+        return frame, cone_center

@@ -14,6 +14,9 @@ pub struct MainMenuButton {}
 pub struct QuitButton {}
 
 #[derive(Component)]
+pub struct ResetButton {}
+
+#[derive(Component)]
 pub struct HUDToggle {}
 
 #[derive(Component)]

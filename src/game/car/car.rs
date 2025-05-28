@@ -1,6 +1,7 @@
 // car.rs - Defines car components and spawning logic
 
 use bevy::prelude::*;
+use crate::game::car::DrivingState;
 
 #[derive(Component, Default)]
 pub enum GearMode {
@@ -26,6 +27,7 @@ pub struct Car {
     pub max_steering_angle: f32, // Maximum steering angle in radians
     pub steering_speed: f32,     // How quickly steering angle changes
     pub wheelbase: f32,          // Distance between front and rear axles
+    pub driving_state: DrivingState,
 }
 
 #[derive(Component)]
@@ -59,6 +61,7 @@ pub fn spawn_car(
                 max_steering_angle: 0.5, // About 30 degrees in radians
                 steering_speed: 2.0,     // How quickly steering angle changes
                 wheelbase: 1.6,          // Distance between front and rear wheels
+                driving_state: DrivingState::Manual,
             },
             Mesh3d(meshes.add(Cuboid::new(1.0, 0.5, 2.0))),
             MeshMaterial3d(materials.add(StandardMaterial {

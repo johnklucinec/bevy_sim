@@ -69,20 +69,20 @@ pub fn build_pause_menu(commands: &mut Commands, asset_server: &Res<AssetServer>
                         ));
 
                     // ====== Reset Button ======
-                    // parent
-                    //     .spawn((
-                    //         Button,
-                    //         button_style(),
-                    //         BorderColor(Color::BLACK),
-                    //         BorderRadius::all(Val::Px(10.0)),
-                    //         BackgroundColor(PRESSED_BUTTON), // Update to enable
-                    //         DisabledButton {},               // Update to enable
-                    //     ))
-                    //     .with_child((
-                    //         Text::new("Reset"),
-                    //         get_text_style(28.0, asset_server),
-                    //         TextColor(TEXT_COLOR),
-                    //     ));
+                    parent
+                        .spawn((
+                            Button,
+                            button_style(),
+                            BorderColor(Color::BLACK),
+                            BorderRadius::all(Val::Px(10.0)),
+                            BackgroundColor(PRESSED_BUTTON), // Update to enable
+                            ResetButton {},               // Update to enable
+                        ))
+                        .with_child((
+                            Text::new("Reset"),
+                            get_text_style(28.0, asset_server),
+                            TextColor(TEXT_COLOR),
+                        ));
 
                     // ====== Modify Vehicle Button ======
                     // parent

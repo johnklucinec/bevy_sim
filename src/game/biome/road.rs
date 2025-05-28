@@ -22,7 +22,6 @@ pub fn spawn_single_road(
     start: Vec3,
     end: Vec3,
 ) -> Vec<Segment> {
-    //asphalt texture
 
     let delta = end - start;
     let dx = delta.x;
@@ -54,6 +53,19 @@ pub fn spawn_single_road(
             },
         ))
         .id();
+
+    // Spawn cones randomly
+    spawn_cones_on_road(
+        commands,
+        asset_server,
+        parent_id,
+        distance,
+        road_width,
+        road_thickness,
+        20,
+        15.0,
+    );
+
     //for finish and start line
     let half_x_thickness = 0.2;
     let half_y_thickness = 0.01;
@@ -98,7 +110,7 @@ pub fn spawn_single_road(
     let stop_sign_handle: Handle<Scene> =
         asset_server.load("3dmodels/stop_sign/stop_sign/scene.gltf#Scene0");
 
-    let sign_spacing = 1.0;
+    let sign_spacing = 10.0;
     let mut num_signs = (total_road_length / sign_spacing).floor() as i32;
 
     let left_edge_z = -road_width * 0.5 - 0.3;

@@ -11,3 +11,8 @@ Cargo.lock
 ai/__pycache__/
 ai/__pycache__/windowcapture.cpython-313.pyc
 ai/__pycache__/windowcapture.cpython-313.pyc
+ai/datasets/train
+ai/datasets/valid
+ai/datasets/test
+runs/detect
+

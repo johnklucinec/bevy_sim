@@ -1,10 +1,12 @@
 /// Author: John Klucinec (@johnklucinec)
 mod pause_menu;
 mod speedometer;
+mod free_cam_text;
 
 use bevy::prelude::*;
 use pause_menu::PauseMenuPlugin;
 use speedometer::SpeedometerPlugin;
+use free_cam_text::FreeCamTextPlugin;
 
 pub struct GameUIPlugin;
 
@@ -13,7 +15,7 @@ impl Plugin for GameUIPlugin {
         app
             // States
             .init_state::<HUDOverlayState>()
-            .add_plugins((PauseMenuPlugin, SpeedometerPlugin));
+            .add_plugins((PauseMenuPlugin, SpeedometerPlugin, FreeCamTextPlugin));
     }
 }
 

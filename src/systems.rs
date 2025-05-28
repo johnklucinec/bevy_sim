@@ -51,8 +51,8 @@ pub fn setup(mut commands: Commands) {
     commands.spawn((
         DirectionalLight {
             //full sun
-            color: Color::WHITE,
-            illuminance: 2300.0,
+            color: Color::srgb(1.0, 0.98, 0.9), // Changed to a warmer daylight color
+            illuminance: 1000.0,
             //might have to turn off shadows for preformance
             shadows_enabled: true,
             //tweak these if your shadows are clipping
@@ -119,10 +119,8 @@ pub fn change_camera_state(
 
     if car_cam_pressed {
         camera_state.set(CameraState::CarCam);
-        println!("Switched to CarCam");
     } else if free_cam_pressed {
         camera_state.set(CameraState::FreeCam);
-        println!("Switched to FreeCam");
     }
 }
 
