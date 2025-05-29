@@ -28,4 +28,6 @@ pip install torch torchvision torchaudio --index-url https://download.pytorch.or
 
 ## Troubleshooting
 
-**Window Update Issues**: If the secondary window doesn't update in your Bevy project, try setting the Vulkan/OpenGL present method to "native" in your graphics settings (NVIDIA control panel).
+**Window Update Issues:** If the secondary window doesn’t refresh in your Bevy project, switch the **Vulkan/OpenGL present method** to **Native** in the NVIDIA Control Panel.
+
+![NVIDIA Control Panel – switch Vulkan/OpenGL present method to “Native”](assets/images/native.png)
